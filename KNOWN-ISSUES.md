@@ -29,7 +29,7 @@ LOW
 
 ### KI-0001: Final tech stack not yet confirmed
 
-Status: OPEN  
+Status: RESOLVED  
 Severity: MEDIUM
 
 Description:
@@ -40,6 +40,9 @@ Setup commands, auth flow, storage integration, and deployment instructions may 
 
 Recommended action:
 Confirm stack during project setup and update `README.md`, `ARCHITECTURE.md`, and `TASKS.md`.
+
+Resolution (2026-05-21):
+Codebase uses Next.js 15, TypeScript (strict), Tailwind v4, Prisma 6, Zod, ESLint, Prettier, pnpm. Auth.js stubs in `lib/auth/`; full auth in TD-0103.
 
 ---
 
@@ -248,6 +251,7 @@ Trust and user adoption matter more than monetization at the start.
 
 ## Resolved issues
 
+- **KI-0001:** Final tech stack confirmed in codebase (2026-05-21)
 - **KI-0012:** Planning documentation inconsistencies (2026-05-21)
 
 ---

@@ -1,0 +1,17 @@
+// TrustDoko database schema — foundation placeholder.
+// Full models will be added in TD-0102.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Placeholder to allow prisma generate before core schema migration.
+model HealthCheck {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+}

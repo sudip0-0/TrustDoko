@@ -246,17 +246,47 @@ trustdoko/
 
 ## Local setup
 
-**Not runnable yet.** The application has not been initialized. After TD-0001 completes, use:
+### Prerequisites
+
+- Node.js 20+
+- pnpm 9+
+- PostgreSQL 15+ (local Docker, Neon, or Supabase)
+
+### First-time setup
 
 ```bash
+# Install dependencies
 pnpm install
+
+# Copy environment template and edit values
 cp .env.example .env
-pnpm prisma migrate dev
-pnpm prisma db seed
+
+# Generate Prisma client (runs automatically on install)
+pnpm db:generate
+
+# Apply database schema (requires DATABASE_URL in .env)
+pnpm db:migrate
+
+# Start development server
 pnpm dev
 ```
 
-Package manager for MVP: **pnpm** (see `ARCHITECTURE.md` § Assumptions).
+Open [http://localhost:3000](http://localhost:3000).
+
+### Common commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start dev server (Turbopack) |
+| `pnpm build` | Production build |
+| `pnpm start` | Run production server |
+| `pnpm lint` | ESLint |
+| `pnpm typecheck` | TypeScript check |
+| `pnpm format` | Prettier write |
+| `pnpm db:migrate` | Prisma migrate dev |
+| `pnpm db:studio` | Prisma Studio |
+
+Package manager: **pnpm**. Stack defaults: see `ARCHITECTURE.md` § Assumptions.
 
 ---
 
@@ -314,7 +344,7 @@ A task is done only when:
 
 ## Current status
 
-Planning complete. Documentation in place. No application code yet.
+Application foundation initialized (Next.js, TypeScript, Tailwind, Prisma, ESLint, Prettier).
 
 | Doc | Purpose |
 |-----|---------|
@@ -323,4 +353,4 @@ Planning complete. Documentation in place. No application code yet.
 | `ARCHITECTURE.md` | Modules, routes, assumptions |
 | `KNOWN-ISSUES.md` | Risks and open decisions |
 
-Next task: **TD-0001** (initialize Next.js project).
+Next task: **TD-0101** (core database schema) and **TD-0103** (Auth.js).

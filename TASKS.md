@@ -52,7 +52,7 @@ See `PROGRESS.md` for phased exit criteria and `ARCHITECTURE.md` for module boun
 
 ### TD-0001: Initialize project
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Goal:
@@ -66,12 +66,12 @@ Next.js + TypeScript + Tailwind CSS + PostgreSQL + Prisma + Auth.js
 
 Acceptance criteria:
 
-- [ ] Next.js project created
-- [ ] TypeScript enabled
-- [ ] Tailwind configured
-- [ ] Basic app layout exists
-- [ ] `.env.example` added
-- [ ] README setup instructions verified
+- [x] Next.js project created
+- [x] TypeScript enabled
+- [x] Tailwind configured
+- [x] Basic app layout exists
+- [x] `.env.example` added
+- [x] README setup instructions verified
 
 Validation:
 
@@ -104,15 +104,15 @@ Acceptance criteria:
 
 ### TD-0003: Configure linting, formatting, and typecheck
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Lint command exists
-- [ ] Typecheck command exists
-- [ ] Format command exists
-- [ ] Project passes initial validation
+- [x] Lint command exists
+- [x] Typecheck command exists
+- [x] Format command exists
+- [x] Project passes initial validation
 
 Suggested scripts:
 

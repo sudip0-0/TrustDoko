@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Planning complete. Implementation not started.**
+**Phase 0 foundation — in progress.**
 
-The repo contains product and engineering documentation only. No application code, database, or tooling exists yet.
+Next.js application scaffold is in place. Core business schema and Auth.js are not implemented yet.
 
 ---
 
@@ -20,14 +20,16 @@ The repo contains product and engineering documentation only. No application cod
 |------|--------|
 | Product scope | Defined in `README.md` |
 | Architecture | Defined in `ARCHITECTURE.md` |
-| Task backlog | Defined in `TASKS.md` (TD-0002 DONE; others TODO) |
-| Risks / decisions | Tracked in `KNOWN-ISSUES.md` |
-| Agent workflow | Defined in `AGENTS.md` |
-| Next.js app | **Missing** |
-| Git repository | **Missing** |
-| Database / Prisma | **Missing** |
-| Auth | **Missing** |
-| CI / lint / test scripts | **Missing** |
+| Task backlog | TD-0001, TD-0002, TD-0003 **DONE** |
+| Next.js app | **Initialized** (App Router, landing page) |
+| TypeScript | **Strict** (`strict`, `noUncheckedIndexedAccess`) |
+| Tailwind CSS | **Configured** (v4, `@theme` tokens) |
+| ESLint / Prettier | **Configured** |
+| Prisma | **Placeholder schema** (`HealthCheck` model) |
+| Auth | **Stubs only** (`lib/auth/`) |
+| Zod | **Env validation** (`lib/validations/env.ts`) |
+| Database migrate | Pending `DATABASE_URL` + TD-0102 |
+| Git repository | Not initialized |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
 
@@ -46,22 +48,17 @@ PROGRESS.md
 KNOWN-ISSUES.md
 ```
 
-### Expected but missing (Milestone 0)
+### Application structure (created)
 
 ```txt
-package.json / pnpm-lock.yaml
-next.config.ts
-tsconfig.json
-tailwind.config.ts
-postcss.config.mjs
+app/                    layout, globals.css, landing, placeholders
+components/             layout/, ui/
+lib/                    auth/, db/, validations/, utils.ts
+prisma/                 schema.prisma (placeholder)
+server/                 actions/, queries/
+types/                  auth types
 .env.example
-.gitignore
-prisma/schema.prisma
-app/                    (Next.js App Router)
-components/
-lib/
-public/
-tests/
+package.json, tsconfig.json, eslint, prettier
 ```
 
 ### Planning review (2026-05-21)
@@ -94,9 +91,9 @@ Execute in order. Each phase should finish validation (`pnpm lint`, `pnpm typech
 
 | Step | Task ID | Outcome |
 |------|---------|---------|
-| 0.1 | TD-0001 | Init Next.js (App Router) + TypeScript + Tailwind; root layout; home placeholder |
-| 0.2 | — | Init git, `.gitignore`, `.env.example`; confirm stack in docs |
-| 0.3 | TD-0003 | ESLint, Prettier, `typecheck` script |
+| 0.1 | TD-0001 | ~~Init Next.js~~ **DONE** |
+| 0.2 | — | Init git (optional); `.env.example` **DONE** |
+| 0.3 | TD-0003 | ~~ESLint, Prettier, typecheck~~ **DONE** |
 | 0.4 | TD-0101 | Prisma + PostgreSQL connection + `lib/db` helper |
 | 0.5 | TD-0102 | Core schema + first migration |
 | 0.6 | TD-0103 | Auth (register, login, logout, protected routes) |
@@ -195,16 +192,18 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 
 ## Active task
 
-None (planning / audit only).
+**TD-0101** — Prisma core schema and first real migration.
 
 ---
 
 ## Completed tasks
 
 - Initial product and agent documentation (2026-05-21)
-- Repository audit and implementation plan in this file (2026-05-21)
+- Repository audit and implementation plan (2026-05-21)
 - Planning review: assumptions, module index, contradiction fixes (2026-05-21)
-- TD-0002 marked DONE in `TASKS.md`
+- TD-0002 documentation (2026-05-21)
+- **TD-0001** application foundation (2026-05-21)
+- **TD-0003** lint, format, typecheck (2026-05-21)
 
 ---
 
@@ -291,6 +290,45 @@ None.
 #### Next suggested task
 
 - **TD-0001:** Initialize Next.js project.
+
+---
+
+### 2026-05-21 - Cursor agent (application foundation)
+
+#### Completed
+
+- Initialized Next.js 15 (App Router) + React 19 + TypeScript (strict).
+- Configured Tailwind CSS v4 with TrustDoko theme tokens.
+- Added ESLint (Next.js) + Prettier + `lint` / `typecheck` / `format` scripts.
+- Created folder structure: `app/`, `components/`, `components/ui/`, `lib/`, `prisma/`, `types/`, `server/actions/`, `server/queries/`.
+- Added base layout, header/footer, landing page, route placeholders (`/businesses`, `/about`).
+- Added Prisma placeholder schema + `lib/db` client singleton.
+- Added auth-ready stubs (`lib/auth/`) and Zod env validation.
+- Added `.env.example`, `.gitignore`.
+
+#### Changed files
+
+- `package.json`, `pnpm-lock.yaml`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`
+- `eslint.config.mjs`, `.prettierrc`, `.prettierignore`, `.env.example`, `.gitignore`
+- `app/**`, `components/**`, `lib/**`, `prisma/schema.prisma`, `server/**`, `types/**`
+- `README.md`, `TASKS.md`, `PROGRESS.md`
+
+#### Validation
+
+- `pnpm typecheck`: pass
+- `pnpm lint`: pass
+- `pnpm build`: pass
+
+#### Notes
+
+- Package name is `trustdoko` (npm does not allow capitals in project name).
+- Run `pnpm db:migrate` after setting `DATABASE_URL` in `.env`.
+- Auth.js integration deferred to TD-0103.
+
+#### Next suggested task
+
+- **TD-0102:** Core database schema.
+- **TD-0101:** Wire PostgreSQL and first migration.
 
 ---
 
