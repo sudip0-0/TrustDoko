@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 2 (public discovery) — in progress.**
+**Milestone 2 (public discovery) — complete.**
 
-Business listing, search/filters, and profile pages are live. Next: reviews (Milestone 3).
+Business directory QA passed (listing, search, filters, sort, profiles). Next: reviews (Milestone 3 / TD-0301).
 
 ---
 
@@ -36,7 +36,8 @@ Business listing, search/filters, and profile pages are live. Next: reviews (Mil
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **39 passing** |
+| Unit tests (Vitest) | **40 passing** |
+| Milestone 2 QA (directory) | **Passed** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
 
@@ -549,6 +550,50 @@ No packages removed.
 #### Next suggested task
 
 - **TD-0203:** Search and filters.
+
+---
+
+### 2026-05-21 - Milestone 2 quality check (business directory)
+
+#### Checklist
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | Business listing `/businesses` loads | **Pass** |
+| 2 | Profile loads by slug | **Pass** (`sample-kathmandu-threads`) |
+| 3 | Search (name, city, social) | **Pass** |
+| 4 | Filters (individual + combined) | **Pass** |
+| 5 | Sort (trust, rating, reviews, newest) | **Pass** |
+| 6 | Empty state (no results) | **Pass** |
+| 7 | Loading states (listing + profile) | **Pass** |
+| 8 | Business cards show trust/rating/verification | **Pass** |
+| 9 | Profile with missing optional fields | **Pass** (null-safe components) |
+| 10 | Responsive layout | **Pass** (mobile-first grid/filters) |
+| 11 | Efficient queries | **Pass** (parallel listing fetch; `cache()` profile dedupe; single `groupBy` for complaints) |
+| 12 | PROGRESS.md updated | **Pass** (this entry) |
+
+#### Fixes applied during QA
+
+- Invalid URL filter params no longer 500 (Zod `.catch()` on enums/coercion).
+- `getBusinessProfile` wrapped in React `cache()` to avoid duplicate DB fetch (metadata + page).
+- Complaint counts use one `groupBy` query instead of two `count` queries.
+- Added [`app/not-found.tsx`](app/not-found.tsx) for invalid business slugs.
+- Clean `.next` + rebuild if dev Turbopack corrupts production `next start` (missing `[turbopack]_runtime.js`).
+
+#### Commands
+
+```bash
+npm run lint          # pass
+npm run typecheck     # pass
+npm run build         # pass
+npm test              # pass (40 tests)
+```
+
+Manual HTTP QA (production `next start -p 3011` after clean build): all listing/search/filter/sort/profile/empty/invalid-slug scenarios **pass**.
+
+#### Next suggested task
+
+- **TD-0301:** Review submission flow.
 
 ---
 

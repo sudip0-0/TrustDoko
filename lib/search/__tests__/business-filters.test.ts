@@ -31,6 +31,24 @@ describe("businessListFiltersSchema", () => {
     const parsed = businessListFiltersSchema.parse({ page: "1" });
     expect(parsed.sort).toBe("trust");
   });
+
+  it("ignores invalid enum values instead of throwing", () => {
+    const parsed = businessListFiltersSchema.parse({
+      page: "1",
+      sort: "invalid",
+      businessType: "BOGUS",
+      verificationStatus: "NOT_A_STATUS",
+      trustLabel: "FAKE",
+      minRating: "abc",
+      category: "online-clothing",
+    });
+    expect(parsed.sort).toBe("trust");
+    expect(parsed.businessType).toBeUndefined();
+    expect(parsed.verificationStatus).toBeUndefined();
+    expect(parsed.trustLabel).toBeUndefined();
+    expect(parsed.minRating).toBeUndefined();
+    expect(parsed.category).toBe("online-clothing");
+  });
 });
 
 describe("hasActiveBusinessFilters", () => {

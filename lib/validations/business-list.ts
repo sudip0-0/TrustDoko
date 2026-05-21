@@ -22,15 +22,19 @@ export const businessSortValues = [
 export type BusinessListSort = (typeof businessSortValues)[number];
 
 export const businessListFiltersSchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  q: z.string().trim().optional(),
+  page: z.coerce.number().int().min(1).default(1).catch(1),
+  q: z
+    .string()
+    .trim()
+    .transform((value) => (value.length > 0 ? value : undefined))
+    .optional(),
   category: z.string().trim().optional(),
   city: z.string().trim().optional(),
-  businessType: z.nativeEnum(BusinessType).optional(),
-  verificationStatus: z.nativeEnum(VerificationStatus).optional(),
-  minRating: z.coerce.number().min(1).max(5).optional(),
-  trustLabel: z.enum(trustLabelKeys).optional(),
-  sort: z.enum(businessSortValues).default("trust"),
+  businessType: z.nativeEnum(BusinessType).optional().catch(undefined),
+  verificationStatus: z.nativeEnum(VerificationStatus).optional().catch(undefined),
+  minRating: z.coerce.number().min(1).max(5).optional().catch(undefined),
+  trustLabel: z.enum(trustLabelKeys).optional().catch(undefined),
+  sort: z.enum(businessSortValues).default("trust").catch("trust"),
 });
 
 export type BusinessListFilters = z.infer<typeof businessListFiltersSchema>;

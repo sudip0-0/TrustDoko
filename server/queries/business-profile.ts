@@ -1,4 +1,5 @@
 import { ComplaintStatus, ReviewStatus } from "@prisma/client";
+import { cache } from "react";
 
 import { prisma } from "@/lib/db";
 
@@ -41,7 +42,7 @@ export type BusinessProfileData = {
   };
 };
 
-export async function getBusinessProfile(
+async function fetchBusinessProfile(
   slug: string,
 ): Promise<BusinessProfileData | null> {
   const business = await prisma.business.findUnique({
@@ -68,27 +69,29 @@ export async function getBusinessProfile(
     return null;
   }
 
-  const [unresolved, resolved] = await Promise.all([
-    prisma.complaint.count({
-      where: {
-        businessId: business.id,
-        status: {
-          in: [
-            ComplaintStatus.SUBMITTED,
-            ComplaintStatus.UNDER_REVIEW,
-            ComplaintStatus.BUSINESS_RESPONDED,
-            ComplaintStatus.UNRESOLVED,
-          ],
-        },
-      },
-    }),
-    prisma.complaint.count({
-      where: {
-        businessId: business.id,
-        status: ComplaintStatus.RESOLVED,
-      },
-    }),
+  const complaintCounts = await prisma.complaint.groupBy({
+    by: ["status"],
+    where: { businessId: business.id },
+    _count: { _all: true },
+  });
+
+  const unresolvedStatuses = new Set<ComplaintStatus>([
+    ComplaintStatus.SUBMITTED,
+    ComplaintStatus.UNDER_REVIEW,
+    ComplaintStatus.BUSINESS_RESPONDED,
+    ComplaintStatus.UNRESOLVED,
   ]);
+
+  let unresolved = 0;
+  let resolved = 0;
+  for (const row of complaintCounts) {
+    const count = row._count._all;
+    if (row.status === ComplaintStatus.RESOLVED) {
+      resolved = count;
+    } else if (unresolvedStatuses.has(row.status)) {
+      unresolved += count;
+    }
+  }
 
   return {
     id: business.id,
@@ -127,3 +130,6 @@ export async function getBusinessProfile(
     },
   };
 }
+
+/** Dedupes metadata + page fetches within the same request. */
+export const getBusinessProfile = cache(fetchBusinessProfile);
