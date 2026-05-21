@@ -311,6 +311,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run db:migrate` | `pnpm db:migrate` | Prisma migrate dev |
 | `npm run db:seed` | `pnpm db:seed` | Seed categories |
 | `npm run db:studio` | `pnpm db:studio` | Prisma Studio |
+| `npm test` | `pnpm test` | Run unit tests (Vitest) |
 
 Stack defaults: see `ARCHITECTURE.md` § Assumptions.
 
@@ -388,7 +389,7 @@ Application foundation initialized (Next.js, TypeScript, Tailwind, Prisma, ESLin
 | `ARCHITECTURE.md` | Modules, routes, assumptions |
 | `KNOWN-ISSUES.md` | Risks and open decisions |
 
-PostgreSQL, core schema, and Auth.js (credentials) are configured. Next task: **TD-0104** (permission helpers).
+PostgreSQL, core schema, Auth.js, and permission helpers are configured. Next task: **TD-0202** (business listing page).
 
 ### Auth routes
 

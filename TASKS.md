@@ -194,7 +194,7 @@ Acceptance criteria:
 
 ### TD-0104: Add permission helpers
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Goal:
@@ -202,11 +202,11 @@ Centralize authorization logic.
 
 Acceptance criteria:
 
-- [ ] `lib/permissions` exists
-- [ ] Helper for admin check exists
-- [ ] Helper for business ownership check exists
-- [ ] Helper for review ownership check exists
-- [ ] Unit tests added if test framework exists
+- [x] `lib/permissions` exists
+- [x] Helper for admin check exists
+- [x] Helper for business ownership check exists
+- [x] Helper for review ownership check exists
+- [x] Unit tests added (Vitest, 28 tests)
 
 ---
 

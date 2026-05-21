@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 1 (database + auth) — in progress.**
+**Milestone 1 (database + auth) — complete.**
 
-PostgreSQL, core schema, and Auth.js credentials auth are done. Next: permission helpers (TD-0104).
+PostgreSQL, core schema, Auth.js, and permission helpers are done. Next: **Milestone 2** public business discovery.
 
 ---
 
@@ -34,6 +34,8 @@ PostgreSQL, core schema, and Auth.js credentials auth are done. Next: permission
 | Phase 0 QA (npm) | **Passed** (2026-05-21) |
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
+| TD-0104 | **DONE** (2026-05-21) |
+| Unit tests (Vitest) | **28 passing** |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
 
@@ -196,7 +198,7 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 
 ## Active task
 
-**TD-0104** — Permission helpers (`lib/permissions`).
+**TD-0202** — Business listing page (`/businesses`).
 
 ---
 
@@ -211,6 +213,7 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 - **TD-0101** PostgreSQL + Prisma connection (2026-05-21)
 - **TD-0102** core database schema + migration (2026-05-21)
 - **TD-0103** Auth.js register, login, logout, protected dashboard (2026-05-21)
+- **TD-0104** Permission helpers + Vitest tests (2026-05-21)
 
 ---
 
@@ -454,6 +457,32 @@ No packages removed.
 #### Next suggested task
 
 - **TD-0104:** Permission helpers.
+
+---
+
+### 2026-05-21 - TD-0104 Permission helpers
+
+#### Completed
+
+- Added `lib/permissions/` with admin, review, business, and complaint checks.
+- Added Prisma-backed async helpers (`canEditReviewById`, `canManageBusinessById`, etc.).
+- Added `requireAuth` / `requireAdmin` throw helpers for server actions.
+- Added Vitest with 28 unit tests (`npm test`).
+
+#### Changed files
+
+- `lib/permissions/**`, `vitest.config.ts`, `package.json`
+- `README.md`, `TASKS.md`, `PROGRESS.md`
+
+#### Validation
+
+- `npm test`: pass (28 tests)
+- `npm run typecheck`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0202:** Business listing page.
 
 ---
 
