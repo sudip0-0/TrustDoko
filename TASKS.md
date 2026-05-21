@@ -130,16 +130,16 @@ Suggested scripts:
 
 ### TD-0101: Add Prisma and database connection
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Prisma installed
-- [ ] PostgreSQL connection configured
-- [ ] Prisma client generated
-- [ ] Initial migration works
-- [ ] Database helper created
+- [x] Prisma installed
+- [x] PostgreSQL connection configured (Docker Compose, port 5433)
+- [x] Prisma client generated
+- [x] Initial migration works
+- [x] Database helper created (`lib/db/`, `checkDatabaseConnection`)
 
 Files likely to change:
 
@@ -151,7 +151,7 @@ Files likely to change:
 
 ### TD-0102: Create core database schema
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Models to add:
@@ -168,11 +168,11 @@ Models to add:
 
 Acceptance criteria:
 
-- [ ] Models created
-- [ ] Relations created
-- [ ] Enums created
-- [ ] Indexes added for core queries
-- [ ] Migration generated
+- [x] Models created
+- [x] Relations created
+- [x] Enums created
+- [x] Indexes added for core queries
+- [x] Migration generated (`20260521150137_init`)
 
 ---
 

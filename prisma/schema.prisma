@@ -1,5 +1,4 @@
-// TrustDoko database schema — foundation placeholder.
-// Full models will be added in TD-0102.
+// TrustDoko — core database schema (TD-0102)
 
 generator client {
   provider = "prisma-client-js"
@@ -10,8 +9,321 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Placeholder to allow prisma generate before core schema migration.
-model HealthCheck {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
+// --- Enums ---
+
+enum UserRole {
+  USER
+  BUSINESS
+  ADMIN
+}
+
+enum UserTrustLevel {
+  NEW
+  VERIFIED
+  TRUSTED
+  FLAGGED
+}
+
+enum BusinessType {
+  ONLINE_ONLY
+  PHYSICAL
+  HYBRID
+}
+
+enum ClaimStatus {
+  UNCLAIMED
+  PENDING
+  CLAIMED
+  REJECTED
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  CONTACT_VERIFIED
+  DOCUMENT_VERIFIED
+  SOCIAL_VERIFIED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+  UNDER_REVIEW
+}
+
+enum ComplaintStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  BUSINESS_RESPONDED
+  RESOLVED
+  UNRESOLVED
+  REJECTED
+}
+
+enum ComplaintSeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum ComplaintCategory {
+  NON_DELIVERY
+  FAKE_PRODUCT
+  REFUND_ISSUE
+  POOR_SERVICE
+  MISLEADING_INFO
+  HARASSMENT
+  OTHER
+}
+
+enum BusinessClaimMethod {
+  PHONE
+  EMAIL
+  WEBSITE
+  SOCIAL
+  DOCUMENT
+}
+
+enum BusinessClaimStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum VerificationRequestType {
+  CONTACT
+  DOCUMENT
+  SOCIAL
+  WEBSITE
+}
+
+enum VerificationRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum FileVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+enum FilePurpose {
+  REVIEW_PROOF
+  COMPLAINT_PROOF
+  BUSINESS_DOCUMENT
+  BUSINESS_IMAGE
+}
+
+// --- Models ---
+
+model User {
+  id           String         @id @default(cuid())
+  name         String?
+  email        String         @unique
+  phone        String?
+  passwordHash String?
+  role         UserRole       @default(USER)
+  trustLevel   UserTrustLevel @default(NEW)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  reviews               Review[]
+  complaints            Complaint[]
+  businessClaims        BusinessClaim[]
+  verificationRequests  VerificationRequest[]
+  ownedBusinesses       Business[]            @relation("BusinessOwner")
+  fileAssets            FileAsset[]
+  auditLogs             AuditLog[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Category {
+  id               String     @id @default(cuid())
+  name             String
+  slug             String     @unique
+  description      String?
+  parentCategoryId String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryHierarchy")
+  businesses Business[]
+
+  @@index([slug])
+}
+
+model Business {
+  id                 String             @id @default(cuid())
+  name               String
+  slug               String             @unique
+  description        String?
+  categoryId         String?
+  businessType       BusinessType       @default(ONLINE_ONLY)
+  address            String?
+  city               String?
+  province           String?
+  phone              String?
+  email              String?
+  websiteUrl         String?
+  facebookUrl        String?
+  instagramUrl       String?
+  tiktokUrl          String?
+  claimedByUserId    String?
+  claimStatus        ClaimStatus        @default(UNCLAIMED)
+  verificationStatus VerificationStatus @default(UNVERIFIED)
+  trustScore         Int                @default(0)
+  averageRating      Float              @default(0)
+  reviewCount        Int                @default(0)
+  complaintCount     Int                @default(0)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  category              Category?              @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  claimedBy             User?                  @relation("BusinessOwner", fields: [claimedByUserId], references: [id], onDelete: SetNull)
+  reviews               Review[]
+  complaints            Complaint[]
+  businessClaims        BusinessClaim[]
+  verificationRequests  VerificationRequest[]
+  fileAssets            FileAsset[]
+
+  @@index([slug])
+  @@index([name])
+  @@index([city])
+  @@index([categoryId])
+  @@index([trustScore])
+  @@index([claimStatus])
+  @@index([verificationStatus])
+}
+
+model Review {
+  id             String       @id @default(cuid())
+  businessId     String
+  userId         String
+  rating         Int
+  title          String?
+  body           String
+  experienceType String?
+  experienceDate DateTime?
+  status         ReviewStatus @default(PENDING)
+  proofFileId    String?      @unique
+  helpfulCount   Int          @default(0)
+  businessReply  String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  business  Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proofFile FileAsset? @relation("ReviewProof", fields: [proofFileId], references: [id], onDelete: SetNull)
+
+  @@unique([businessId, userId])
+  @@index([businessId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Complaint {
+  id               String            @id @default(cuid())
+  businessId       String
+  userId           String
+  category         ComplaintCategory
+  summary          String
+  description      String
+  status           ComplaintStatus   @default(SUBMITTED)
+  severity         ComplaintSeverity @default(MEDIUM)
+  proofFileId      String?           @unique
+  businessResponse String?
+  adminNote        String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  business  Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proofFile FileAsset? @relation("ComplaintProof", fields: [proofFileId], references: [id], onDelete: SetNull)
+
+  @@index([businessId])
+  @@index([userId])
+  @@index([status])
+  @@index([severity])
+}
+
+model BusinessClaim {
+  id         String              @id @default(cuid())
+  businessId String
+  userId     String
+  method     BusinessClaimMethod
+  status     BusinessClaimStatus @default(PENDING)
+  adminNote  String?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([userId])
+  @@index([status])
+}
+
+model VerificationRequest {
+  id                String                    @id @default(cuid())
+  businessId        String
+  requestedByUserId String
+  type              VerificationRequestType
+  status            VerificationRequestStatus @default(PENDING)
+  fileId            String?
+  adminNote         String?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  business    Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  requestedBy User       @relation(fields: [requestedByUserId], references: [id], onDelete: Cascade)
+  file        FileAsset? @relation(fields: [fileId], references: [id], onDelete: SetNull)
+
+  @@index([businessId])
+  @@index([status])
+}
+
+model FileAsset {
+  id         String         @id @default(cuid())
+  ownerUserId String
+  businessId String?
+  url        String
+  storageKey String
+  mimeType   String
+  size       Int
+  visibility FileVisibility @default(PRIVATE)
+  purpose    FilePurpose
+  createdAt  DateTime       @default(now())
+
+  owner              User                 @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  business           Business?            @relation(fields: [businessId], references: [id], onDelete: SetNull)
+  reviewProof        Review?              @relation("ReviewProof")
+  complaintProof     Complaint?           @relation("ComplaintProof")
+  verificationFiles  VerificationRequest[]
+
+  @@index([ownerUserId])
+  @@index([businessId])
+  @@index([visibility])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([actorUserId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
 }

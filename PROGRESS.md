@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Phase 0 foundation — in progress.**
+**Milestone 1 (database) — in progress.**
 
-Next.js application scaffold is in place. Core business schema and Auth.js are not implemented yet.
+PostgreSQL runs via Docker. Core Prisma schema migrated and categories seeded. Auth.js not implemented yet.
 
 ---
 
@@ -25,11 +25,14 @@ Next.js application scaffold is in place. Core business schema and Auth.js are n
 | TypeScript | **Strict** (`strict`, `noUncheckedIndexedAccess`) |
 | Tailwind CSS | **Configured** (v4, `@theme` tokens) |
 | ESLint / Prettier | **Configured** |
-| Prisma | **Placeholder schema** (`HealthCheck` model) |
-| Auth | **Stubs only** (`lib/auth/`) |
+| Prisma | **Core schema** migrated (`20260521150137_init`) |
+| PostgreSQL | **Docker** (`trustdoko-postgres`, port **5433**) |
+| Seed data | **10 categories** (`npm run db:seed`) |
+| Auth | **Stubs only** (`lib/auth/`) — TD-0103 next |
 | Zod | **Env validation** (`lib/validations/env.ts`) |
-| Database migrate | Pending `DATABASE_URL` + TD-0102 |
 | Git repository | Not initialized |
+| Phase 0 QA (npm) | **Passed** (2026-05-21) |
+| TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
 
@@ -94,8 +97,8 @@ Execute in order. Each phase should finish validation (`pnpm lint`, `pnpm typech
 | 0.1 | TD-0001 | ~~Init Next.js~~ **DONE** |
 | 0.2 | — | Init git (optional); `.env.example` **DONE** |
 | 0.3 | TD-0003 | ~~ESLint, Prettier, typecheck~~ **DONE** |
-| 0.4 | TD-0101 | Prisma + PostgreSQL connection + `lib/db` helper |
-| 0.5 | TD-0102 | Core schema + first migration |
+| 0.4 | TD-0101 | ~~Prisma + PostgreSQL~~ **DONE** (Docker, port 5433) |
+| 0.5 | TD-0102 | ~~Core schema + migration~~ **DONE** |
 | 0.6 | TD-0103 | Auth (register, login, logout, protected routes) |
 | 0.7 | TD-0104 | `lib/permissions` + tests |
 
@@ -192,7 +195,7 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 
 ## Active task
 
-**TD-0101** — Prisma core schema and first real migration.
+**TD-0103** — Auth.js (register, login, session).
 
 ---
 
@@ -204,6 +207,8 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 - TD-0002 documentation (2026-05-21)
 - **TD-0001** application foundation (2026-05-21)
 - **TD-0003** lint, format, typecheck (2026-05-21)
+- **TD-0101** PostgreSQL + Prisma connection (2026-05-21)
+- **TD-0102** core database schema + migration (2026-05-21)
 
 ---
 
@@ -329,6 +334,93 @@ None.
 
 - **TD-0102:** Core database schema.
 - **TD-0101:** Wire PostgreSQL and first migration.
+
+---
+
+### 2026-05-21 - Phase 0 quality check (npm)
+
+#### Checklist
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | `npm install` succeeds | Pass (after clean `node_modules`; `.npmrc` added) |
+| 2 | `npm run dev` runs locally | Pass — http://localhost:3000 returns 200 |
+| 3 | TypeScript | Pass — `npx tsc --noEmit` |
+| 4 | Lint | Pass — `npm run lint` |
+| 5 | Tailwind | Pass — theme classes in rendered HTML (`text-primary`, `bg-card`, etc.) |
+| 6 | Folder structure | Pass — `app/`, `components/`, `lib/`, `prisma/`, `types/`, `server/` |
+| 7 | Environment variables | Pass — `.env.example` documents all vars |
+| 8 | README.md | Pass — setup + npm/pnpm commands |
+| 9 | PROGRESS.md | Pass — this entry |
+| 10 | Dependencies | Pass — no unnecessary packages; all deps used or required for tooling |
+
+#### Commands run
+
+```bash
+npm install          # pass
+npm run dev          # pass (verified HTTP 200)
+npm run build        # pass
+npm run lint         # pass
+npx tsc --noEmit     # pass
+```
+
+#### Fixes applied
+
+- Added `.npmrc` (`legacy-peer-deps=true`) for reliable `npm install` on Windows.
+- Regenerated `node_modules` via npm (do not mix npm/pnpm installs without deleting `node_modules` first).
+- Added `package-lock.json` for npm users.
+
+#### Dependency audit
+
+| Package | Verdict |
+|---------|---------|
+| `next`, `react`, `react-dom` | Required |
+| `@prisma/client`, `prisma` | Required (schema + postinstall) |
+| `zod` | Used in `lib/validations/env.ts` |
+| `clsx`, `tailwind-merge` | Used in `lib/utils.ts` |
+| `tailwindcss`, `@tailwindcss/postcss` | Required for styling |
+| `eslint*`, `prettier*` | Required for lint/format |
+| `@eslint/eslintrc` | Required for flat ESLint + Next config |
+
+No packages removed.
+
+#### Next suggested task
+
+- **TD-0102** / **TD-0101** — core schema and PostgreSQL migration.
+
+---
+
+### 2026-05-21 - PostgreSQL + core schema (Docker)
+
+#### Completed
+
+- Added `docker-compose.yml` (Postgres 16, host port **5433**).
+- Implemented full Prisma schema (User, Business, Category, Review, Complaint, claims, files, audit).
+- Applied migration `20260521150137_init`.
+- Seeded 10 MVP categories.
+- Added `lib/db/health.ts`, `server/queries/health.ts`, `npm run docker:*` and `db:seed` scripts.
+
+#### Changed files
+
+- `docker-compose.yml`, `prisma/schema.prisma`, `prisma/seed.ts`, `prisma/migrations/`
+- `.env.example`, `package.json`, `lib/db/`, `server/queries/health.ts`
+- `README.md`, `TASKS.md`, `PROGRESS.md`
+
+#### Validation
+
+- `docker compose up -d`: pass
+- `npm run db:migrate`: pass
+- `npm run db:seed`: pass (10 categories)
+- `npm run typecheck`: pass
+
+#### Notes
+
+- Port **5433** used because local PostgreSQL often occupies **5432** on Windows.
+- `.env` is gitignored; copy from `.env.example` on new machines.
+
+#### Next suggested task
+
+- **TD-0103:** Auth.js integration.
 
 ---
 

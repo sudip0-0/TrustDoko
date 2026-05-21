@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: trustdoko-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: trustdoko
+      POSTGRES_PASSWORD: trustdoko
+      POSTGRES_DB: trustdoko
+    volumes:
+      - trustdoko_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trustdoko -d trustdoko"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  trustdoko_pgdata:

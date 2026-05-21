@@ -1,5 +1,7 @@
 # dependencies
 /node_modules
+
+# use one package manager per clone (npm: package-lock.json, pnpm: pnpm-lock.yaml)
 /.pnp
 .pnp.*
 .yarn/*

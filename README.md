@@ -249,25 +249,47 @@ trustdoko/
 ### Prerequisites
 
 - Node.js 20+
-- pnpm 9+
-- PostgreSQL 15+ (local Docker, Neon, or Supabase)
+- npm 10+ or pnpm 9+ (use **one** package manager per install; do not mix without reinstalling `node_modules`)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommended for local PostgreSQL)
 
 ### First-time setup
 
+**1. Start PostgreSQL (Docker)**
+
 ```bash
-# Install dependencies
-pnpm install
+npm run docker:up
+```
 
-# Copy environment template and edit values
+This starts PostgreSQL 16 on **host port 5433** (avoids conflict with a local Postgres on 5432).
+
+Credentials (default):
+
+| Key | Value |
+|-----|-------|
+| User | `trustdoko` |
+| Password | `trustdoko` |
+| Database | `trustdoko` |
+| URL | `postgresql://trustdoko:trustdoko@127.0.0.1:5433/trustdoko` |
+
+**2. Install app and apply schema**
+
+**npm:**
+
+```bash
+npm install
 cp .env.example .env
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
 
-# Generate Prisma client (runs automatically on install)
-pnpm db:generate
+**pnpm:**
 
-# Apply database schema (requires DATABASE_URL in .env)
+```bash
+pnpm install
+cp .env.example .env
 pnpm db:migrate
-
-# Start development server
+pnpm db:seed
 pnpm dev
 ```
 
@@ -275,18 +297,28 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### Common commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start dev server (Turbopack) |
-| `pnpm build` | Production build |
-| `pnpm start` | Run production server |
-| `pnpm lint` | ESLint |
-| `pnpm typecheck` | TypeScript check |
-| `pnpm format` | Prettier write |
-| `pnpm db:migrate` | Prisma migrate dev |
-| `pnpm db:studio` | Prisma Studio |
+| npm | pnpm | Description |
+|-----|------|-------------|
+| `npm run docker:up` | — | Start Postgres container |
+| `npm run docker:down` | — | Stop Postgres container |
+| `npm run docker:logs` | — | Tail Postgres logs |
+| `npm run dev` | `pnpm dev` | Dev server (Turbopack) |
+| `npm run build` | `pnpm build` | Production build |
+| `npm run start` | `pnpm start` | Production server |
+| `npm run lint` | `pnpm lint` | ESLint |
+| `npx tsc --noEmit` | `pnpm typecheck` | TypeScript check |
+| `npm run format` | `pnpm format` | Prettier write |
+| `npm run db:migrate` | `pnpm db:migrate` | Prisma migrate dev |
+| `npm run db:seed` | `pnpm db:seed` | Seed categories |
+| `npm run db:studio` | `pnpm db:studio` | Prisma Studio |
 
-Package manager: **pnpm**. Stack defaults: see `ARCHITECTURE.md` § Assumptions.
+Stack defaults: see `ARCHITECTURE.md` § Assumptions.
+
+### Database troubleshooting
+
+- **P1000 authentication failed on port 5432:** Another PostgreSQL may be running locally. TrustDoko Docker uses **5433** — ensure `.env` matches `.env.example`.
+- **Container not ready:** Run `npm run docker:logs` and wait for `database system is ready`.
+- **Reset database:** `npm run docker:down` then `docker volume rm trustdoko_trustdoko_pgdata` (destroys data), then `npm run docker:up` and `npm run db:migrate`.
 
 ---
 
@@ -295,13 +327,15 @@ Package manager: **pnpm**. Stack defaults: see `ARCHITECTURE.md` § Assumptions.
 Example only. Keep secrets out of git.
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/trustdoko"
+DATABASE_URL="postgresql://trustdoko:trustdoko@127.0.0.1:5433/trustdoko"
 NEXTAUTH_SECRET="replace-me"
 NEXTAUTH_URL="http://localhost:3000"
-CLOUDINARY_CLOUD_NAME="replace-me"
-CLOUDINARY_API_KEY="replace-me"
-CLOUDINARY_API_SECRET="replace-me"
+CLOUDINARY_CLOUD_NAME=""
+CLOUDINARY_API_KEY=""
+CLOUDINARY_API_SECRET=""
 ```
+
+See `.env.example` for the full template.
 
 ---
 
@@ -353,4 +387,4 @@ Application foundation initialized (Next.js, TypeScript, Tailwind, Prisma, ESLin
 | `ARCHITECTURE.md` | Modules, routes, assumptions |
 | `KNOWN-ISSUES.md` | Risks and open decisions |
 
-Next task: **TD-0101** (core database schema) and **TD-0103** (Auth.js).
+PostgreSQL (Docker) and core schema are configured. Next task: **TD-0103** (Auth.js).

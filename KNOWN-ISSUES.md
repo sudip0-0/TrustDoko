@@ -27,6 +27,22 @@ LOW
 
 ## Open issues
 
+### KI-0013: Local PostgreSQL port conflict on Windows
+
+Status: ACCEPTED_RISK  
+Severity: LOW
+
+Description:
+Many developers run PostgreSQL on port 5432. TrustDoko Docker maps to host port **5433** to avoid authentication errors against the wrong server.
+
+Impact:
+Developers must use `127.0.0.1:5433` in `DATABASE_URL`, not 5432.
+
+Recommended action:
+Document in README (done). If 5433 is taken, change the host port in `docker-compose.yml` and `.env`.
+
+---
+
 ### KI-0001: Final tech stack not yet confirmed
 
 Status: RESOLVED  
