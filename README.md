@@ -309,7 +309,10 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npx tsc --noEmit` | `pnpm typecheck` | TypeScript check |
 | `npm run format` | `pnpm format` | Prettier write |
 | `npm run db:migrate` | `pnpm db:migrate` | Prisma migrate dev |
-| `npm run db:seed` | `pnpm db:seed` | Seed categories |
+| `npm run db:seed` | `pnpm db:seed` | Seed categories + sample businesses |
+| `npm run db:reset` | — | Reset DB and re-run migrations + seed |
+| `npm run db:status` | — | Migration status |
+| `npm run db:migrate:deploy` | — | Apply migrations (production) |
 | `npm run db:studio` | `pnpm db:studio` | Prisma Studio |
 | `npm test` | `pnpm test` | Run unit tests (Vitest) |
 

@@ -1,4 +1,4 @@
-// TrustDoko — core database schema (TD-0102)
+// TrustDoko — MVP database schema
 
 generator client {
   provider = "prisma-client-js"
@@ -91,14 +91,14 @@ enum BusinessClaimStatus {
   REJECTED
 }
 
-enum VerificationRequestType {
+enum BusinessVerificationType {
   CONTACT
   DOCUMENT
   SOCIAL
   WEBSITE
 }
 
-enum VerificationRequestStatus {
+enum BusinessVerificationStatus {
   PENDING
   APPROVED
   REJECTED
@@ -129,32 +129,36 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
-  reviews               Review[]
-  complaints            Complaint[]
-  businessClaims        BusinessClaim[]
-  verificationRequests  VerificationRequest[]
-  ownedBusinesses       Business[]            @relation("BusinessOwner")
-  fileAssets            FileAsset[]
-  auditLogs             AuditLog[]
+  reviews              Review[]
+  complaints           Complaint[]
+  businessClaims       BusinessClaim[]
+  businessVerifications BusinessVerification[]
+  reviewVotes          ReviewVote[]
+  savedBusinesses      SavedBusiness[]
+  businessResponses    BusinessResponse[]
+  ownedBusinesses      Business[]             @relation("BusinessOwner")
+  fileAssets           FileAsset[]
+  auditLogs            AuditLog[]
 
   @@index([email])
   @@index([role])
 }
 
 model Category {
-  id               String     @id @default(cuid())
+  id               String   @id @default(cuid())
   name             String
-  slug             String     @unique
+  slug             String   @unique
   description      String?
   parentCategoryId String?
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  parent   Category?  @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id], onDelete: SetNull)
-  children Category[] @relation("CategoryHierarchy")
+  parent     Category?  @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id], onDelete: SetNull)
+  children   Category[] @relation("CategoryHierarchy")
   businesses Business[]
 
   @@index([slug])
+  @@index([name])
 }
 
 model Business {
@@ -188,16 +192,21 @@ model Business {
   reviews               Review[]
   complaints            Complaint[]
   businessClaims        BusinessClaim[]
-  verificationRequests  VerificationRequest[]
+  businessVerifications BusinessVerification[]
+  businessResponses     BusinessResponse[]
+  savedByUsers          SavedBusiness[]
   fileAssets            FileAsset[]
 
   @@index([slug])
   @@index([name])
   @@index([city])
+  @@index([province])
   @@index([categoryId])
   @@index([trustScore])
+  @@index([averageRating])
   @@index([claimStatus])
   @@index([verificationStatus])
+  @@index([city, categoryId])
 }
 
 model Review {
@@ -212,44 +221,48 @@ model Review {
   status         ReviewStatus @default(PENDING)
   proofFileId    String?      @unique
   helpfulCount   Int          @default(0)
-  businessReply  String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
-  business  Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  proofFile FileAsset? @relation("ReviewProof", fields: [proofFileId], references: [id], onDelete: SetNull)
+  business         Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proofFile        FileAsset?        @relation("ReviewProof", fields: [proofFileId], references: [id], onDelete: SetNull)
+  votes            ReviewVote[]
+  businessResponse BusinessResponse?
 
   @@unique([businessId, userId])
   @@index([businessId])
   @@index([userId])
   @@index([status])
+  @@index([rating])
   @@index([createdAt])
+  @@index([businessId, status])
 }
 
 model Complaint {
-  id               String            @id @default(cuid())
-  businessId       String
-  userId           String
-  category         ComplaintCategory
-  summary          String
-  description      String
-  status           ComplaintStatus   @default(SUBMITTED)
-  severity         ComplaintSeverity @default(MEDIUM)
-  proofFileId      String?           @unique
-  businessResponse String?
-  adminNote        String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id          String            @id @default(cuid())
+  businessId  String
+  userId      String
+  category    ComplaintCategory
+  summary     String
+  description String
+  status      ComplaintStatus   @default(SUBMITTED)
+  severity    ComplaintSeverity @default(MEDIUM)
+  proofFileId String?           @unique
+  adminNote   String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
-  business  Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  proofFile FileAsset? @relation("ComplaintProof", fields: [proofFileId], references: [id], onDelete: SetNull)
+  business         Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proofFile        FileAsset?        @relation("ComplaintProof", fields: [proofFileId], references: [id], onDelete: SetNull)
+  businessResponse BusinessResponse?
 
   @@index([businessId])
   @@index([userId])
   @@index([status])
   @@index([severity])
+  @@index([businessId, status])
 }
 
 model BusinessClaim {
@@ -270,42 +283,92 @@ model BusinessClaim {
   @@index([status])
 }
 
-model VerificationRequest {
-  id                String                    @id @default(cuid())
+model BusinessVerification {
+  id                String                   @id @default(cuid())
   businessId        String
   requestedByUserId String
-  type              VerificationRequestType
-  status            VerificationRequestStatus @default(PENDING)
+  type              BusinessVerificationType
+  status            BusinessVerificationStatus @default(PENDING)
   fileId            String?
   adminNote         String?
-  createdAt         DateTime                  @default(now())
-  updatedAt         DateTime                  @updatedAt
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
 
   business    Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
   requestedBy User       @relation(fields: [requestedByUserId], references: [id], onDelete: Cascade)
   file        FileAsset? @relation(fields: [fileId], references: [id], onDelete: SetNull)
 
   @@index([businessId])
+  @@index([requestedByUserId])
   @@index([status])
+  @@index([type])
+}
+
+model ReviewVote {
+  id        String   @id @default(cuid())
+  reviewId  String
+  userId    String
+  createdAt DateTime @default(now())
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@index([reviewId])
+  @@index([userId])
+}
+
+model SavedBusiness {
+  id         String   @id @default(cuid())
+  userId     String
+  businessId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, businessId])
+  @@index([userId])
+  @@index([businessId])
+}
+
+model BusinessResponse {
+  id           String   @id @default(cuid())
+  businessId   String
+  authorUserId String
+  reviewId     String?  @unique
+  complaintId  String?  @unique
+  body         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  business  Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  author    User       @relation(fields: [authorUserId], references: [id], onDelete: Cascade)
+  review    Review?    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  complaint Complaint? @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([authorUserId])
 }
 
 model FileAsset {
-  id         String         @id @default(cuid())
+  id          String         @id @default(cuid())
   ownerUserId String
-  businessId String?
-  url        String
-  storageKey String
-  mimeType   String
-  size       Int
-  visibility FileVisibility @default(PRIVATE)
-  purpose    FilePurpose
-  createdAt  DateTime       @default(now())
+  businessId  String?
+  url         String
+  storageKey  String
+  mimeType    String
+  size        Int
+  visibility  FileVisibility @default(PRIVATE)
+  purpose     FilePurpose
+  createdAt   DateTime       @default(now())
 
-  owner              User                 @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
-  business           Business?            @relation(fields: [businessId], references: [id], onDelete: SetNull)
-  reviewProof        Review?              @relation("ReviewProof")
-  complaintProof     Complaint?           @relation("ComplaintProof")
-  verificationFiles  VerificationRequest[]
+  owner                User                   @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  business             Business?              @relation(fields: [businessId], references: [id], onDelete: SetNull)
+  reviewProof          Review?                @relation("ReviewProof")
+  complaintProof       Complaint?             @relation("ComplaintProof")
+  businessVerifications BusinessVerification[]
 
   @@index([ownerUserId])
   @@index([businessId])
@@ -325,5 +388,6 @@ model AuditLog {
 
   @@index([actorUserId])
   @@index([entityType, entityId])
+  @@index([action])
   @@index([createdAt])
 }

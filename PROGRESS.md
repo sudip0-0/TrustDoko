@@ -25,9 +25,9 @@ PostgreSQL, core schema, Auth.js, and permission helpers are done. Next: **Miles
 | TypeScript | **Strict** (`strict`, `noUncheckedIndexedAccess`) |
 | Tailwind CSS | **Configured** (v4, `@theme` tokens) |
 | ESLint / Prettier | **Configured** |
-| Prisma | **Core schema** migrated (`20260521150137_init`) |
+| Prisma | **MVP schema v2** (`expand_mvp_schema`) |
 | PostgreSQL | **Docker** (`trustdoko-postgres`, port **5433**) |
-| Seed data | **10 categories** (`npm run db:seed`) |
+| Seed data | **10 categories + 12 sample businesses** |
 | Auth | **Auth.js v5** (credentials, JWT session) — TD-0103 **DONE** |
 | Zod | **Env validation** (`lib/validations/env.ts`) |
 | Git repository | Not initialized |
@@ -198,7 +198,7 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 
 ## Active task
 
-**TD-0202** — Business listing page (`/businesses`).
+**TD-0203** — Search and filters on `/businesses`.
 
 ---
 
@@ -214,6 +214,7 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 - **TD-0102** core database schema + migration (2026-05-21)
 - **TD-0103** Auth.js register, login, logout, protected dashboard (2026-05-21)
 - **TD-0104** Permission helpers + Vitest tests (2026-05-21)
+- **TD-0202** Business listing page `/businesses` (2026-05-21)
 
 ---
 
@@ -483,6 +484,69 @@ No packages removed.
 #### Next suggested task
 
 - **TD-0202:** Business listing page.
+
+---
+
+### 2026-05-21 - Prisma schema expansion
+
+#### Completed
+
+- Expanded schema: User, Business, Category, Review, Complaint, BusinessClaim, BusinessVerification, ReviewVote, SavedBusiness, BusinessResponse, AuditLog, FileAsset.
+- Renamed `VerificationRequest` → `BusinessVerification`.
+- Moved owner replies to `BusinessResponse` (removed inline reply fields on Review/Complaint).
+- Migration `20260521152858_expand_mvp_schema`.
+- Seed: 10 categories + 12 `[Sample]` businesses.
+- DB helpers: `db` alias, `runInTransaction`, type re-exports.
+- npm scripts: `db:reset`, `db:status`, `db:migrate:deploy`.
+- Updated `ARCHITECTURE.md` model documentation.
+
+#### Changed files
+
+- `prisma/schema.prisma`, `prisma/seed.ts`, `prisma/migrations/`
+- `lib/db/`, `package.json`, `README.md`, `ARCHITECTURE.md`, `PROGRESS.md`
+
+#### Validation
+
+- `prisma migrate dev`: pass
+- `npm run db:seed`: pass
+- `npm run typecheck`: pass
+- `npm run db:seed`: pass
+
+#### Next suggested task
+
+- **TD-0202:** Business listing page using seeded businesses.
+
+---
+
+### 2026-05-21 - TD-0202 Business listing page
+
+#### Completed
+
+- `/businesses` lists seeded businesses from PostgreSQL (12 per page).
+- Shows name, category, city, rating, trust label badge, complaint count.
+- Pagination via `?page=` query param.
+- `loading.tsx` skeleton, empty state component.
+- Responsive 1-column mobile / 2-column sm+ grid.
+- `lib/trust-score/labels.ts` for MVP trust labels on cards.
+- Minimal `/businesses/[slug]` stub until TD-0204.
+
+#### Changed files
+
+- `app/businesses/page.tsx`, `app/businesses/loading.tsx`, `app/businesses/[slug]/page.tsx`
+- `components/business/*`, `server/queries/businesses.ts`
+- `lib/trust-score/labels.ts`, `lib/validations/business-list.ts`
+- `TASKS.md`, `PROGRESS.md`
+
+#### Validation
+
+- `npm run typecheck`: pass
+- `npm test`: pass (33 tests)
+- `npm run lint`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0203:** Search and filters.
 
 ---
 

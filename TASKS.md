@@ -214,7 +214,7 @@ Acceptance criteria:
 
 ### TD-0201: Add category seed data
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Initial categories:
@@ -232,15 +232,16 @@ Initial categories:
 
 Acceptance criteria:
 
-- [ ] Seed script exists
-- [ ] Categories inserted
-- [ ] Seed is repeatable
+- [x] Seed script exists
+- [x] Categories inserted
+- [x] Seed is repeatable
+- [x] Sample businesses seeded (`[Sample]` prefix in `prisma/seed.ts`)
 
 ---
 
 ### TD-0202: Create business listing page
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Route:
@@ -251,12 +252,12 @@ Route:
 
 Acceptance criteria:
 
-- [ ] Shows business list
-- [ ] Supports pagination
-- [ ] Shows business name, category, city, rating, trust label
-- [ ] Empty state exists
-- [ ] Loading state exists
-- [ ] Mobile layout works
+- [x] Shows business list
+- [x] Supports pagination
+- [x] Shows business name, category, city, rating, trust label
+- [x] Empty state exists
+- [x] Loading state exists
+- [x] Mobile layout works
 
 ---
 

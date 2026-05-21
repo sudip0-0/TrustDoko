@@ -94,8 +94,10 @@ These defaults apply until implementation proves otherwise. Update this section 
 | Review ranking (MVP) | Recency first; helpful votes in TD-0304 |
 | Complaint proof (MVP) | Text complaints ship first; file attach after TD-0801 |
 | Duplicate businesses | Manual admin handling at launch; merge tooling deferred |
-| Notifications | No Notification model in schema v1 |
-| ReviewVote | No ReviewVote table until TD-0304; `helpfulCount` on Review may stay 0 |
+| Notifications | No Notification model yet |
+| ReviewVote | In schema; helpful UI in TD-0304 |
+| BusinessResponse | Separate table for owner replies to reviews/complaints |
+| BusinessVerification | Renamed from VerificationRequest |
 
 Unresolved until TD-0001: exact Auth.js adapter, email provider, and hosting URLs. Track as **KI-0001**.
 
@@ -364,6 +366,8 @@ createdAt
 updatedAt
 ```
 
+Public owner replies live on `BusinessResponse` (linked by `reviewId`), not inline on `Review`.
+
 ### Complaint
 
 ```txt
@@ -376,11 +380,12 @@ description
 status: SUBMITTED | UNDER_REVIEW | BUSINESS_RESPONDED | RESOLVED | UNRESOLVED | REJECTED
 severity: LOW | MEDIUM | HIGH
 proofFileId
-businessResponse
 adminNote
 createdAt
 updatedAt
 ```
+
+Public owner replies live on `BusinessResponse` (linked by `complaintId`).
 
 ### BusinessClaim
 
@@ -395,7 +400,7 @@ createdAt
 updatedAt
 ```
 
-### VerificationRequest
+### BusinessVerification
 
 ```txt
 id
@@ -408,6 +413,46 @@ adminNote
 createdAt
 updatedAt
 ```
+
+Renamed from `VerificationRequest` in schema v2. Tracks verification requests per business.
+
+### ReviewVote
+
+```txt
+id
+reviewId
+userId
+createdAt
+```
+
+One helpful vote per user per review. `Review.helpfulCount` is denormalized for listing performance.
+
+### SavedBusiness
+
+```txt
+id
+userId
+businessId
+createdAt
+updatedAt
+```
+
+User bookmarks for `/dashboard/user/saved`.
+
+### BusinessResponse
+
+```txt
+id
+businessId
+authorUserId
+reviewId (optional, unique)
+complaintId (optional, unique)
+body
+createdAt
+updatedAt
+```
+
+Owner replies to a review or complaint. Exactly one target per row (enforced in application logic).
 
 ### FileAsset
 
@@ -436,11 +481,9 @@ metadata
 createdAt
 ```
 
-### Post-MVP entities (not in schema v1)
+### Post-MVP entities
 
-**ReviewVote** — user-to-review helpful vote; adds when TD-0304 ships. Until then, `Review.helpfulCount` may remain 0.
-
-**Notification** — in-app or email alerts for owners/admins; deferred until after MVP launch.
+**Notification** — in-app or email alerts for owners/admins; not in schema yet.
 
 ---
 
