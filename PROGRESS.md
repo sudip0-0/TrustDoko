@@ -32,6 +32,7 @@ PostgreSQL, core schema, Auth.js, and permission helpers are done. Next: **Miles
 | Zod | **Env validation** (`lib/validations/env.ts`) |
 | Git repository | Not initialized |
 | Phase 0 QA (npm) | **Passed** (2026-05-21) |
+| Milestone 1 QA (npm) | **Passed** (2026-05-21) |
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
@@ -54,17 +55,17 @@ PROGRESS.md
 KNOWN-ISSUES.md
 ```
 
-### Application structure (created)
+### Application structure
 
 ```txt
-app/                    layout, globals.css, landing, placeholders
-components/             layout/, ui/
-lib/                    auth/, db/, validations/, utils.ts
-prisma/                 schema.prisma (placeholder)
+app/                    pages, auth API, dashboard, login/register
+components/             layout/, auth/, ui/
+lib/                    auth/, db/, permissions/, validations/
+prisma/                 schema + migrations + seed
 server/                 actions/, queries/
-types/                  auth types
+types/                  auth, next-auth
+docker-compose.yml
 .env.example
-package.json, tsconfig.json, eslint, prettier
 ```
 
 ### Planning review (2026-05-21)
@@ -72,13 +73,12 @@ package.json, tsconfig.json, eslint, prettier
 | Check | Result |
 |-------|--------|
 | All six planning docs present | Yes |
-| Implementation order documented | Yes — `TASKS.md` § Implementation order + phases below |
-| Main modules identified | Yes — `ARCHITECTURE.md` § Main modules |
-| Cross-file contradictions | Resolved (routes, entities, helpful votes); see KI-0012 |
-| Assumptions documented | Yes — `ARCHITECTURE.md` § Assumptions |
-| MVP scope realistic | Yes, if P2/deferred items honored (proof upload, helpful votes, notifications after core flows) |
+| Implementation order documented | Yes |
+| Main modules identified | Yes |
+| Assumptions documented | Yes |
+| MVP scope realistic | Yes |
 
-Remaining gap: no application code or git repo yet.
+Remaining gap: git repo not initialized.
 
 ---
 
@@ -483,6 +483,61 @@ No packages removed.
 #### Next suggested task
 
 - **TD-0202:** Business listing page.
+
+---
+
+### 2026-05-21 - Milestone 1 quality check (npm)
+
+Full Phase 1 / Milestone 1 sign-off (foundation + database + auth + permissions).
+
+#### Checklist
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | `npm install` | **Pass** |
+| 2 | `npm run dev` | **Pass** (app ready; uses port 3001 if 3000 is busy) |
+| 3 | `npx tsc --noEmit` | **Pass** |
+| 4 | `npm run lint` | **Pass** |
+| 5 | Tailwind | **Pass** (`text-primary`, `bg-card` in rendered HTML) |
+| 6 | Folder structure | **Pass** (`app/`, `components/`, `lib/`, `prisma/`, `server/`, `types/`) |
+| 7 | Environment variables | **Pass** (`.env.example` documents DB, auth, Cloudinary) |
+| 8 | README.md | **Pass** (Docker, npm commands, auth routes) |
+| 9 | PROGRESS.md | **Pass** (this entry) |
+| 10 | Dependencies | **Pass** (removed deprecated `@types/bcryptjs`; all others justified) |
+
+#### Commands run
+
+```bash
+npm install          # pass
+npm run dev          # pass (Ready on http://localhost:3001)
+npm run build        # pass
+npm run lint         # pass
+npx tsc --noEmit     # pass
+npm test             # pass (28 tests)
+```
+
+#### Manual verification
+
+- Home page HTTP 200 with TrustDoko branding and Tailwind classes.
+- `/dashboard/user` returns 307 redirect when unauthenticated (middleware).
+
+#### Dependency audit
+
+| Package | Verdict |
+|---------|---------|
+| `next`, `react`, `react-dom` | Required |
+| `next-auth`, `bcryptjs` | Auth (TD-0103) |
+| `@prisma/client`, `prisma` | Database |
+| `zod` | Validation |
+| `clsx`, `tailwind-merge` | UI utilities |
+| `vitest`, `tsx` | Tests + seed |
+| Tooling (eslint, prettier, tailwind, typescript) | Required |
+
+Removed: `@types/bcryptjs` (bcryptjs ships its own types).
+
+#### Sign-off
+
+**Milestone 1 complete.** Safe to start Milestone 2 (TD-0202 business listing).
 
 ---
 
