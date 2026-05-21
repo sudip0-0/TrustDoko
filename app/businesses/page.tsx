@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 
 import { BusinessCard } from "@/components/business/business-card";
 import { BusinessListEmpty } from "@/components/business/business-list-empty";
+import { BusinessListFilters } from "@/components/business/business-list-filters";
 import { BusinessListPagination } from "@/components/business/business-list-pagination";
-import { businessListSearchSchema } from "@/lib/validations/business-list";
-import { listBusinesses } from "@/server/queries/businesses";
+import { hasActiveBusinessFilters } from "@/lib/search/business-filters";
+import { parseBusinessListFilters } from "@/lib/validations/business-list";
+import {
+  getBusinessFilterOptions,
+  listBusinesses,
+} from "@/server/queries/businesses";
 
 export const metadata: Metadata = {
   title: "Browse businesses",
@@ -13,18 +18,19 @@ export const metadata: Metadata = {
 };
 
 type BusinessesPageProps = {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function BusinessesPage({
   searchParams,
 }: BusinessesPageProps) {
   const rawParams = await searchParams;
-  const { page } = businessListSearchSchema.parse({
-    page: rawParams.page,
-  });
+  const filters = parseBusinessListFilters(rawParams);
 
-  const result = await listBusinesses(page);
+  const [result, filterOptions] = await Promise.all([
+    listBusinesses(filters),
+    getBusinessFilterOptions(),
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
@@ -36,11 +42,19 @@ export default async function BusinessesPage({
         </p>
       </header>
 
-      <div className="mt-8">
+      <div className="mt-8 space-y-8">
+        <BusinessListFilters filters={filters} options={filterOptions} />
+
         {result.total === 0 ? (
-          <BusinessListEmpty />
+          <BusinessListEmpty filters={filters} />
         ) : (
           <>
+            {hasActiveBusinessFilters(filters) ? (
+              <p className="text-muted text-sm">
+                {result.total} result{result.total === 1 ? "" : "s"} found
+              </p>
+            ) : null}
+
             <ul className="grid list-none gap-4 p-0 sm:grid-cols-2">
               {result.businesses.map((business) => (
                 <li key={business.id}>
@@ -49,13 +63,12 @@ export default async function BusinessesPage({
               ))}
             </ul>
 
-            <div className="mt-10">
-              <BusinessListPagination
-                page={result.page}
-                totalPages={result.totalPages}
-                total={result.total}
-              />
-            </div>
+            <BusinessListPagination
+              page={result.page}
+              totalPages={result.totalPages}
+              total={result.total}
+              filters={result.filters}
+            />
           </>
         )}
       </div>

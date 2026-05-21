@@ -27,6 +27,103 @@ LOW
 
 ## Open issues
 
+### KI-0014: Prisma generate EPERM when dev server holds query engine (Windows)
+
+Status: OPEN  
+Severity: LOW
+
+Description:
+On Windows, `npx prisma generate` can fail with `EPERM: operation not permitted` when renaming `query_engine-windows.dll.node` because another Node process (typically `npm run dev`) has the file open.
+
+Impact:
+CI and fresh installs are unaffected if `postinstall` runs without a lock. Local re-generate after schema edits may fail until the dev server stops.
+
+Recommended action:
+Stop `npm run dev`, then run `npm run db:generate`. Migrate and seed still apply SQL; build works if an existing client is present.
+
+Related files:
+- `package.json` (`postinstall`, `db:generate`)
+- `README.md` (Database troubleshooting)
+
+---
+
+### KI-0015: BusinessResponse target not enforced in database
+
+Status: OPEN  
+Severity: MEDIUM
+
+Description:
+`BusinessResponse` allows both `reviewId` and `complaintId` to be null or both set. The intended rule is exactly one target per row.
+
+Impact:
+Invalid rows could break profile UI or owner-reply permissions if server actions do not validate.
+
+Recommended action:
+Validate in Zod/server actions when TD-0301+ ship. Optional later: partial unique indexes or check constraint via raw SQL migration.
+
+Related files:
+- `prisma/schema.prisma` (`BusinessResponse`)
+
+---
+
+### KI-0016: Denormalized business aggregates can drift
+
+Status: OPEN  
+Severity: MEDIUM
+
+Description:
+`Business.trustScore`, `averageRating`, `reviewCount`, and `complaintCount` are stored on the row for fast listing. Seed sets demo values; no background job recalculates from child tables yet.
+
+Impact:
+Listing and trust labels may disagree with live review/complaint counts until TD-0501 and moderation hooks update aggregates in transactions.
+
+Recommended action:
+Update counters in the same transaction as review/complaint approve/reject/delete. Add tests when trust score logic lands.
+
+Related files:
+- `prisma/schema.prisma` (`Business`)
+- `lib/trust-score/`
+
+---
+
+### KI-0017: Review rating range not enforced in PostgreSQL
+
+Status: OPEN  
+Severity: LOW
+
+Description:
+`Review.rating` is an `Int` without a database check constraint for 1–5.
+
+Impact:
+A buggy server action could persist invalid ratings.
+
+Recommended action:
+Enforce in Zod (`lib/validations/`) on submit; optional `CHECK (rating >= 1 AND rating <= 5)` in a future migration.
+
+Related files:
+- `prisma/schema.prisma` (`Review`)
+
+---
+
+### KI-0018: Prisma 7 `package.json#prisma` seed config deprecation
+
+Status: DEFERRED  
+Severity: LOW
+
+Description:
+Prisma 6 warns that `package.json` → `"prisma": { "seed": ... }` will be removed in Prisma 7 in favor of `prisma.config.ts`.
+
+Impact:
+Future Prisma upgrade will require moving seed configuration.
+
+Recommended action:
+Migrate to `prisma.config.ts` when upgrading to Prisma 7.
+
+Related files:
+- `package.json`
+
+---
+
 ### KI-0013: Local PostgreSQL port conflict on Windows
 
 Status: ACCEPTED_RISK  

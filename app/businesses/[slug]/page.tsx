@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { prisma } from "@/lib/db";
+import { BusinessProfileActions } from "@/components/business/business-profile-actions";
+import { BusinessProfileComplaints } from "@/components/business/business-profile-complaints";
+import { BusinessProfileHeader } from "@/components/business/business-profile-header";
+import { BusinessProfileReviews } from "@/components/business/business-profile-reviews";
+import { BusinessProfileStats } from "@/components/business/business-profile-stats";
+import { getBusinessProfile } from "@/server/queries/business-profile";
 
 type BusinessProfilePageProps = {
   params: Promise<{ slug: string }>;
@@ -12,10 +16,7 @@ export async function generateMetadata({
   params,
 }: BusinessProfilePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const business = await prisma.business.findUnique({
-    where: { slug },
-    select: { name: true },
-  });
+  const business = await getBusinessProfile(slug);
 
   if (!business) {
     return { title: "Business not found" };
@@ -27,33 +28,23 @@ export async function generateMetadata({
   };
 }
 
-/** Placeholder until TD-0204 full profile page. */
 export default async function BusinessProfilePage({
   params,
 }: BusinessProfilePageProps) {
   const { slug } = await params;
-  const business = await prisma.business.findUnique({
-    where: { slug },
-    select: { name: true, slug: true },
-  });
+  const business = await getBusinessProfile(slug);
 
   if (!business) {
     notFound();
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold tracking-tight">{business.name}</h1>
-      <p className="text-muted mt-4 leading-relaxed">
-        Full business profile (reviews, complaints, trust breakdown) is coming
-        in TD-0204.
-      </p>
-      <Link
-        href="/businesses"
-        className="text-primary mt-8 inline-block text-sm font-medium no-underline hover:underline"
-      >
-        ← Back to businesses
-      </Link>
+    <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">
+      <BusinessProfileHeader business={business} />
+      <BusinessProfileStats business={business} />
+      <BusinessProfileActions business={business} />
+      <BusinessProfileReviews business={business} />
+      <BusinessProfileComplaints business={business} />
     </div>
   );
 }

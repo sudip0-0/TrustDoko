@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 1 (database + auth) — complete.**
+**Milestone 2 (public discovery) — in progress.**
 
-PostgreSQL, core schema, Auth.js, and permission helpers are done. Next: **Milestone 2** public business discovery.
+Business listing, search/filters, and profile pages are live. Next: reviews (Milestone 3).
 
 ---
 
@@ -198,7 +198,7 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 
 ## Active task
 
-**TD-0203** — Search and filters on `/businesses`.
+**TD-0301** — Review submission flow.
 
 ---
 
@@ -215,6 +215,8 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 - **TD-0103** Auth.js register, login, logout, protected dashboard (2026-05-21)
 - **TD-0104** Permission helpers + Vitest tests (2026-05-21)
 - **TD-0202** Business listing page `/businesses` (2026-05-21)
+- **TD-0203** Search and filters on `/businesses` (2026-05-21)
+- **TD-0204** Full business profile `/businesses/[slug]` (2026-05-21)
 
 ---
 
@@ -547,6 +549,28 @@ No packages removed.
 #### Next suggested task
 
 - **TD-0203:** Search and filters.
+
+---
+
+### 2026-05-21 - TD-0203 & TD-0204 Discovery complete
+
+#### Completed
+
+- Search/filters on `/businesses` (GET form, URL params, pagination preserved).
+- Full profile at `/businesses/[slug]` with stats, reviews, complaints, CTAs.
+- Placeholder routes: `/write-review/[slug]`, `/report/[slug]`, `/claim/[slug]`.
+- `lib/search/business-filters.ts`, `server/queries/business-profile.ts`.
+- Sample approved reviews in seed for demo.
+
+#### Validation
+
+- `npm run typecheck`: pass
+- `npm run lint`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0301:** Review submission.
 
 ---
 

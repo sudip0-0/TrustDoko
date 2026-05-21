@@ -1,0 +1,44 @@
+import type { BusinessProfileData } from "@/server/queries/business-profile";
+
+type BusinessProfileStatsProps = {
+  business: BusinessProfileData;
+};
+
+export function BusinessProfileStats({ business }: BusinessProfileStatsProps) {
+  const ratingText =
+    business.reviewCount > 0
+      ? `${business.averageRating.toFixed(1)} / 5`
+      : "No ratings yet";
+
+  return (
+    <section
+      className="grid gap-4 sm:grid-cols-3"
+      aria-label="Trust and reputation summary"
+    >
+      <div className="rounded-xl border border-border bg-card p-5">
+        <p className="text-muted text-sm font-medium">Trust score</p>
+        <p className="text-foreground mt-1 text-2xl font-bold">
+          {business.trustScore}
+          <span className="text-muted text-base font-normal"> / 100</span>
+        </p>
+      </div>
+      <div className="rounded-xl border border-border bg-card p-5">
+        <p className="text-muted text-sm font-medium">Average rating</p>
+        <p className="text-foreground mt-1 text-2xl font-bold">{ratingText}</p>
+        <p className="text-muted mt-1 text-xs">
+          {business.reviewCount} approved review
+          {business.reviewCount === 1 ? "" : "s"}
+        </p>
+      </div>
+      <div className="rounded-xl border border-border bg-card p-5">
+        <p className="text-muted text-sm font-medium">Complaints on record</p>
+        <p className="text-foreground mt-1 text-2xl font-bold">
+          {business.complaintSummary.total}
+        </p>
+        <p className="text-muted mt-1 text-xs">
+          {business.complaintSummary.unresolved} unresolved
+        </p>
+      </div>
+    </section>
+  );
+}

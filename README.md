@@ -308,6 +308,9 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run lint` | `pnpm lint` | ESLint |
 | `npx tsc --noEmit` | `pnpm typecheck` | TypeScript check |
 | `npm run format` | `pnpm format` | Prettier write |
+| `npm run db:format` | — | Format `schema.prisma` |
+| `npm run db:validate` | — | Validate schema against datasource |
+| `npm run db:generate` | — | Regenerate Prisma Client |
 | `npm run db:migrate` | `pnpm db:migrate` | Prisma migrate dev |
 | `npm run db:seed` | `pnpm db:seed` | Seed categories + sample businesses |
 | `npm run db:reset` | — | Reset DB and re-run migrations + seed |
@@ -323,6 +326,7 @@ Stack defaults: see `ARCHITECTURE.md` § Assumptions.
 - **P1000 authentication failed on port 5432:** Another PostgreSQL may be running locally. TrustDoko Docker uses **5433** — ensure `.env` matches `.env.example`.
 - **Container not ready:** Run `npm run docker:logs` and wait for `database system is ready`.
 - **Reset database:** `npm run docker:down` then `docker volume rm trustdoko_trustdoko_pgdata` (destroys data), then `npm run docker:up` and `npm run db:migrate`.
+- **`prisma generate` EPERM on Windows:** Another process (often `npm run dev`) may lock `query_engine-windows.dll.node`. Stop the dev server, then run `npm run db:generate`. Migrate/seed/build can still work if the client was generated earlier.
 
 ---
 
@@ -392,7 +396,7 @@ Application foundation initialized (Next.js, TypeScript, Tailwind, Prisma, ESLin
 | `ARCHITECTURE.md` | Modules, routes, assumptions |
 | `KNOWN-ISSUES.md` | Risks and open decisions |
 
-PostgreSQL, core schema, Auth.js, and permission helpers are configured. Next task: **TD-0202** (business listing page).
+Public discovery is live: `/businesses` with search/filters and `/businesses/[slug]` profiles. Next: **TD-0301** (reviews).
 
 ### Auth routes
 

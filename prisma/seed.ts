@@ -269,6 +269,65 @@ async function main() {
   }
 
   console.log(`Seeded ${sampleBusinesses.length} sample businesses.`);
+
+  const reviewer = await prisma.user.upsert({
+    where: { email: "sample-reviewer@trustdoko.local" },
+    update: { name: "Sample Reviewer" },
+    create: {
+      email: "sample-reviewer@trustdoko.local",
+      name: "Sample Reviewer",
+    },
+  });
+
+  const sampleReviews = [
+    {
+      businessSlug: "sample-himalayan-gadgets",
+      rating: 5,
+      title: "Genuine products",
+      body: "Ordered earbuds and they matched the listing. Delivery to Kathmandu took 3 days.",
+    },
+    {
+      businessSlug: "sample-momo-cloud-kitchen",
+      rating: 4,
+      title: "Good momos",
+      body: "Tasted fresh and well packed. Slightly late delivery during rain.",
+    },
+  ] as const;
+
+  for (const item of sampleReviews) {
+    const business = await prisma.business.findUnique({
+      where: { slug: item.businessSlug },
+      select: { id: true },
+    });
+    if (!business) {
+      continue;
+    }
+
+    await prisma.review.upsert({
+      where: {
+        businessId_userId: {
+          businessId: business.id,
+          userId: reviewer.id,
+        },
+      },
+      update: {
+        rating: item.rating,
+        title: item.title,
+        body: item.body,
+        status: "APPROVED",
+      },
+      create: {
+        businessId: business.id,
+        userId: reviewer.id,
+        rating: item.rating,
+        title: item.title,
+        body: item.body,
+        status: "APPROVED",
+      },
+    });
+  }
+
+  console.log(`Seeded ${sampleReviews.length} sample approved reviews.`);
 }
 
 main()

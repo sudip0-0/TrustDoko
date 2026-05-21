@@ -485,6 +485,36 @@ createdAt
 
 **Notification** — in-app or email alerts for owners/admins; not in schema yet.
 
+### Schema implementation notes (2026-05-21 audit)
+
+**Migrations applied (local dev):**
+
+```txt
+20260521150137_init
+20260521152858_expand_mvp_schema
+20260521154323_add_business_type_index
+```
+
+**Required MVP models:** All present in `prisma/schema.prisma` — `User`, `Business`, `Category`, `Review`, `Complaint`, `BusinessClaim`, `BusinessVerification` (replaces early `VerificationRequest` naming), `ReviewVote`, `SavedBusiness`, `BusinessResponse`, `FileAsset`, `AuditLog`.
+
+**Relations:** Owner on `Business` via `claimedByUserId` / `BusinessOwner`. One review per user per business (`@@unique([businessId, userId])`). One helpful vote per user per review (`ReviewVote`). Owner replies only on `BusinessResponse` (optional `reviewId` or `complaintId`, each unique when set). Proof files via `FileAsset` with optional `proofFileId` on Review/Complaint.
+
+**Enums:** PascalCase model enums with SCREAMING_SNAKE values (e.g. `ClaimStatus.UNCLAIMED`, `ComplaintCategory.NON_DELIVERY`). Separate enums for business-level `VerificationStatus` vs per-request `BusinessVerificationStatus`.
+
+**Indexes (search and listing):** `Business` — `slug`, `name`, `city`, `province`, `categoryId`, `trustScore`, `averageRating`, `claimStatus`, `verificationStatus`, `businessType`, composite `(city, categoryId)`. Name/slug search uses `ILIKE` in app code (no PostgreSQL full-text index yet). `Category` — `slug`, `name`. `Review` / `Complaint` — status and business-scoped composites for profile and moderation queries.
+
+**Timestamps:** `createdAt` / `updatedAt` on all mutable domain models. Append-only or immutable rows: `ReviewVote` (`createdAt` only), `FileAsset` (`createdAt` only), `AuditLog` (`createdAt` only).
+
+**Not enforced in the database (application layer):**
+
+- `BusinessResponse`: exactly one of `reviewId` or `complaintId` must be set.
+- `Review.rating` in range 1–5.
+- `Business.trustScore`, `averageRating`, `reviewCount`, `complaintCount` kept denormalized; must be updated in transactions when reviews/complaints change (TD-0501 / moderation tasks).
+
+**Seed:** `prisma/seed.ts` — idempotent upserts for 10 categories, 12 `[Sample]` businesses, one sample reviewer, 2 approved reviews.
+
+**Tooling:** `npm run db:format`, `db:validate`, `db:generate`, `db:migrate`, `db:seed`, `db:status`, `db:reset`, `db:migrate:deploy`, `db:studio`. See `README.md` § Database troubleshooting.
+
 ---
 
 ## Review workflow

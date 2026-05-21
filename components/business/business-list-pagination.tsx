@@ -1,21 +1,23 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
+import {
+  buildBusinessListPath,
+  type BusinessListFilters,
+} from "@/lib/validations/business-list";
 
 type BusinessListPaginationProps = {
   page: number;
   totalPages: number;
   total: number;
+  filters: BusinessListFilters;
 };
-
-function pageHref(page: number): string {
-  return page <= 1 ? "/businesses" : `/businesses?page=${page}`;
-}
 
 export function BusinessListPagination({
   page,
   totalPages,
   total,
+  filters,
 }: BusinessListPaginationProps) {
   if (totalPages <= 1) {
     return (
@@ -44,7 +46,7 @@ export function BusinessListPagination({
         <li>
           {page > 1 ? (
             <Link
-              href={pageHref(page - 1)}
+              href={buildBusinessListPath(filters, page - 1)}
               className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium no-underline hover:bg-accent"
             >
               Previous
@@ -64,7 +66,7 @@ export function BusinessListPagination({
                 <span className="text-muted px-1 text-sm">…</span>
               ) : null}
               <Link
-                href={pageHref(p)}
+                href={buildBusinessListPath(filters, p)}
                 aria-current={p === page ? "page" : undefined}
                 className={cn(
                   "min-w-9 rounded-lg border px-3 py-1.5 text-center text-sm font-medium no-underline",
@@ -81,7 +83,7 @@ export function BusinessListPagination({
         <li>
           {page < totalPages ? (
             <Link
-              href={pageHref(page + 1)}
+              href={buildBusinessListPath(filters, page + 1)}
               className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium no-underline hover:bg-accent"
             >
               Next

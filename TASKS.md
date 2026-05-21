@@ -263,7 +263,7 @@ Acceptance criteria:
 
 ### TD-0203: Add search and filters
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Filters:
@@ -278,17 +278,17 @@ Filters:
 
 Acceptance criteria:
 
-- [ ] Search works by business name
-- [ ] Category filter works
-- [ ] City filter works
-- [ ] URL query params preserve state
-- [ ] Pagination works with filters
+- [x] Search works by business name
+- [x] Category filter works
+- [x] City filter works
+- [x] URL query params preserve state
+- [x] Pagination works with filters
 
 ---
 
 ### TD-0204: Create business profile page
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Route:
@@ -299,15 +299,15 @@ Route:
 
 Acceptance criteria:
 
-- [ ] Shows public business info
-- [ ] Shows rating summary
-- [ ] Shows trust score label
-- [ ] Shows review list
-- [ ] Shows complaint summary
-- [ ] Shows verification status
-- [ ] Shows CTA to write review
-- [ ] Shows CTA to report issue
-- [ ] Shows CTA to claim business if unclaimed
+- [x] Shows public business info
+- [x] Shows rating summary
+- [x] Shows trust score label
+- [x] Shows review list
+- [x] Shows complaint summary
+- [x] Shows verification status
+- [x] Shows CTA to write review
+- [x] Shows CTA to report issue
+- [x] Shows CTA to claim business if unclaimed
 
 ---
 
