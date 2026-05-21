@@ -178,17 +178,17 @@ Acceptance criteria:
 
 ### TD-0103: Add authentication
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] User can register
-- [ ] User can login
-- [ ] User can logout
-- [ ] Session is available server-side
-- [ ] Protected routes redirect unauthenticated users
-- [ ] User role is available safely on the server
+- [x] User can register
+- [x] User can login
+- [x] User can logout
+- [x] Session is available server-side (`auth()`, `getSessionUser()`)
+- [x] Protected routes redirect unauthenticated users (`/dashboard/*`)
+- [x] User role is available safely on the server (JWT session)
 
 ---
 

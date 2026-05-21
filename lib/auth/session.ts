@@ -1,9 +1,17 @@
-import type { SessionUser } from "@/types/auth";
+import { auth } from "@/lib/auth/auth.config";
+import type { SessionUser, UserRole } from "@/types/auth";
 
-/**
- * Returns the current session user on the server.
- * Replace with Auth.js `auth()` when TD-0103 is implemented.
- */
 export async function getSessionUser(): Promise<SessionUser | null> {
-  return null;
+  const session = await auth();
+
+  if (!session?.user?.id || !session.user.email) {
+    return null;
+  }
+
+  return {
+    id: session.user.id,
+    email: session.user.email,
+    name: session.user.name ?? null,
+    role: session.user.role as UserRole,
+  };
 }

@@ -328,14 +328,15 @@ Example only. Keep secrets out of git.
 
 ```env
 DATABASE_URL="postgresql://trustdoko:trustdoko@127.0.0.1:5433/trustdoko"
-NEXTAUTH_SECRET="replace-me"
+AUTH_SECRET="replace-me"
 NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="replace-me"
 CLOUDINARY_CLOUD_NAME=""
 CLOUDINARY_API_KEY=""
 CLOUDINARY_API_SECRET=""
 ```
 
-See `.env.example` for the full template.
+Generate `AUTH_SECRET` with `openssl rand -base64 32`. See `.env.example` for the full template.
 
 ---
 
@@ -387,4 +388,15 @@ Application foundation initialized (Next.js, TypeScript, Tailwind, Prisma, ESLin
 | `ARCHITECTURE.md` | Modules, routes, assumptions |
 | `KNOWN-ISSUES.md` | Risks and open decisions |
 
-PostgreSQL (Docker) and core schema are configured. Next task: **TD-0103** (Auth.js).
+PostgreSQL, core schema, and Auth.js (credentials) are configured. Next task: **TD-0104** (permission helpers).
+
+### Auth routes
+
+| Route | Description |
+|-------|-------------|
+| `/register` | Create account (email + password) |
+| `/login` | Sign in |
+| `/dashboard/user` | Protected user dashboard |
+| `/api/auth/*` | Auth.js handlers |
+
+Server session: `getSessionUser()` from `@/lib/auth` or `auth()` from `@/lib/auth/auth.config`.

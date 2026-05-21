@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 1 (database) — in progress.**
+**Milestone 1 (database + auth) — in progress.**
 
-PostgreSQL runs via Docker. Core Prisma schema migrated and categories seeded. Auth.js not implemented yet.
+PostgreSQL, core schema, and Auth.js credentials auth are done. Next: permission helpers (TD-0104).
 
 ---
 
@@ -28,11 +28,12 @@ PostgreSQL runs via Docker. Core Prisma schema migrated and categories seeded. A
 | Prisma | **Core schema** migrated (`20260521150137_init`) |
 | PostgreSQL | **Docker** (`trustdoko-postgres`, port **5433**) |
 | Seed data | **10 categories** (`npm run db:seed`) |
-| Auth | **Stubs only** (`lib/auth/`) — TD-0103 next |
+| Auth | **Auth.js v5** (credentials, JWT session) — TD-0103 **DONE** |
 | Zod | **Env validation** (`lib/validations/env.ts`) |
 | Git repository | Not initialized |
 | Phase 0 QA (npm) | **Passed** (2026-05-21) |
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
+| TD-0103 | **DONE** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
 
@@ -195,7 +196,7 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 
 ## Active task
 
-**TD-0103** — Auth.js (register, login, session).
+**TD-0104** — Permission helpers (`lib/permissions`).
 
 ---
 
@@ -209,6 +210,7 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 - **TD-0003** lint, format, typecheck (2026-05-21)
 - **TD-0101** PostgreSQL + Prisma connection (2026-05-21)
 - **TD-0102** core database schema + migration (2026-05-21)
+- **TD-0103** Auth.js register, login, logout, protected dashboard (2026-05-21)
 
 ---
 
@@ -421,6 +423,37 @@ No packages removed.
 #### Next suggested task
 
 - **TD-0103:** Auth.js integration.
+
+---
+
+### 2026-05-21 - TD-0103 Auth.js
+
+#### Completed
+
+- Auth.js v5 with Credentials provider (email/password, bcrypt).
+- Routes: `/login`, `/register`, `/api/auth/[...nextauth]`.
+- Server actions: `registerAction`, `loginAction`, `logoutAction`.
+- Protected `/dashboard/*` via middleware (`getToken`) + layout guard.
+- Session exposes `id`, `email`, `name`, `role` via `getSessionUser()`.
+- Header shows Sign in / Register or Dashboard / Sign out.
+
+#### Changed files
+
+- `lib/auth/auth.config.ts`, `lib/auth/session.ts`, `lib/auth/password.ts`
+- `middleware.ts`, `server/actions/auth.ts`, `lib/validations/auth.ts`
+- `app/login/`, `app/register/`, `app/dashboard/`
+- `components/auth/*`, `components/layout/site-header.tsx`
+- `types/next-auth.d.ts`, `package.json`, `README.md`, `TASKS.md`, `.env.example`
+
+#### Validation
+
+- `npm run typecheck`: pass
+- `npm run lint`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0104:** Permission helpers.
 
 ---
 
