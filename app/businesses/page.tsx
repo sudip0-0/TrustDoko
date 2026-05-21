@@ -38,7 +38,12 @@ export default async function BusinessesPage({
         <h1 className="text-3xl font-bold tracking-tight">Browse businesses</h1>
         <p className="text-muted mt-3 text-sm leading-relaxed sm:text-base">
           Compare trust scores, ratings, and complaint signals before you buy from
-          online sellers in Nepal.
+          online sellers and social shops in Nepal.
+        </p>
+        <p className="text-muted mt-2 text-xs leading-relaxed sm:text-sm">
+          Trust labels (Highly Trusted, Mixed, High Risk) summarize reputation from
+          reviews and complaints — not legal findings. Search by name, city, category,
+          or social links.
         </p>
       </header>
 

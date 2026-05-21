@@ -1,7 +1,11 @@
 import { prisma } from "@/lib/db";
 import { buildBusinessWhere } from "@/lib/search/business-filters";
-import type { BusinessListFilters } from "@/lib/validations/business-list";
+import type {
+  BusinessListFilters,
+  BusinessListSort,
+} from "@/lib/validations/business-list";
 import { BUSINESS_LIST_PAGE_SIZE } from "@/lib/validations/business-list";
+import type { Prisma } from "@prisma/client";
 
 const businessListSelect = {
   id: true,
@@ -46,11 +50,33 @@ export type BusinessListResult = {
   filters: BusinessListFilters;
 };
 
-const businessListOrderBy = [
-  { trustScore: "desc" as const },
-  { reviewCount: "desc" as const },
-  { name: "asc" as const },
-];
+function getBusinessListOrderBy(
+  sort: BusinessListSort,
+): Prisma.BusinessOrderByWithRelationInput[] {
+  switch (sort) {
+    case "rating":
+      return [
+        { averageRating: "desc" },
+        { reviewCount: "desc" },
+        { name: "asc" },
+      ];
+    case "reviews":
+      return [
+        { reviewCount: "desc" },
+        { averageRating: "desc" },
+        { name: "asc" },
+      ];
+    case "newest":
+      return [{ createdAt: "desc" }, { name: "asc" }];
+    case "trust":
+    default:
+      return [
+        { trustScore: "desc" },
+        { reviewCount: "desc" },
+        { name: "asc" },
+      ];
+  }
+}
 
 export async function listBusinesses(
   filters: BusinessListFilters,
@@ -66,7 +92,7 @@ export async function listBusinesses(
     where,
     skip,
     take: pageSize,
-    orderBy: businessListOrderBy,
+    orderBy: getBusinessListOrderBy(filters.sort),
     select: businessListSelect,
   });
 

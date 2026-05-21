@@ -1,4 +1,5 @@
 import { TrustLabelBadge } from "@/components/business/trust-label-badge";
+import { VerificationBadge } from "@/components/business/verification-badge";
 import {
   formatBusinessType,
   formatClaimStatus,
@@ -32,7 +33,14 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
             <p className="text-muted mt-2 text-sm">{business.category.name}</p>
           ) : null}
         </div>
-        <TrustLabelBadge trustLabel={trustLabel} />
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-foreground text-sm font-semibold tabular-nums">
+            {business.trustScore}
+            <span className="text-muted font-normal">/100</span>
+          </span>
+          <TrustLabelBadge trustLabel={trustLabel} />
+          <VerificationBadge verificationStatus={business.verificationStatus} />
+        </div>
       </div>
 
       {business.description ? (

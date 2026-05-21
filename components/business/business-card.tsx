@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { TrustLabelBadge } from "@/components/business/trust-label-badge";
+import { VerificationBadge } from "@/components/business/verification-badge";
 import { getTrustLabelFromScore } from "@/lib/trust-score";
 import type { BusinessListItem } from "@/server/queries/businesses";
 
@@ -28,7 +29,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
 
   return (
     <article className="flex flex-col rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
-      <div className="flex flex-wrap items-start justify-between gap-2">
+      <div className="space-y-3">
         <h2 className="text-foreground text-lg font-semibold leading-snug">
           <Link
             href={`/businesses/${business.slug}`}
@@ -37,7 +38,15 @@ export function BusinessCard({ business }: BusinessCardProps) {
             {business.name}
           </Link>
         </h2>
-        <TrustLabelBadge trustLabel={trustLabel} />
+
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-foreground text-sm font-semibold tabular-nums">
+            {business.trustScore}
+            <span className="text-muted font-normal">/100</span>
+          </span>
+          <TrustLabelBadge trustLabel={trustLabel} />
+          <VerificationBadge verificationStatus={business.verificationStatus} />
+        </div>
       </div>
 
       <dl className="text-muted mt-4 space-y-1.5 text-sm">
@@ -69,7 +78,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
       <div className="mt-4 pt-2">
         <Link
           href={`/businesses/${business.slug}`}
-          className="text-primary text-sm font-medium no-underline hover:underline"
+          className="text-primary inline-flex min-h-11 items-center text-sm font-medium no-underline hover:underline"
         >
           View profile →
         </Link>

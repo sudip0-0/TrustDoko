@@ -10,10 +10,16 @@ export function buildBusinessWhere(
   const where: Prisma.BusinessWhereInput = {};
 
   if (filters.q) {
+    const q = filters.q;
     where.OR = [
-      { name: { contains: filters.q, mode: "insensitive" } },
-      { description: { contains: filters.q, mode: "insensitive" } },
-      { city: { contains: filters.q, mode: "insensitive" } },
+      { name: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
+      { city: { contains: q, mode: "insensitive" } },
+      { category: { name: { contains: q, mode: "insensitive" } } },
+      { websiteUrl: { contains: q, mode: "insensitive" } },
+      { facebookUrl: { contains: q, mode: "insensitive" } },
+      { instagramUrl: { contains: q, mode: "insensitive" } },
+      { tiktokUrl: { contains: q, mode: "insensitive" } },
     ];
   }
 
@@ -56,6 +62,7 @@ export function hasActiveBusinessFilters(filters: BusinessListFilters): boolean 
       filters.businessType ||
       filters.verificationStatus ||
       filters.minRating !== undefined ||
-      filters.trustLabel,
+      filters.trustLabel ||
+      (filters.sort && filters.sort !== "trust"),
   );
 }

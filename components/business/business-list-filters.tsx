@@ -31,7 +31,7 @@ export function BusinessListFilters({
             name="q"
             type="search"
             defaultValue={filters.q ?? ""}
-            placeholder="Business name, description, or city…"
+            placeholder="Name, city, category, or social handle…"
             className={selectClassName}
           />
         </div>
@@ -138,6 +138,23 @@ export function BusinessListFilters({
             <option value="3">3+ stars</option>
             <option value="2">2+ stars</option>
             <option value="1">1+ stars</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="sort" className="text-foreground mb-1.5 block text-sm font-medium">
+            Sort by
+          </label>
+          <select
+            id="sort"
+            name="sort"
+            defaultValue={filters.sort ?? "trust"}
+            className={selectClassName}
+          >
+            <option value="trust">Highest trust score</option>
+            <option value="rating">Highest rating</option>
+            <option value="reviews">Most reviewed</option>
+            <option value="newest">Newest</option>
           </select>
         </div>
 

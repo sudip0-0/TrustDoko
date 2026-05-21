@@ -12,6 +12,15 @@ const trustLabelKeys = [
   "HIGH_RISK",
 ] as const;
 
+export const businessSortValues = [
+  "trust",
+  "rating",
+  "reviews",
+  "newest",
+] as const;
+
+export type BusinessListSort = (typeof businessSortValues)[number];
+
 export const businessListFiltersSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   q: z.string().trim().optional(),
@@ -21,6 +30,7 @@ export const businessListFiltersSchema = z.object({
   verificationStatus: z.nativeEnum(VerificationStatus).optional(),
   minRating: z.coerce.number().min(1).max(5).optional(),
   trustLabel: z.enum(trustLabelKeys).optional(),
+  sort: z.enum(businessSortValues).default("trust"),
 });
 
 export type BusinessListFilters = z.infer<typeof businessListFiltersSchema>;
@@ -47,6 +57,7 @@ export function parseBusinessListFilters(
     verificationStatus: get("verificationStatus"),
     minRating: get("minRating"),
     trustLabel: get("trustLabel"),
+    sort: get("sort"),
   });
 }
 
@@ -80,6 +91,9 @@ export function buildBusinessListQueryString(
   }
   if (filters.trustLabel) {
     params.set("trustLabel", filters.trustLabel);
+  }
+  if (filters.sort && filters.sort !== "trust") {
+    params.set("sort", filters.sort);
   }
 
   const query = params.toString();

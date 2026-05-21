@@ -36,7 +36,7 @@ Business listing, search/filters, and profile pages are live. Next: reviews (Mil
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **28 passing** |
+| Unit tests (Vitest) | **39 passing** |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
 
@@ -549,6 +549,38 @@ No packages removed.
 #### Next suggested task
 
 - **TD-0203:** Search and filters.
+
+---
+
+### 2026-05-21 - Business directory completion (gaps)
+
+#### Completed
+
+- Sort by trust score, rating, review count, or newest (`sort` URL param).
+- Keyword search extended to category name and social/website URLs.
+- Business cards: numeric trust score, trust label, verification badge.
+- Profile header badges aligned with listing cards.
+- Profile loading skeleton at `/businesses/[slug]/loading.tsx`.
+- Trust legend copy on listing page; filtered-empty search tips.
+- Vitest: `lib/search/__tests__/business-filters.test.ts` (6 tests).
+
+#### Changed files
+
+- `lib/validations/business-list.ts`, `lib/search/business-filters.ts`
+- `server/queries/businesses.ts`
+- `components/business/business-card.tsx`, `business-list-filters.tsx`, `verification-badge.tsx`, `business-profile-header.tsx`, `business-profile-skeleton.tsx`
+- `app/businesses/page.tsx`, `app/businesses/[slug]/loading.tsx`
+
+#### Validation
+
+- `npm run typecheck`: pass
+- `npm run lint`: pass
+- `npm test`: pass (39 tests)
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0301:** Review submission flow.
 
 ---
 

@@ -17,7 +17,8 @@ export function BusinessListEmpty({ filters }: BusinessListEmptyProps) {
           No matching businesses
         </h2>
         <p className="text-muted mx-auto mt-2 max-w-md text-sm leading-relaxed">
-          Try different filters or clear your search to see more results.
+          Try different filters, search by Instagram or category name, or clear your
+          search to see more results.
         </p>
         <Link
           href="/businesses"

@@ -254,7 +254,7 @@ Acceptance criteria:
 
 - [x] Shows business list
 - [x] Supports pagination
-- [x] Shows business name, category, city, rating, trust label
+- [x] Shows business name, category, city, rating, trust score, trust label, verification badge
 - [x] Empty state exists
 - [x] Loading state exists
 - [x] Mobile layout works
@@ -279,8 +279,10 @@ Filters:
 Acceptance criteria:
 
 - [x] Search works by business name
+- [x] Search works by category name and social/website URLs
 - [x] Category filter works
 - [x] City filter works
+- [x] Sort by trust, rating, reviews, or newest
 - [x] URL query params preserve state
 - [x] Pagination works with filters
 
