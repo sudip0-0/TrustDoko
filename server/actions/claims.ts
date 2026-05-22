@@ -78,52 +78,85 @@ export async function submitClaimAction(
     return { error: "A claim for this business is already under review." };
   }
 
-  const existingPendingByUser = await prisma.businessClaim.findFirst({
-    where: {
-      businessId: business.id,
-      userId: user.id,
-      status: BusinessClaimStatus.PENDING,
-    },
-    select: { id: true },
-  });
+  try {
+    await prisma.$transaction(async (tx) => {
+      const fresh = await tx.business.findUnique({
+        where: { id: business.id },
+        select: { claimStatus: true },
+      });
 
-  if (existingPendingByUser) {
-    return { error: "You already submitted a claim for this business." };
+      if (!fresh) {
+        throw new Error("NOT_FOUND");
+      }
+
+      if (
+        fresh.claimStatus === ClaimStatus.CLAIMED ||
+        fresh.claimStatus === ClaimStatus.PENDING
+      ) {
+        throw new Error("NOT_ELIGIBLE");
+      }
+
+      const pendingClaim = await tx.businessClaim.findFirst({
+        where: {
+          businessId: business.id,
+          status: BusinessClaimStatus.PENDING,
+        },
+        select: { userId: true },
+      });
+
+      if (pendingClaim) {
+        if (pendingClaim.userId === user.id) {
+          throw new Error("DUPLICATE_USER");
+        }
+        throw new Error("PENDING_OTHER");
+      }
+
+      const created = await tx.businessClaim.create({
+        data: {
+          businessId: business.id,
+          userId: user.id,
+          ownerName: parsed.data.ownerName,
+          ownerEmail: parsed.data.ownerEmail,
+          ownerPhone: parsed.data.ownerPhone || null,
+          method: parsed.data.method,
+          message: parsed.data.message,
+        },
+        select: { id: true },
+      });
+
+      await tx.business.update({
+        where: { id: business.id },
+        data: { claimStatus: ClaimStatus.PENDING },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          actorUserId: user.id,
+          action: "CLAIM_SUBMITTED",
+          entityType: "BusinessClaim",
+          entityId: created.id,
+          metadata: { businessId: business.id, method: parsed.data.method },
+        },
+      });
+    });
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "";
+    if (code === "NOT_FOUND") {
+      return { error: "Business not found." };
+    }
+    if (code === "NOT_ELIGIBLE") {
+      return { error: "This business cannot be claimed right now." };
+    }
+    if (code === "DUPLICATE_USER") {
+      return { error: "You already submitted a claim for this business." };
+    }
+    if (code === "PENDING_OTHER") {
+      return {
+        error: "A claim for this business is already under review.",
+      };
+    }
+    throw error;
   }
-
-  const claim = await prisma.$transaction(async (tx) => {
-    const created = await tx.businessClaim.create({
-      data: {
-        businessId: business.id,
-        userId: user.id,
-        ownerName: parsed.data.ownerName,
-        ownerEmail: parsed.data.ownerEmail,
-        ownerPhone: parsed.data.ownerPhone || null,
-        method: parsed.data.method,
-        message: parsed.data.message,
-      },
-      select: { id: true },
-    });
-
-    await tx.business.update({
-      where: { id: business.id },
-      data: { claimStatus: ClaimStatus.PENDING },
-    });
-
-    await tx.auditLog.create({
-      data: {
-        actorUserId: user.id,
-        action: "CLAIM_SUBMITTED",
-        entityType: "BusinessClaim",
-        entityId: created.id,
-        metadata: { businessId: business.id, method: parsed.data.method },
-      },
-    });
-
-    return created;
-  });
-
-  void claim;
 
   revalidatePath(`/businesses/${business.slug}`);
   revalidatePath(`/claim/${business.slug}`);

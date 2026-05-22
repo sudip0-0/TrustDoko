@@ -2,9 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 
+import { buildOwnerUpdateData } from "@/lib/business/build-owner-update-data";
 import { getSessionUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
-import { canManageBusiness } from "@/lib/permissions/business";
+import { isBusinessOwner } from "@/lib/permissions/business";
 import {
   parseBusinessProfileFormData,
   updateBusinessProfileSchema,
@@ -60,28 +61,16 @@ export async function updateBusinessProfileAction(
     return { error: "Business not found." };
   }
 
-  if (!canManageBusiness(user, business)) {
-    return { error: "You cannot edit this business profile." };
+  if (!isBusinessOwner(user, business)) {
+    return {
+      error: "Only the approved owner of a claimed business can edit this profile.",
+    };
   }
 
   await prisma.$transaction([
     prisma.business.update({
       where: { id: business.id },
-      data: {
-        description: parsed.data.description,
-        phone: parsed.data.phone,
-        email: parsed.data.email,
-        websiteUrl: parsed.data.websiteUrl,
-        facebookUrl: parsed.data.facebookUrl,
-        instagramUrl: parsed.data.instagramUrl,
-        tiktokUrl: parsed.data.tiktokUrl,
-        address: parsed.data.address,
-        city: parsed.data.city,
-        province: parsed.data.province,
-        ...(parsed.data.businessType
-          ? { businessType: parsed.data.businessType }
-          : {}),
-      },
+      data: buildOwnerUpdateData(parsed.data),
     }),
     prisma.auditLog.create({
       data: {

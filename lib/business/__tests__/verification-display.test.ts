@@ -25,6 +25,15 @@ describe("getVerificationBadgeDisplay", () => {
     ).toMatchObject({ key: "CONTACT_VERIFIED", label: "Contact verified" });
   });
 
+  it("returns Social verified when applicable", () => {
+    expect(
+      getVerificationBadgeDisplay(
+        ClaimStatus.CLAIMED,
+        VerificationStatus.SOCIAL_VERIFIED,
+      ),
+    ).toMatchObject({ key: "SOCIAL_VERIFIED", label: "Social verified" });
+  });
+
   it("returns Trusted seller as highest tier", () => {
     expect(
       getVerificationBadgeDisplay(

@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 6 (business claims) — complete.**
+**Milestone 6 (business claims) — QA complete.**
 
-Business claim submission, admin approval, owner dashboard, profile edits, review/complaint responses, and verification badges are live. Next: trust score module (TD-0501) or admin moderation UI (TD-0703).
+Claim flow, owner access control, verification badges, and admin approval are validated. Next: trust score module (TD-0501) or admin moderation UI (TD-0703).
 
 ---
 
@@ -36,12 +36,13 @@ Business claim submission, admin approval, owner dashboard, profile edits, revie
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **99 passing** |
+| Unit tests (Vitest) | **101 passing** |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 4 (complaints) | **DONE** (2026-05-22) |
 | Milestone 4 QA (complaints) | **Passed** (2026-05-22) |
 | Milestone 6 (business claims) | **DONE** (2026-05-22) |
+| Milestone 6 QA (claims) | **Passed** (2026-05-21) |
 | Milestone 2 QA (directory) | **Passed** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
@@ -612,11 +613,11 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 - Owner dashboard: [`/dashboard/business`](app/dashboard/business/page.tsx) and per-business manage page.
 - Admin queue: [`/dashboard/admin/claims`](app/dashboard/admin/claims/page.tsx).
 - Verification badges: composite display (Unverified, Claimed, Contact/Document/Social/Trusted seller) + legend.
-- Access control: `canManageBusiness` / `isBusinessOwner` on all owner routes.
+- Access control: owner routes use `isBusinessOwner`; profile edit and review respond actions require claimed ownership (admins use separate admin flows).
 
 #### Validation
 
-- `npm test`: pass (99)
+- `npm test`: pass (101)
 - `npm run typecheck`: pass
 - `npm run lint`: pass
 - `npm run build`: pass
@@ -624,6 +625,48 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 #### Next suggested task
 
 - **TD-0501:** Trust score calculation module.
+
+---
+
+### 2026-05-21 - Milestone 6 QA: Business claim and verification quality check
+
+#### QA checklist (10 items)
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | Users can submit business claim requests | Pass — `/claim/[slug]`, `submitClaimAction`, auth required |
+| 2 | Claim requests stored correctly | Pass — `BusinessClaim` fields + audit log |
+| 3 | Duplicate claims prevented | Pass — pre-check + transactional re-check for PENDING/CLAIMED |
+| 4 | Owners access only approved claimed businesses | Pass — `getOwnedBusinesses` / `getBusinessForOwnerEdit` filter `CLAIMED` + `claimedByUserId` |
+| 5 | Owners cannot edit unclaimed businesses | Pass — owner dashboard 404; `updateBusinessProfileAction` uses `isBusinessOwner` |
+| 6 | Verification badges display correctly | Pass — `getVerificationBadgeDisplay` + `VerificationBadge` + unit tests |
+| 7 | Profile edit permissions restricted | Pass — Zod allowlist + `buildOwnerUpdateData` |
+| 8 | Review/complaint responses tied to owner | Pass — `respondToReviewAction` / `respondToComplaintAction` require `isBusinessOwner` (non-admin) |
+| 9 | Admin approve/reject claims | Pass — `/dashboard/admin/claims`, `approveClaimAction` / `rejectClaimAction` |
+| 10 | PROGRESS.md updated | Pass — this section |
+
+#### Permission fixes (QA session)
+
+- `updateBusinessProfileAction`: `canManageBusiness` → `isBusinessOwner` (admins no longer edit arbitrary profiles via owner action).
+- `respondToReviewAction`: non-admins require `isBusinessOwner` on review’s business.
+- `owner-reviews-panel`: respond UI gated with `isBusinessOwner`.
+- `submitClaimAction`: transactional duplicate/race guard.
+- `buildOwnerUpdateData`: allowlisted owner profile fields only.
+
+#### Manual access-control smoke (seed users)
+
+| Role | Account | Verified |
+|------|---------|----------|
+| Normal user | Register or use any non-owner account | Cannot open `/dashboard/business/[otherId]`; can submit claim on unclaimed business |
+| Business owner | `sample-owner@trustdoko.local` | Sees `sample-valley-mobile-hub` only; can edit profile and respond to reviews/complaints |
+| Admin | `admin@trustdoko.local` | `/dashboard/admin/claims` approve/reject; no owner profile edit via owner action |
+
+#### Validation (QA)
+
+- `npm run lint`: pass
+- `npm run typecheck`: pass
+- `npm test`: pass (101)
+- `npm run build`: pass
 
 ---
 

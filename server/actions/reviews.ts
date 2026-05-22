@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 
 import { getSessionUser } from "@/lib/auth/session";
 import { determineReviewStatus } from "@/lib/moderation/review-status";
+import { isBusinessOwner } from "@/lib/permissions/business";
+import { isAdmin } from "@/lib/permissions/admin";
 import { canDeleteReview, canEditReview, canReplyToReview } from "@/lib/permissions/review";
 import { recalculateBusinessReviewAggregates } from "@/lib/reviews/aggregates";
 import { isReviewRateLimited } from "@/lib/reviews/rate-limit";
@@ -353,8 +355,14 @@ export async function respondToReviewAction(
     return { error: "Review not found." };
   }
 
-  if (!canReplyToReview(user, review.business)) {
-    return { error: "You cannot respond to reviews for this business." };
+  if (isAdmin(user)) {
+    if (!canReplyToReview(user, review.business)) {
+      return { error: "You cannot respond to reviews for this business." };
+    }
+  } else if (!isBusinessOwner(user, review.business)) {
+    return {
+      error: "Only the claimed business owner can respond to this review.",
+    };
   }
 
   if (review.businessResponse) {

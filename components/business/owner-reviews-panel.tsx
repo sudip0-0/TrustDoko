@@ -1,5 +1,8 @@
 import { OwnerReviewResponseForm } from "@/components/reviews/owner-review-response-form";
-import { canReplyToReview } from "@/lib/permissions/review";
+import {
+  isBusinessOwner,
+  type BusinessOwnershipFields,
+} from "@/lib/permissions/business";
 import type { SessionUser } from "@/types/auth";
 import {
   getApprovedReviewsForBusiness,
@@ -10,10 +13,7 @@ type OwnerReviewsPanelProps = {
   businessId: string;
   businessSlug: string;
   sessionUser: SessionUser;
-  business: {
-    claimedByUserId: string | null;
-    claimStatus: string;
-  };
+  business: BusinessOwnershipFields;
 };
 
 function OwnerReviewRow({
@@ -52,7 +52,7 @@ export async function OwnerReviewsPanel({
   business,
 }: OwnerReviewsPanelProps) {
   const { reviews } = await getApprovedReviewsForBusiness(businessId, 1);
-  const allowRespond = canReplyToReview(sessionUser, business);
+  const allowRespond = isBusinessOwner(sessionUser, business);
 
   if (reviews.length === 0) {
     return (
