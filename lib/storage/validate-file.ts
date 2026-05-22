@@ -1,4 +1,6 @@
 import { copy } from "@/lib/copy/messages";
+import { detectMimeFromBuffer } from "@/lib/storage/file-sniff";
+import { validateProofFilename } from "@/lib/storage/filename";
 import {
   PROOF_ALLOWED_MIME_TYPES,
   PROOF_MAX_BYTES,
@@ -9,6 +11,7 @@ export type ProofFileInput = {
   name: string;
   type: string;
   size: number;
+  buffer: Buffer;
 };
 
 export type ValidateProofFileResult =
@@ -24,10 +27,28 @@ export function validateProofFile(file: ProofFileInput): ValidateProofFileResult
     return { ok: false, error: copy.forms.proofTooLarge };
   }
 
-  const mimeType = file.type as ProofMimeType;
-  if (!PROOF_ALLOWED_MIME_TYPES.includes(mimeType)) {
+  const detectedMime = detectMimeFromBuffer(file.buffer);
+  if (!detectedMime) {
     return { ok: false, error: copy.forms.proofInvalidType };
   }
 
-  return { ok: true, mimeType };
+  if (!PROOF_ALLOWED_MIME_TYPES.includes(detectedMime)) {
+    return { ok: false, error: copy.forms.proofInvalidType };
+  }
+
+  const declaredMime = file.type as ProofMimeType;
+  if (
+    declaredMime &&
+    PROOF_ALLOWED_MIME_TYPES.includes(declaredMime) &&
+    declaredMime !== detectedMime
+  ) {
+    return { ok: false, error: copy.forms.proofMimeMismatch };
+  }
+
+  const filenameCheck = validateProofFilename(file.name, detectedMime);
+  if (!filenameCheck.ok) {
+    return { ok: false, error: filenameCheck.error };
+  }
+
+  return { ok: true, mimeType: detectedMime };
 }

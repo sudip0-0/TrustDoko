@@ -10,6 +10,7 @@ import { canDeleteReview, canEditReview } from "@/lib/permissions/review";
 import { recalculateBusinessReviewAggregates } from "@/lib/reviews/aggregates";
 import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import { isReviewRateLimited } from "@/lib/reviews/rate-limit";
+import { deleteFileAsset } from "@/lib/storage/delete-asset";
 import { processProofUploadFromFormData } from "@/lib/storage/process-proof";
 import { prisma } from "@/lib/db";
 import {
@@ -130,6 +131,7 @@ export async function submitReviewAction(
   }
 
   const reviewData = buildReviewData(parsed.data);
+  const newProofFileId = proofResult.proofFileId;
 
   try {
     await prisma.review.create({
@@ -137,12 +139,13 @@ export async function submitReviewAction(
         businessId: business.id,
         userId: user.id,
         ...reviewData,
-        ...(proofResult.proofFileId
-          ? { proofFileId: proofResult.proofFileId }
-          : {}),
+        ...(newProofFileId ? { proofFileId: newProofFileId } : {}),
       },
     });
   } catch (error) {
+    if (newProofFileId) {
+      await deleteFileAsset(newProofFileId);
+    }
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
@@ -197,6 +200,7 @@ export async function updateReviewAction(
       id: true,
       userId: true,
       businessId: true,
+      proofFileId: true,
       business: { select: { slug: true } },
     },
   });
@@ -224,16 +228,24 @@ export async function updateReviewAction(
   }
 
   const reviewData = buildReviewData(parsed.data);
+  const newProofFileId = proofResult.proofFileId;
+  const previousProofFileId = review.proofFileId;
 
   await prisma.review.update({
     where: { id: review.id },
     data: {
       ...reviewData,
-      ...(proofResult.proofFileId
-        ? { proofFileId: proofResult.proofFileId }
-        : {}),
+      ...(newProofFileId ? { proofFileId: newProofFileId } : {}),
     },
   });
+
+  if (
+    newProofFileId &&
+    previousProofFileId &&
+    previousProofFileId !== newProofFileId
+  ) {
+    await deleteFileAsset(previousProofFileId);
+  }
 
   await recalculateBusinessReviewAggregates(review.businessId);
   await recalculateTrustScore(review.businessId);
@@ -270,6 +282,7 @@ export async function deleteReviewAction(
       userId: true,
       businessId: true,
       status: true,
+      proofFileId: true,
       business: { select: { slug: true } },
     },
   });
@@ -282,7 +295,13 @@ export async function deleteReviewAction(
     return { error: "You can only delete your own reviews." };
   }
 
+  const proofToDelete = review.proofFileId;
+
   await prisma.review.delete({ where: { id: review.id } });
+
+  if (proofToDelete) {
+    await deleteFileAsset(proofToDelete);
+  }
 
   if (review.status === ReviewStatus.APPROVED) {
     await recalculateBusinessReviewAggregates(review.businessId);

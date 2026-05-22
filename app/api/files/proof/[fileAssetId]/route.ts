@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import { getSessionUser } from "@/lib/auth/session";
-import { isAdmin } from "@/lib/permissions/admin";
 import { canAccessProofAssetById } from "@/lib/storage/access-proof";
 import { isStorageConfigured } from "@/lib/storage/config";
 import { prisma } from "@/lib/db";
@@ -13,8 +12,8 @@ type RouteContext = {
 
 export async function GET(_request: Request, context: RouteContext) {
   const user = await getSessionUser();
-  if (!user || !isAdmin(user)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   if (!isStorageConfigured()) {

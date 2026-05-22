@@ -4,7 +4,8 @@ import { copy } from "@/lib/copy/messages";
 import { prisma } from "@/lib/db";
 import { getCloudinary } from "@/lib/storage/cloudinary";
 import { isStorageConfigured } from "@/lib/storage/config";
-import { proofFolderForPurpose } from "@/lib/storage/constants";
+import { proofFolderForPurpose, type ProofMimeType } from "@/lib/storage/constants";
+import { deleteFileAsset } from "@/lib/storage/delete-asset";
 import { validateProofFile } from "@/lib/storage/validate-file";
 
 export type UploadProofFileInput = {
@@ -18,6 +19,29 @@ export type UploadProofFileResult =
   | { ok: true; fileAssetId: string }
   | { ok: false; error: string };
 
+function resourceTypeForMime(mimeType: ProofMimeType): "image" | "raw" {
+  return mimeType === "application/pdf" ? "raw" : "image";
+}
+
+function privateAssetUrl(storageKey: string): string {
+  return `private://${storageKey}`;
+}
+
+async function destroyCloudinaryAsset(
+  publicId: string,
+  mimeType: ProofMimeType,
+): Promise<void> {
+  try {
+    const cloudinary = getCloudinary();
+    await cloudinary.uploader.destroy(publicId, {
+      type: "private",
+      resource_type: resourceTypeForMime(mimeType),
+    });
+  } catch {
+    /* best effort */
+  }
+}
+
 export async function uploadProofFile(
   input: UploadProofFileInput,
 ): Promise<UploadProofFileResult> {
@@ -25,31 +49,36 @@ export async function uploadProofFile(
     return { ok: false, error: copy.forms.proofStorageUnavailable };
   }
 
+  const buffer = Buffer.from(await input.file.arrayBuffer());
+
   const validation = validateProofFile({
     name: input.file.name,
     type: input.file.type,
     size: input.file.size,
+    buffer,
   });
 
   if (!validation.ok) {
     return { ok: false, error: validation.error };
   }
 
-  const buffer = Buffer.from(await input.file.arrayBuffer());
   const cloudinary = getCloudinary();
   const folder = proofFolderForPurpose(input.purpose);
+  const resourceType = resourceTypeForMime(validation.mimeType);
+
+  let uploadedPublicId: string | null = null;
+  let fileAssetId: string | null = null;
 
   try {
     const result = await new Promise<{
       public_id: string;
-      secure_url: string;
       bytes: number;
     }>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder,
           type: "private",
-          resource_type: "auto",
+          resource_type: resourceType,
         },
         (error, uploadResult) => {
           if (error || !uploadResult) {
@@ -58,7 +87,6 @@ export async function uploadProofFile(
           }
           resolve({
             public_id: uploadResult.public_id,
-            secure_url: uploadResult.secure_url,
             bytes: uploadResult.bytes,
           });
         },
@@ -66,11 +94,13 @@ export async function uploadProofFile(
       uploadStream.end(buffer);
     });
 
+    uploadedPublicId = result.public_id;
+
     const fileAsset = await prisma.fileAsset.create({
       data: {
         ownerUserId: input.ownerUserId,
         businessId: input.businessId ?? null,
-        url: result.secure_url,
+        url: privateAssetUrl(result.public_id),
         storageKey: result.public_id,
         mimeType: validation.mimeType,
         size: result.bytes,
@@ -80,8 +110,14 @@ export async function uploadProofFile(
       select: { id: true },
     });
 
+    fileAssetId = fileAsset.id;
     return { ok: true, fileAssetId: fileAsset.id };
   } catch {
+    if (fileAssetId) {
+      await deleteFileAsset(fileAssetId);
+    } else if (uploadedPublicId) {
+      await destroyCloudinaryAsset(uploadedPublicId, validation.mimeType);
+    }
     return { ok: false, error: copy.forms.proofUploadFailed };
   }
 }

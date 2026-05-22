@@ -251,6 +251,42 @@ Related files:
 
 ---
 
+### KI-0020: Business verification and image uploads not implemented
+
+Status: OPEN  
+Severity: MEDIUM
+
+Description:
+`FileAsset` supports `BUSINESS_DOCUMENT` and `BUSINESS_IMAGE`, but claim/verification/profile flows still show “coming soon” and have no server upload handlers.
+
+Impact:
+Owners cannot upload verification documents or gallery images yet; schema is ahead of UI.
+
+Recommended action:
+Implement dedicated upload actions with stricter ownership checks when product requires it (post-M8).
+
+Related files:
+- `components/claims/claim-form.tsx`
+- `prisma/schema.prisma` (`FileAsset`)
+
+---
+
+### KI-0021: No image dimension limits on proof uploads
+
+Status: ACCEPTED_RISK  
+Severity: LOW
+
+Description:
+Proof uploads validate MIME (magic bytes), extension, and 5 MB size but do not inspect image width/height.
+
+Impact:
+Extremely large pixel dimensions could stress image processors; mitigated by size cap and private storage.
+
+Recommended action:
+Add dimension checks if abuse appears.
+
+---
+
 ### KI-0019: Login rate limit is in-memory (single instance)
 
 Status: ACCEPTED_RISK  

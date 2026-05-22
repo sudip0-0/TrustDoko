@@ -10,7 +10,7 @@ Agents must update this file after every meaningful coding session.
 
 **Milestone 9 (quality and launch readiness) — complete.**
 
-Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits, security review documented, KI-0005 resolved. Next: post-MVP enhancements (search, owner proof viewer, production rate limiting).
+Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits, security review documented, KI-0005 resolved. **File upload security hardening** (magic-byte validation, extension blocklist, upload rate limits, orphan cleanup, owner proof route). Next: post-MVP enhancements (search, business document upload, production rate limiting).
 
 ---
 
@@ -1337,6 +1337,24 @@ npm run typecheck
 npm test
 npm run build
 ```
+
+---
+
+## File upload security hardening (2026-05-21)
+
+Senior review of Cloudinary proof pipeline (reviews + complaints). Fixes:
+
+| Area | Change |
+|------|--------|
+| Validation | Magic-byte sniffing; extension allow/block lists; path traversal filenames rejected; MIME spoofing rejected |
+| Storage | Explicit `image`/`raw` resource types (not `auto`); `private://` URLs in DB (no leaked `secure_url`) |
+| Abuse | 15 uploads/user/hour; single file per form; rollback on failed entity create |
+| Access | `canAccessProofAssetById` requires entity link; `/api/files/proof/[id]` for owners; admin route hardened |
+| Cleanup | Replace/delete review proof removes old Cloudinary assets |
+
+Tests: `lib/storage/__tests__/*` (sniff, filename, form-data, access-proof, rate-limit, validate-file).
+
+Residual: KI-0020 (business docs/images not built), KI-0021 (no dimension cap).
 
 ---
 

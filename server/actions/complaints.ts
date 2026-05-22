@@ -9,6 +9,7 @@ import { isComplaintRateLimited } from "@/lib/complaints/rate-limit";
 import { getComplaintSeverity } from "@/lib/complaints/severity";
 import { canTransitionComplaintStatus } from "@/lib/complaints/status-transitions";
 import { getSessionUser } from "@/lib/auth/session";
+import { deleteFileAsset } from "@/lib/storage/delete-asset";
 import { processProofUploadFromFormData } from "@/lib/storage/process-proof";
 import { prisma } from "@/lib/db";
 import { determineInitialComplaintStatus } from "@/lib/moderation/complaint-status";
@@ -120,24 +121,32 @@ export async function submitComplaintAction(
     return { error: proofResult.error };
   }
 
-  const complaint = await prisma.complaint.create({
-    data: {
-      businessId: business.id,
-      userId: user.id,
-      category: parsed.data.category,
-      summary,
-      description: parsed.data.description,
-      experienceDate: parseExperienceDate(parsed.data.experienceDate),
-      amountRange: parsed.data.amountRange ?? null,
-      allowAdminContact: parsed.data.allowAdminContact ?? false,
-      status,
-      severity,
-      ...(proofResult.proofFileId
-        ? { proofFileId: proofResult.proofFileId }
-        : {}),
-    },
-    select: { id: true },
-  });
+  const newProofFileId = proofResult.proofFileId;
+
+  let complaint: { id: string };
+  try {
+    complaint = await prisma.complaint.create({
+      data: {
+        businessId: business.id,
+        userId: user.id,
+        category: parsed.data.category,
+        summary,
+        description: parsed.data.description,
+        experienceDate: parseExperienceDate(parsed.data.experienceDate),
+        amountRange: parsed.data.amountRange ?? null,
+        allowAdminContact: parsed.data.allowAdminContact ?? false,
+        status,
+        severity,
+        ...(newProofFileId ? { proofFileId: newProofFileId } : {}),
+      },
+      select: { id: true },
+    });
+  } catch (error) {
+    if (newProofFileId) {
+      await deleteFileAsset(newProofFileId);
+    }
+    throw error;
+  }
 
   await recalculateBusinessComplaintCount(business.id);
   await recalculateTrustScore(business.id);

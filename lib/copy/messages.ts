@@ -42,6 +42,13 @@ export const copy = {
     proofStorageUnavailable:
       "File uploads are not available right now. You can still submit your report without proof.",
     proofHasFile: "Proof file attached (moderators only)",
+    proofInvalidFilename:
+      "That filename is not allowed. Use a short name ending in .jpg, .png, .webp, or .pdf.",
+    proofMimeMismatch:
+      "The file content does not match its type. Upload a genuine JPEG, PNG, WebP, or PDF.",
+    proofMultipleFiles: "Upload one file at a time.",
+    proofRateLimited:
+      "You have uploaded too many files recently. Please wait before trying again.",
   },
   empty: {
     businesses:
