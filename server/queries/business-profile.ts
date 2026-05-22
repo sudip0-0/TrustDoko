@@ -3,15 +3,6 @@ import { cache } from "react";
 
 import { prisma } from "@/lib/db";
 
-export type BusinessProfileReview = {
-  id: string;
-  rating: number;
-  title: string | null;
-  body: string;
-  createdAt: Date;
-  authorName: string | null;
-};
-
 export type BusinessProfileData = {
   id: string;
   name: string;
@@ -34,7 +25,6 @@ export type BusinessProfileData = {
   reviewCount: number;
   complaintCount: number;
   category: { name: string; slug: string } | null;
-  reviews: BusinessProfileReview[];
   complaintSummary: {
     total: number;
     unresolved: number;
@@ -49,19 +39,6 @@ async function fetchBusinessProfile(
     where: { slug },
     include: {
       category: { select: { name: true, slug: true } },
-      reviews: {
-        where: { status: ReviewStatus.APPROVED },
-        orderBy: { createdAt: "desc" },
-        take: 20,
-        select: {
-          id: true,
-          rating: true,
-          title: true,
-          body: true,
-          createdAt: true,
-          user: { select: { name: true } },
-        },
-      },
     },
   });
 
@@ -115,14 +92,6 @@ async function fetchBusinessProfile(
     reviewCount: business.reviewCount,
     complaintCount: business.complaintCount,
     category: business.category,
-    reviews: business.reviews.map((review) => ({
-      id: review.id,
-      rating: review.rating,
-      title: review.title,
-      body: review.body,
-      createdAt: review.createdAt,
-      authorName: review.user.name,
-    })),
     complaintSummary: {
       total: business.complaintCount,
       unresolved,

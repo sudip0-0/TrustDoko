@@ -14,13 +14,18 @@ type LoginPageProps = {
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+  const callbackUrl =
+    typeof params.callbackUrl === "string" &&
+    params.callbackUrl.startsWith("/") &&
+    !params.callbackUrl.startsWith("//")
+      ? params.callbackUrl
+      : undefined;
+
   const session = await auth();
   if (session?.user) {
-    redirect("/dashboard/user");
+    redirect(callbackUrl ?? "/dashboard/user");
   }
-
-  const params = await searchParams;
-  const callbackUrl = params.callbackUrl;
 
   return (
     <div className="mx-auto w-full max-w-md px-4 py-16 sm:px-6">

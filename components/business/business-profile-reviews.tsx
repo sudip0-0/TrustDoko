@@ -1,44 +1,53 @@
-import type { BusinessProfileData } from "@/server/queries/business-profile";
+import { ReviewCard } from "@/components/reviews/review-card";
+import { ReviewListPagination } from "@/components/reviews/review-list-pagination";
+import type { ReviewListItem } from "@/server/queries/reviews";
 
 type BusinessProfileReviewsProps = {
-  business: BusinessProfileData;
+  businessSlug: string;
+  reviews: ReviewListItem[];
+  reviewPage: number;
+  reviewTotalPages: number;
+  reviewTotal: number;
+  viewerUserId?: string | null;
+  isLoggedIn: boolean;
 };
 
-function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("en-NP", {
-    dateStyle: "medium",
-  }).format(date);
-}
-
-export function BusinessProfileReviews({ business }: BusinessProfileReviewsProps) {
+export function BusinessProfileReviews({
+  businessSlug,
+  reviews,
+  reviewPage,
+  reviewTotalPages,
+  reviewTotal,
+  viewerUserId,
+  isLoggedIn,
+}: BusinessProfileReviewsProps) {
   return (
-    <section className="rounded-xl border border-border bg-card p-6">
+    <section id="reviews" className="scroll-mt-24 rounded-xl border border-border bg-card p-6">
       <h2 className="text-xl font-semibold">Reviews</h2>
       <p className="text-muted mt-1 text-sm">
         Only approved reviews are shown publicly.
       </p>
 
-      {business.reviews.length === 0 ? (
+      <div className="mt-4">
+        <ReviewListPagination
+          businessSlug={businessSlug}
+          page={reviewPage}
+          totalPages={reviewTotalPages}
+          total={reviewTotal}
+        />
+      </div>
+
+      {reviews.length === 0 ? (
         <p className="text-muted mt-6 text-sm">No approved reviews yet.</p>
       ) : (
         <ul className="mt-6 list-none space-y-4 p-0">
-          {business.reviews.map((review) => (
-            <li
+          {reviews.map((review) => (
+            <ReviewCard
               key={review.id}
-              className="border-b border-border pb-4 last:border-0 last:pb-0"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-foreground font-medium">
-                  {review.rating} ★
-                  {review.title ? ` · ${review.title}` : ""}
-                </p>
-                <p className="text-muted text-xs">{formatDate(review.createdAt)}</p>
-              </div>
-              {review.authorName ? (
-                <p className="text-muted mt-1 text-xs">by {review.authorName}</p>
-              ) : null}
-              <p className="text-muted mt-2 text-sm leading-relaxed">{review.body}</p>
-            </li>
+              review={review}
+              isLoggedIn={isLoggedIn}
+              isOwner={viewerUserId === review.userId}
+            />
           ))}
         </ul>
       )}

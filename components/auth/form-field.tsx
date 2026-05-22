@@ -5,6 +5,8 @@ type FormFieldProps = {
   type?: string;
   autoComplete?: string;
   required?: boolean;
+  defaultValue?: string;
+  placeholder?: string;
   errors?: string[];
 };
 
@@ -15,6 +17,8 @@ export function FormField({
   type = "text",
   autoComplete,
   required = true,
+  defaultValue,
+  placeholder,
   errors,
 }: FormFieldProps) {
   return (
@@ -28,6 +32,8 @@ export function FormField({
         type={type}
         autoComplete={autoComplete}
         required={required}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
         className="border-border bg-background text-foreground focus:ring-primary/30 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2"
       />
       {errors?.[0] ? (

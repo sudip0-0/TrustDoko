@@ -94,7 +94,9 @@ export async function loginAction(
 
   const callbackUrl = formData.get("callbackUrl");
   const redirectTo =
-    typeof callbackUrl === "string" && callbackUrl.startsWith("/dashboard")
+    typeof callbackUrl === "string" &&
+    callbackUrl.startsWith("/") &&
+    !callbackUrl.startsWith("//")
       ? callbackUrl
       : "/dashboard/user";
 

@@ -219,6 +219,8 @@ model Review {
   body           String
   experienceType String?
   experienceDate DateTime?
+  wouldRecommend Boolean      @default(true)
+  tags           String[]     @default([])
   status         ReviewStatus @default(PENDING)
   proofFileId    String?      @unique
   helpfulCount   Int          @default(0)

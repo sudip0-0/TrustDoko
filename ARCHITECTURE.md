@@ -519,25 +519,31 @@ createdAt
 
 ## Review workflow
 
+MVP implementation (`lib/moderation/review-status.ts`):
+
 ```txt
-User submits review
+User submits review (logged in, one per business)
         |
         v
-Validate input
+Validate input (Zod) + rate limit (10 min between new reviews)
         |
         v
-Detect risky language and spam signals
+Scan title + body for risky phrases (scam, fraud, fake, harassment, abuse)
         |
-        +-- safe review --> APPROVED or PENDING depending on policy
+        +-- match --> status PENDING (hidden from public list; author sees banner)
         |
-        +-- risky review --> UNDER_REVIEW
-        |
-        v
-Admin moderation if needed
+        +-- no match --> status APPROVED (public immediately)
         |
         v
-Update business aggregate rating and trust score
+Recalculate Business.reviewCount and Business.averageRating (approved only)
+        |
+        v
+Trust score formula unchanged until TD-0501
 ```
+
+Helpful votes: `ReviewVote` (one per user per review) increments `Review.helpfulCount`.
+
+Proof upload: UI placeholder only until TD-0801.
 
 Risky reviews include serious accusations or suspicious patterns.
 

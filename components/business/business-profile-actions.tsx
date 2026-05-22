@@ -12,7 +12,7 @@ export function BusinessProfileActions({ business }: BusinessProfileActionsProps
   return (
     <section className="flex flex-col gap-3 rounded-xl border border-border bg-card p-6 sm:flex-row sm:flex-wrap">
       <Link
-        href={`/write-review/${business.slug}`}
+        href={`/businesses/${business.slug}#write-review`}
         className="bg-primary text-primary-foreground inline-flex justify-center rounded-lg px-5 py-2.5 text-sm font-semibold no-underline hover:opacity-90"
       >
         Write a review

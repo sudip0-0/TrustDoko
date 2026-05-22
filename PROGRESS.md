@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 2 (public discovery) — complete.**
+**Milestone 3 (reviews) — complete.**
 
-Business directory QA passed (listing, search, filters, sort, profiles). Next: reviews (Milestone 3 / TD-0301).
+Review submission, moderation, display, edit/delete, helpful votes, and aggregate rating updates are live. Next: complaints (Milestone 4 / TD-0401).
 
 ---
 
@@ -36,7 +36,8 @@ Business directory QA passed (listing, search, filters, sort, profiles). Next: r
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **40 passing** |
+| Unit tests (Vitest) | **47 passing** |
+| Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 2 QA (directory) | **Passed** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
@@ -594,6 +595,64 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 #### Next suggested task
 
 - **TD-0301:** Review submission flow.
+
+---
+
+### 2026-05-22 - Milestone 3: Review system (TD-0301–0304)
+
+#### Completed
+
+- Schema: `wouldRecommend`, `tags[]` on `Review` (migration `review_would_recommend_tags`).
+- `lib/validations/review.ts`, `lib/moderation/review-status.ts`, `lib/reviews/aggregates.ts`, `lib/reviews/rate-limit.ts`.
+- Server actions: submit, update, delete, helpful vote (`server/actions/reviews.ts`).
+- Review form on business profile (`#write-review`); sign-in CTA for guests.
+- Approved reviews paginated (`?reviewPage=`); pending banner for author.
+- Edit/delete own review; one review per user per business.
+- Auto-approve normal reviews; `PENDING` for scam/fraud/fake/harassment/abuse keywords.
+- `reviewCount` / `averageRating` recalculated on approve/update/delete.
+- Helpful votes via `ReviewVote` + denormalized `helpfulCount`.
+- `/write-review/[slug]` redirects to profile anchor.
+- Dashboard lists user reviews with edit links.
+- Login accepts any safe `callbackUrl` (e.g. return to profile after review).
+
+#### Validation
+
+- `npm test`: pass (47)
+- `npm run typecheck`: pass
+- `npm run lint`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0401:** Complaint submission flow.
+
+---
+
+### 2026-05-22 - App smoke test + dependency fix
+
+#### Issue found
+
+`package.json` had been corrupted: `next` was `^9.3.3` (invalid with Next Auth 5 / App Router) and a mistaken `openssl` npm package was added. Dev server failed with `Unknown option: --turbopack`; typecheck failed on missing `next` types.
+
+#### Fix
+
+- Restored `next` to `^15.1.0`, removed `openssl` dependency, ran clean `npm install`.
+- Added npm `overrides` so nested deps cannot pin Next 9.
+
+#### Smoke test (dev on http://localhost:3000)
+
+| Route | Status |
+|-------|--------|
+| `/`, `/businesses`, search, profile, invalid slug | 200 |
+| `/login`, `/register`, `/about` | 200 |
+| `/api/auth/session` | 200 (`null` when logged out) |
+| Server logs | No `[auth][error]` JWT errors |
+
+#### Validation
+
+- `npm run typecheck`: pass
+- `npm test`: pass (40)
+- `npm run build`: pass (edge/jose warnings in middleware only)
 
 ---
 
