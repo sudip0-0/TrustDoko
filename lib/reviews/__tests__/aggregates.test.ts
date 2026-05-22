@@ -11,4 +11,8 @@ describe("computeAverageRating", () => {
     expect(computeAverageRating([4, 5, 4])).toBe(4.3);
     expect(computeAverageRating([5, 4])).toBe(4.5);
   });
+
+  it("handles a single approved rating", () => {
+    expect(computeAverageRating([5])).toBe(5);
+  });
 });

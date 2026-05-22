@@ -36,8 +36,9 @@ Review submission, moderation, display, edit/delete, helpful votes, and aggregat
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **47 passing** |
+| Unit tests (Vitest) | **59 passing** |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
+| Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 2 QA (directory) | **Passed** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
@@ -621,6 +622,49 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 - `npm run typecheck`: pass
 - `npm run lint`: pass
 - `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0401:** Complaint submission flow.
+
+---
+
+### 2026-05-22 - Milestone 3 quality check (review system)
+
+#### Checklist
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | Logged-in users can submit reviews | **Pass** — `submitReviewAction` + profile form |
+| 2 | Logged-out users prompted to sign in | **Pass** — `ReviewSignInCta` + login `callbackUrl` |
+| 3 | Review validation works | **Pass** — Zod in `lib/validations/review.ts` (7 tests) |
+| 4 | Approved reviews display publicly | **Pass** — `getApprovedReviewsForBusiness` filters `APPROVED` |
+| 5 | Pending reviews hidden publicly | **Pass** — excluded from public query; author sees banner |
+| 6 | Users can edit own reviews | **Pass** — `updateReviewAction` + edit form |
+| 7 | Users cannot edit others' reviews | **Pass** — `canEditReview` enforced (10 permission tests) |
+| 8 | Users can delete own reviews | **Pass** — `deleteReviewAction` |
+| 9 | Helpful vote works | **Pass** — `voteReviewHelpfulAction`; no self-votes |
+| 10 | Duplicate review prevention | **Pass** — `@@unique([businessId, userId])` + submit→update + P2002 handling |
+| 11 | Average rating updates | **Pass** — `recalculateBusinessReviewAggregates` (approved only) |
+| 12 | Review count updates | **Pass** — same aggregate helper |
+| 13 | Risky keywords → PENDING | **Pass** — `lib/moderation/review-status.ts` (5 tests) |
+| 14 | PROGRESS.md updated | **Pass** (this entry) |
+
+#### Fixes during QA
+
+- Empty `experienceType` from form no longer fails validation.
+- Duplicate create race returns friendly error (Prisma `P2002`).
+- Users cannot mark their own review helpful.
+- Added tests: `lib/validations/__tests__/review.test.ts`, `lib/reviews/__tests__/rate-limit.test.ts`, `server/queries/__tests__/reviews.test.ts`.
+
+#### Commands
+
+```bash
+npm run lint          # pass
+npm run typecheck     # pass
+npm test              # pass (59)
+npm run build         # pass
+```
 
 #### Next suggested task
 

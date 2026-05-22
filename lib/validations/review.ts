@@ -41,7 +41,11 @@ const reviewFieldsSchema = z.object({
     .trim()
     .min(20, "Review must be at least 20 characters")
     .max(5000, "Review is too long"),
-  experienceType: z.enum(experienceTypes).optional(),
+  experienceType: z.preprocess(
+    (value) =>
+      value === "" || value === null || value === undefined ? undefined : value,
+    z.enum(experienceTypes).optional(),
+  ),
   experienceDate: z
     .string()
     .optional()

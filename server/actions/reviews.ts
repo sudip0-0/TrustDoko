@@ -1,6 +1,6 @@
 "use server";
 
-import { ReviewStatus } from "@prisma/client";
+import { Prisma, ReviewStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { getSessionUser } from "@/lib/auth/session";
@@ -113,13 +113,26 @@ export async function submitReviewAction(
 
   const reviewData = buildReviewData(parsed.data);
 
-  await prisma.review.create({
-    data: {
-      businessId: business.id,
-      userId: user.id,
-      ...reviewData,
-    },
-  });
+  try {
+    await prisma.review.create({
+      data: {
+        businessId: business.id,
+        userId: user.id,
+        ...reviewData,
+      },
+    });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return {
+        error:
+          "You already reviewed this business. Edit your existing review below.",
+      };
+    }
+    throw error;
+  }
 
   if (reviewData.status === ReviewStatus.APPROVED) {
     await recalculateBusinessReviewAggregates(business.id);
@@ -266,6 +279,7 @@ export async function voteReviewHelpfulAction(
     where: { id: reviewId, status: ReviewStatus.APPROVED },
     select: {
       id: true,
+      userId: true,
       business: { select: { slug: true } },
       votes: { where: { userId: user.id }, select: { id: true } },
     },
@@ -273,6 +287,10 @@ export async function voteReviewHelpfulAction(
 
   if (!review) {
     return { error: "Review not found." };
+  }
+
+  if (review.userId === user.id) {
+    return { error: "You cannot mark your own review as helpful." };
   }
 
   if (review.votes.length > 0) {
