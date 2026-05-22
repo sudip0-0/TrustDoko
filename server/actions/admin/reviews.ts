@@ -126,6 +126,7 @@ export async function moderateReviewAction(
   }
 
   revalidatePath(`/businesses/${review.business.slug}`);
+  revalidatePath("/businesses");
   revalidatePath("/dashboard/admin");
   revalidatePath("/dashboard/admin/reviews");
 

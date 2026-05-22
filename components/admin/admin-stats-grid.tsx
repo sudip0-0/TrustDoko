@@ -14,7 +14,7 @@ export function AdminStatsGrid({ stats }: AdminStatsGridProps) {
       href: "/dashboard/admin/reviews",
     },
     {
-      label: "Pending complaints",
+      label: "Open complaints",
       value: stats.pendingComplaints,
       href: "/dashboard/admin/complaints",
     },

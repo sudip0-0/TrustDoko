@@ -2,6 +2,8 @@ import { ComplaintStatus } from "@prisma/client";
 
 import { prisma } from "@/lib/db";
 
+import { requireAdminQuery } from "./guard";
+
 export type AdminComplaintRow = {
   id: string;
   summary: string;
@@ -25,6 +27,8 @@ const OPEN_STATUSES: ComplaintStatus[] = [
 export async function getComplaintsForModeration(
   statusFilter?: ComplaintStatus | "ALL",
 ): Promise<AdminComplaintRow[]> {
+  await requireAdminQuery();
+
   const where =
     statusFilter && statusFilter !== "ALL"
       ? { status: statusFilter }

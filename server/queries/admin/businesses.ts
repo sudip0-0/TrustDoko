@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
 
+import { requireAdminQuery } from "./guard";
+
 export type AdminBusinessRow = {
   id: string;
   name: string;
@@ -14,6 +16,8 @@ export type AdminBusinessRow = {
 };
 
 export async function getBusinessesForAdmin(): Promise<AdminBusinessRow[]> {
+  await requireAdminQuery();
+
   const businesses = await prisma.business.findMany({
     orderBy: { name: "asc" },
     take: 100,

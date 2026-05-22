@@ -36,9 +36,10 @@ Admin dashboard with review, complaint, claim, business, and user queues; server
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **131 passing** |
+| Unit tests (Vitest) | **140 passing** |
 | Milestone 5 QA (trust score) | **Passed** (2026-05-21) |
 | Milestone 7 (admin moderation) | **DONE** (2026-05-21) |
+| Milestone 7 QA (admin) | **Passed** (2026-05-21) |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 4 (complaints) | **DONE** (2026-05-22) |
@@ -655,6 +656,48 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 #### Next suggested task
 
 - **TD-0801:** Secure proof file viewing for admins.
+
+---
+
+### 2026-05-21 - Milestone 7 QA: Admin and moderation quality check
+
+#### QA checklist (11 items)
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | Admin dashboard accessible only to admins | Pass — middleware + `requireAdminPage` layout + `requireAdminQuery` on all admin queries |
+| 2 | Normal users cannot access admin pages | Pass — `USER` role redirected to `/dashboard/user` (middleware + layout) |
+| 3 | Business owners cannot access admin pages | Pass — `BUSINESS` role same redirect; unit tests in `admin-access-qa.test.ts` |
+| 4 | Review moderation actions work | Pass — approve/reject/flag/under review/delete + transitions + audit |
+| 5 | Complaint moderation actions work | Pass — status updates + admin note + `moderateComplaintAction` |
+| 6 | Claim approval/rejection works | Pass — `approveBusinessClaim` / `rejectBusinessClaim` + audit + trust recalc |
+| 7 | Audit trail records admin actions | Pass — `recordAuditLog` + claim audit rows; overview lists recent logs |
+| 8 | Dashboard stats are accurate | Pass — pending reviews = PENDING+UNDER_REVIEW; open complaints aligned with queue; claims = PENDING |
+| 9 | Moderation updates public profile data | Pass — `revalidatePath` on business slug + listings; only APPROVED reviews on public profile |
+| 10 | Trust score recalculates after moderation | Pass — review/complaint/claim actions call `recalculateTrustScore` |
+| 11 | PROGRESS.md updated | Pass — this section |
+
+#### QA fixes (session)
+
+- `requireAdminQuery()` on all admin data loaders (defense in depth beyond layout).
+- Stats: pending reviews exclude FLAGGED (separate card); open complaints match moderation queue statuses.
+- Admin actions revalidate `/businesses` listing after review/complaint changes.
+
+#### Manual role access smoke
+
+| Role | `/dashboard/admin` | Expected |
+|------|-------------------|----------|
+| Unauthenticated | Redirect | `/login?callbackUrl=...` |
+| `USER` | Redirect | `/dashboard/user` |
+| `BUSINESS` | Redirect | `/dashboard/user` |
+| `ADMIN` | 200 | Admin overview with stats |
+
+#### Validation (QA)
+
+- `npm run lint`: pass
+- `npm run typecheck`: pass
+- `npm test`: pass
+- `npm run build`: pass
 
 ---
 

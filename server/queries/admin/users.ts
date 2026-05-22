@@ -2,6 +2,8 @@ import type { UserRole, UserTrustLevel } from "@prisma/client";
 
 import { prisma } from "@/lib/db";
 
+import { requireAdminQuery } from "./guard";
+
 export type AdminUserRow = {
   id: string;
   name: string | null;
@@ -14,6 +16,8 @@ export type AdminUserRow = {
 };
 
 export async function getUsersForAdmin(): Promise<AdminUserRow[]> {
+  await requireAdminQuery();
+
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
     take: 100,

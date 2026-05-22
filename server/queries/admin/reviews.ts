@@ -3,6 +3,8 @@ import { ReviewStatus } from "@prisma/client";
 import { MODERATION_QUEUE_STATUSES } from "@/lib/moderation/review-transitions";
 import { prisma } from "@/lib/db";
 
+import { requireAdminQuery } from "./guard";
+
 export type AdminReviewRow = {
   id: string;
   rating: number;
@@ -20,6 +22,8 @@ export type AdminReviewRow = {
 export async function getReviewsForModeration(
   statusFilter?: ReviewStatus | "ALL",
 ): Promise<AdminReviewRow[]> {
+  await requireAdminQuery();
+
   const where =
     statusFilter && statusFilter !== "ALL"
       ? { status: statusFilter }

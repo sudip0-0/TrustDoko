@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
 
+import { requireAdminQuery } from "./guard";
+
 export type AdminAuditRow = {
   id: string;
   action: string;
@@ -11,6 +13,8 @@ export type AdminAuditRow = {
 };
 
 export async function getRecentAuditLogs(limit = 30): Promise<AdminAuditRow[]> {
+  await requireAdminQuery();
+
   const logs = await prisma.auditLog.findMany({
     orderBy: { createdAt: "desc" },
     take: limit,

@@ -281,6 +281,8 @@ export async function updateComplaintStatusAction(
 
   revalidatePath(`/businesses/${complaint.business.slug}`);
   revalidatePath("/dashboard/user");
+  revalidatePath("/dashboard/admin");
+  revalidatePath("/dashboard/admin/complaints");
 
   return { success: true, message: "Complaint status updated." };
 }

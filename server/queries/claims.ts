@@ -2,6 +2,7 @@ import { BusinessClaimStatus } from "@prisma/client";
 
 import { claimMethodLabels } from "@/lib/claims/method-labels";
 import { prisma } from "@/lib/db";
+import { requireAdminQuery } from "@/server/queries/admin/guard";
 
 export type PendingClaimRow = {
   id: string;
@@ -31,6 +32,8 @@ export type UserClaimRow = {
 };
 
 export async function getPendingClaimsForAdmin(): Promise<PendingClaimRow[]> {
+  await requireAdminQuery();
+
   const claims = await prisma.businessClaim.findMany({
     where: { status: BusinessClaimStatus.PENDING },
     orderBy: { createdAt: "asc" },

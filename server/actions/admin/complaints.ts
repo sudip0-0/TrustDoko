@@ -86,6 +86,7 @@ export async function moderateComplaintAction(
   });
 
   revalidatePath(`/businesses/${complaint.business.slug}`);
+  revalidatePath("/businesses");
   revalidatePath("/dashboard/admin");
   revalidatePath("/dashboard/admin/complaints");
 
