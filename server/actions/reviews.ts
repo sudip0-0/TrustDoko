@@ -5,12 +5,13 @@ import { revalidatePath } from "next/cache";
 
 import { getSessionUser } from "@/lib/auth/session";
 import { determineReviewStatus } from "@/lib/moderation/review-status";
-import { canDeleteReview, canEditReview } from "@/lib/permissions/review";
+import { canDeleteReview, canEditReview, canReplyToReview } from "@/lib/permissions/review";
 import { recalculateBusinessReviewAggregates } from "@/lib/reviews/aggregates";
 import { isReviewRateLimited } from "@/lib/reviews/rate-limit";
 import { prisma } from "@/lib/db";
 import {
   parseReviewFormData,
+  respondToReviewSchema,
   submitReviewSchema,
   updateReviewSchema,
 } from "@/lib/validations/review";
@@ -310,4 +311,77 @@ export async function voteReviewHelpfulAction(
   revalidatePath(`/businesses/${review.business.slug}`);
 
   return { success: true, message: "Marked as helpful." };
+}
+
+export async function respondToReviewAction(
+  _prevState: ReviewActionState,
+  formData: FormData,
+): Promise<ReviewActionState> {
+  const user = await getSessionUser();
+  if (!user) {
+    return { error: "You must sign in to respond." };
+  }
+
+  const parsed = respondToReviewSchema.safeParse({
+    reviewId: formData.get("reviewId"),
+    body: formData.get("body"),
+  });
+
+  if (!parsed.success) {
+    return {
+      fieldErrors: formatZodErrors(parsed.error.flatten().fieldErrors),
+    };
+  }
+
+  const review = await prisma.review.findUnique({
+    where: { id: parsed.data.reviewId, status: ReviewStatus.APPROVED },
+    select: {
+      id: true,
+      businessId: true,
+      business: {
+        select: {
+          slug: true,
+          claimedByUserId: true,
+          claimStatus: true,
+        },
+      },
+      businessResponse: { select: { id: true } },
+    },
+  });
+
+  if (!review) {
+    return { error: "Review not found." };
+  }
+
+  if (!canReplyToReview(user, review.business)) {
+    return { error: "You cannot respond to reviews for this business." };
+  }
+
+  if (review.businessResponse) {
+    return { error: "A response has already been posted for this review." };
+  }
+
+  await prisma.$transaction([
+    prisma.businessResponse.create({
+      data: {
+        businessId: review.businessId,
+        authorUserId: user.id,
+        reviewId: review.id,
+        body: parsed.data.body,
+      },
+    }),
+    prisma.auditLog.create({
+      data: {
+        actorUserId: user.id,
+        action: "REVIEW_BUSINESS_RESPONDED",
+        entityType: "Review",
+        entityId: review.id,
+      },
+    }),
+  ]);
+
+  revalidatePath(`/businesses/${review.business.slug}`);
+  revalidatePath(`/dashboard/business/${review.businessId}`);
+
+  return { success: true, message: "Your response was posted." };
 }

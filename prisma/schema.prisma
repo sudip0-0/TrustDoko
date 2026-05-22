@@ -42,6 +42,7 @@ enum VerificationStatus {
   CONTACT_VERIFIED
   DOCUMENT_VERIFIED
   SOCIAL_VERIFIED
+  TRUSTED_SELLER
 }
 
 enum ReviewStatus {
@@ -283,21 +284,28 @@ model Complaint {
 }
 
 model BusinessClaim {
-  id         String              @id @default(cuid())
-  businessId String
-  userId     String
-  method     BusinessClaimMethod
-  status     BusinessClaimStatus @default(PENDING)
-  adminNote  String?
-  createdAt  DateTime            @default(now())
-  updatedAt  DateTime            @updatedAt
+  id             String              @id @default(cuid())
+  businessId     String
+  userId         String
+  ownerName      String
+  ownerEmail     String
+  ownerPhone     String?
+  method         BusinessClaimMethod
+  message        String
+  documentFileId String?             @unique
+  status         BusinessClaimStatus @default(PENDING)
+  adminNote      String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
 
-  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  business     Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentFile FileAsset? @relation("ClaimDocument", fields: [documentFileId], references: [id], onDelete: SetNull)
 
   @@index([businessId])
   @@index([userId])
   @@index([status])
+  @@index([businessId, status])
 }
 
 model BusinessVerification {
@@ -385,6 +393,7 @@ model FileAsset {
   business              Business?              @relation(fields: [businessId], references: [id], onDelete: SetNull)
   reviewProof           Review?                @relation("ReviewProof")
   complaintProof        Complaint?             @relation("ComplaintProof")
+  claimDocument         BusinessClaim?         @relation("ClaimDocument")
   businessVerifications BusinessVerification[]
 
   @@index([ownerUserId])

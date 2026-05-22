@@ -1,10 +1,12 @@
 import { TrustLabelBadge } from "@/components/business/trust-label-badge";
 import { VerificationBadge } from "@/components/business/verification-badge";
+import { VerificationLegend } from "@/components/business/verification-legend";
 import {
   formatBusinessType,
   formatClaimStatus,
   formatVerificationStatus,
 } from "@/lib/business/display";
+import { getVerificationBadgeDisplay } from "@/lib/business/verification-display";
 import { getTrustLabelFromScore } from "@/lib/trust-score";
 import type { BusinessProfileData } from "@/server/queries/business-profile";
 
@@ -23,6 +25,10 @@ function formatLocation(
 
 export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) {
   const trustLabel = getTrustLabelFromScore(business.trustScore);
+  const verificationDisplay = getVerificationBadgeDisplay(
+    business.claimStatus,
+    business.verificationStatus,
+  );
 
   return (
     <header className="rounded-xl border border-border bg-card p-6 sm:p-8">
@@ -39,7 +45,10 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
             <span className="text-muted font-normal">/100</span>
           </span>
           <TrustLabelBadge trustLabel={trustLabel} />
-          <VerificationBadge verificationStatus={business.verificationStatus} />
+          <VerificationBadge
+            claimStatus={business.claimStatus}
+            verificationStatus={business.verificationStatus}
+          />
         </div>
       </div>
 
@@ -60,7 +69,12 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
         </div>
         <div>
           <dt className="text-foreground font-medium">Verification</dt>
-          <dd>{formatVerificationStatus(business.verificationStatus)}</dd>
+          <dd>
+            {verificationDisplay.label}
+            {verificationDisplay.key !== "UNVERIFIED"
+              ? ` (${formatVerificationStatus(business.verificationStatus)})`
+              : ""}
+          </dd>
         </div>
         <div>
           <dt className="text-foreground font-medium">Profile status</dt>
@@ -127,6 +141,8 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
           ) : null}
         </div>
       )}
+
+      <VerificationLegend />
     </header>
   );
 }

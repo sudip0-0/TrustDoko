@@ -398,12 +398,23 @@ Public owner replies live on `BusinessResponse` (linked by `complaintId`).
 id
 businessId
 userId
+ownerName
+ownerEmail
+ownerPhone
 method: PHONE | EMAIL | WEBSITE | SOCIAL | DOCUMENT
+message
+documentFileId (optional; UI placeholder until TD-0801)
 status: PENDING | APPROVED | REJECTED
 adminNote
 createdAt
 updatedAt
 ```
+
+On submit: `Business.claimStatus` → `PENDING`. On approve: `CLAIMED`, `claimedByUserId` set, initial `verificationStatus` from method. On reject: business returns to `UNCLAIMED`.
+
+Owner-editable business fields (claimed owner only): description, contact, social URLs, address, city, province, businessType.
+
+Public verification badge priority: Trusted seller > Document > Social > Contact > Claimed > Unverified (`lib/business/verification-display.ts`).
 
 ### BusinessVerification
 

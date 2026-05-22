@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { getSessionUser } from "@/lib/auth/session";
 import { getDashboardComplaints } from "@/server/queries/complaints";
+import { getUserClaimRequests } from "@/server/queries/claims";
 import { getUserReviews } from "@/server/queries/reviews";
 
 export const metadata: Metadata = {
@@ -22,9 +23,13 @@ function formatStatus(status: string): string {
 
 export default async function UserDashboardPage() {
   const user = await getSessionUser();
-  const [reviews, complaints] = user
-    ? await Promise.all([getUserReviews(user.id), getDashboardComplaints(user)])
-    : [[], []];
+  const [reviews, complaints, claims] = user
+    ? await Promise.all([
+        getUserReviews(user.id),
+        getDashboardComplaints(user),
+        getUserClaimRequests(user.id),
+      ])
+    : [[], [], []];
 
   return (
     <div className="space-y-6">
@@ -60,6 +65,35 @@ export default async function UserDashboardPage() {
                 <p className="text-muted mt-1 text-sm">
                   {review.rating} ★ · {formatStatus(review.status)}
                   {review.title ? ` · ${review.title}` : ""}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-6">
+        <h2 className="text-lg font-semibold">Your claim requests</h2>
+        {claims.length === 0 ? (
+          <p className="text-muted mt-3 text-sm">
+            No business claims submitted yet.
+          </p>
+        ) : (
+          <ul className="mt-4 list-none space-y-3 p-0">
+            {claims.map((claim) => (
+              <li
+                key={claim.id}
+                className="border-b border-border pb-3 last:border-0 last:pb-0"
+              >
+                <Link
+                  href={`/businesses/${claim.businessSlug}`}
+                  className="text-foreground font-medium no-underline hover:text-primary"
+                >
+                  {claim.businessName}
+                </Link>
+                <p className="text-muted mt-1 text-sm">
+                  {claim.methodLabel} · {claim.status.toLowerCase()} ·{" "}
+                  {claim.createdAt.toLocaleDateString()}
                 </p>
               </li>
             ))}

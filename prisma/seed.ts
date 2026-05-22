@@ -1,8 +1,12 @@
 import {
+  BusinessClaimMethod,
+  BusinessClaimStatus,
+  ClaimStatus,
   ComplaintCategory,
   ComplaintSeverity,
   ComplaintStatus,
   PrismaClient,
+  VerificationStatus,
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -350,14 +354,54 @@ async function main() {
   });
 
   if (valleyMobile) {
+    await prisma.businessClaim.upsert({
+      where: {
+        id: "seed-valley-mobile-claim",
+      },
+      update: {
+        status: BusinessClaimStatus.APPROVED,
+        ownerName: "Sample Business Owner",
+        ownerEmail: "sample-owner@trustdoko.local",
+        ownerPhone: "+9779800000000",
+        method: BusinessClaimMethod.EMAIL,
+        message:
+          "I am the authorized operator of Valley Mobile Hub and can verify via business email.",
+      },
+      create: {
+        id: "seed-valley-mobile-claim",
+        businessId: valleyMobile.id,
+        userId: sampleOwner.id,
+        ownerName: "Sample Business Owner",
+        ownerEmail: "sample-owner@trustdoko.local",
+        ownerPhone: "+9779800000000",
+        method: BusinessClaimMethod.EMAIL,
+        message:
+          "I am the authorized operator of Valley Mobile Hub and can verify via business email.",
+        status: BusinessClaimStatus.APPROVED,
+      },
+    });
+
     await prisma.business.update({
       where: { id: valleyMobile.id },
       data: {
-        claimStatus: "CLAIMED",
+        claimStatus: ClaimStatus.CLAIMED,
         claimedByUserId: sampleOwner.id,
+        verificationStatus: VerificationStatus.CONTACT_VERIFIED,
       },
     });
   }
+
+  const sampleAdmin = await prisma.user.upsert({
+    where: { email: "admin@trustdoko.local" },
+    update: { name: "Sample Admin", role: "ADMIN" },
+    create: {
+      email: "admin@trustdoko.local",
+      name: "Sample Admin",
+      role: "ADMIN",
+    },
+  });
+
+  void sampleAdmin;
 
   await prisma.complaint.deleteMany({
     where: {

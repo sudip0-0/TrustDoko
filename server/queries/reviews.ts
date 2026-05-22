@@ -18,6 +18,7 @@ export type ReviewListItem = {
   authorName: string | null;
   userId: string;
   viewerHasVoted: boolean;
+  businessResponseBody: string | null;
 };
 
 export type ViewerReview = {
@@ -62,6 +63,7 @@ export async function getApprovedReviewsForBusiness(
       createdAt: true,
       userId: true,
       user: { select: { name: true } },
+      businessResponse: { select: { body: true } },
       votes: viewerUserId
         ? { where: { userId: viewerUserId }, select: { id: true } }
         : false,
@@ -85,6 +87,7 @@ export async function getApprovedReviewsForBusiness(
       viewerHasVoted: viewerUserId
         ? Array.isArray(review.votes) && review.votes.length > 0
         : false,
+      businessResponseBody: review.businessResponse?.body ?? null,
     })),
     total,
     totalPages,

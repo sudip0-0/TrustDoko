@@ -1,0 +1,85 @@
+import { BusinessClaimStatus } from "@prisma/client";
+
+import { claimMethodLabels } from "@/lib/claims/method-labels";
+import { prisma } from "@/lib/db";
+
+export type PendingClaimRow = {
+  id: string;
+  ownerName: string;
+  ownerEmail: string;
+  ownerPhone: string | null;
+  method: string;
+  methodLabel: string;
+  message: string;
+  createdAt: Date;
+  businessId: string;
+  businessName: string;
+  businessSlug: string;
+  userId: string;
+};
+
+export type UserClaimRow = {
+  id: string;
+  status: string;
+  methodLabel: string;
+  createdAt: Date;
+  businessName: string;
+  businessSlug: string;
+};
+
+export async function getPendingClaimsForAdmin(): Promise<PendingClaimRow[]> {
+  const claims = await prisma.businessClaim.findMany({
+    where: { status: BusinessClaimStatus.PENDING },
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      ownerName: true,
+      ownerEmail: true,
+      ownerPhone: true,
+      method: true,
+      message: true,
+      createdAt: true,
+      businessId: true,
+      userId: true,
+      business: { select: { name: true, slug: true } },
+    },
+  });
+
+  return claims.map((c) => ({
+    id: c.id,
+    ownerName: c.ownerName,
+    ownerEmail: c.ownerEmail,
+    ownerPhone: c.ownerPhone,
+    method: c.method,
+    methodLabel: claimMethodLabels[c.method],
+    message: c.message,
+    createdAt: c.createdAt,
+    businessId: c.businessId,
+    businessName: c.business.name,
+    businessSlug: c.business.slug,
+    userId: c.userId,
+  }));
+}
+
+export async function getUserClaimRequests(userId: string): Promise<UserClaimRow[]> {
+  const claims = await prisma.businessClaim.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      status: true,
+      method: true,
+      createdAt: true,
+      business: { select: { name: true, slug: true } },
+    },
+  });
+
+  return claims.map((c) => ({
+    id: c.id,
+    status: c.status,
+    methodLabel: claimMethodLabels[c.method],
+    createdAt: c.createdAt,
+    businessName: c.business.name,
+    businessSlug: c.business.slug,
+  }));
+}

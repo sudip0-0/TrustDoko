@@ -4,6 +4,7 @@ export function formatVerificationStatus(status: string): string {
     CONTACT_VERIFIED: "Contact verified",
     DOCUMENT_VERIFIED: "Document verified",
     SOCIAL_VERIFIED: "Social verified",
+    TRUSTED_SELLER: "Trusted seller",
   };
   return labels[status] ?? status;
 }

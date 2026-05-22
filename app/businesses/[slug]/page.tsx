@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ClaimPendingBanner } from "@/components/business/claim-pending-banner";
 import { BusinessProfileActions } from "@/components/business/business-profile-actions";
 import { BusinessProfileComplaints } from "@/components/business/business-profile-complaints";
 import { BusinessProfileHeader } from "@/components/business/business-profile-header";
@@ -15,6 +16,7 @@ import { ReviewForm } from "@/components/reviews/review-form";
 import { ReviewPendingBanner } from "@/components/reviews/review-pending-banner";
 import { ReviewSignInCta } from "@/components/reviews/review-sign-in-cta";
 import { getSessionUser } from "@/lib/auth/session";
+import { isBusinessOwner } from "@/lib/permissions/business";
 import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
 import { getBusinessProfile } from "@/server/queries/business-profile";
 import {
@@ -69,8 +71,21 @@ export default async function BusinessProfilePage({
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">
       <BusinessProfileHeader business={business} />
+      {business.claimStatus === "PENDING" ? (
+        <ClaimPendingBanner businessName={business.name} />
+      ) : null}
       <BusinessProfileStats business={business} />
-      <BusinessProfileActions business={business} />
+      <BusinessProfileActions
+        business={business}
+        viewerIsOwner={
+          sessionUser
+            ? isBusinessOwner(sessionUser, {
+                claimedByUserId: business.claimedByUserId,
+                claimStatus: business.claimStatus as ClaimStatus,
+              })
+            : false
+        }
+      />
 
       {sessionUser ? (
         <div className="space-y-4">

@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 4 (complaints) — complete.**
+**Milestone 6 (business claims) — complete.**
 
-Complaint submission, status workflow, public summary on profiles, user dashboard list, and owner responses for claimed businesses are live. Next: trust score module (TD-0501) or business claims (TD-0601).
+Business claim submission, admin approval, owner dashboard, profile edits, review/complaint responses, and verification badges are live. Next: trust score module (TD-0501) or admin moderation UI (TD-0703).
 
 ---
 
@@ -36,11 +36,12 @@ Complaint submission, status workflow, public summary on profiles, user dashboar
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **89 passing** |
+| Unit tests (Vitest) | **99 passing** |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 4 (complaints) | **DONE** (2026-05-22) |
 | Milestone 4 QA (complaints) | **Passed** (2026-05-22) |
+| Milestone 6 (business claims) | **DONE** (2026-05-22) |
 | Milestone 2 QA (directory) | **Passed** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
@@ -598,6 +599,31 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 #### Next suggested task
 
 - **TD-0301:** Review submission flow.
+
+---
+
+### 2026-05-22 - Milestone 6: Business claiming and verification (TD-0601–0603)
+
+#### Completed
+
+- Schema: `BusinessClaim` owner contact fields + `TRUSTED_SELLER` verification tier.
+- Claim flow: [`/claim/[slug]`](app/claim/[businessSlug]/page.tsx) form, profile CTA, pending banner.
+- Actions: submit/approve/reject claims, owner profile edit, review respond, admin verification tier.
+- Owner dashboard: [`/dashboard/business`](app/dashboard/business/page.tsx) and per-business manage page.
+- Admin queue: [`/dashboard/admin/claims`](app/dashboard/admin/claims/page.tsx).
+- Verification badges: composite display (Unverified, Claimed, Contact/Document/Social/Trusted seller) + legend.
+- Access control: `canManageBusiness` / `isBusinessOwner` on all owner routes.
+
+#### Validation
+
+- `npm test`: pass (99)
+- `npm run typecheck`: pass
+- `npm run lint`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0501:** Trust score calculation module.
 
 ---
 

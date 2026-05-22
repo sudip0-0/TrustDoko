@@ -30,6 +30,15 @@ export function ReviewCard({ review, isLoggedIn, isOwner }: ReviewCardProps) {
 
       <p className="text-muted mt-3 text-sm leading-relaxed">{review.body}</p>
 
+      {review.businessResponseBody ? (
+        <div className="mt-4 rounded-lg border border-border bg-muted/30 px-4 py-3">
+          <p className="text-foreground text-xs font-semibold">Business response</p>
+          <p className="text-muted mt-1 text-sm leading-relaxed">
+            {review.businessResponseBody}
+          </p>
+        </div>
+      ) : null}
+
       <dl className="text-muted mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs">
         {review.experienceType ? (
           <div>

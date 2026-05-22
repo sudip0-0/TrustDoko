@@ -75,8 +75,18 @@ export const updateReviewSchema = reviewFieldsSchema.extend({
   reviewId: z.string().trim().min(1, "Review is required"),
 });
 
+export const respondToReviewSchema = z.object({
+  reviewId: z.string().trim().min(1, "Review is required"),
+  body: z
+    .string()
+    .trim()
+    .min(20, "Response must be at least 20 characters")
+    .max(3000, "Response is too long"),
+});
+
 export type SubmitReviewInput = z.infer<typeof submitReviewSchema>;
 export type UpdateReviewInput = z.infer<typeof updateReviewSchema>;
+export type RespondToReviewInput = z.infer<typeof respondToReviewSchema>;
 
 export function parseReviewFormData(formData: FormData) {
   const wouldRecommendRaw = formData.get("wouldRecommend");

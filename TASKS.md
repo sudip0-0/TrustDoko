@@ -486,47 +486,47 @@ Acceptance criteria:
 
 ### TD-0601: Add business claim request flow
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] User can request to claim business
-- [ ] User selects verification method
-- [ ] User submits required proof
-- [ ] Claim status becomes pending
-- [ ] Admin can review claim
+- [x] User can request to claim business
+- [x] User selects verification method
+- [x] User submits required proof
+- [x] Claim status becomes pending
+- [x] Admin can review claim
 
 ---
 
 ### TD-0602: Add business dashboard
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Owner can view claimed businesses
-- [ ] Owner can edit allowed business fields
-- [ ] Owner can view reviews
-- [ ] Owner can reply to reviews
-- [ ] Owner can view complaints for own business
-- [ ] Owner can respond to complaints
+- [x] Owner can view claimed businesses
+- [x] Owner can edit allowed business fields
+- [x] Owner can view reviews
+- [x] Owner can reply to reviews
+- [x] Owner can view complaints for own business
+- [x] Owner can respond to complaints
 
 ---
 
 ### TD-0603: Add verification badges
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Acceptance criteria:
 
-- [ ] Verification status visible on business profile
-- [ ] Contact verified badge works
-- [ ] Document verified badge works
-- [ ] Social verified badge works
-- [ ] Badge meaning is explained
+- [x] Verification status visible on business profile
+- [x] Contact verified badge works
+- [x] Document verified badge works
+- [x] Social verified badge works
+- [x] Badge meaning is explained
 
 ---
 

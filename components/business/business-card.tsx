@@ -45,7 +45,10 @@ export function BusinessCard({ business }: BusinessCardProps) {
             <span className="text-muted font-normal">/100</span>
           </span>
           <TrustLabelBadge trustLabel={trustLabel} />
-          <VerificationBadge verificationStatus={business.verificationStatus} />
+          <VerificationBadge
+            claimStatus={business.claimStatus}
+            verificationStatus={business.verificationStatus}
+          />
         </div>
       </div>
 
