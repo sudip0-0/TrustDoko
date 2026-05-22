@@ -1,29 +1,60 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
+
+import { ButtonLink } from "@/components/ui/button";
 
 type EmptyStateProps = {
   title: string;
   description: string;
   action?: { href: string; label: string };
   icon?: ReactNode;
+  id?: string;
 };
 
-export function EmptyState({ title, description, action, icon }: EmptyStateProps) {
+function DefaultIcon() {
   return (
-    <div className="flex flex-col items-center rounded-xl border border-dashed border-border bg-card px-6 py-12 text-center">
-      {icon ? <div className="text-muted mb-4">{icon}</div> : null}
-      <h3 className="text-foreground text-base font-semibold">{title}</h3>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      className="text-muted h-10 w-10"
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+      />
+    </svg>
+  );
+}
+
+export function EmptyState({
+  title,
+  description,
+  action,
+  icon,
+  id = "empty-state-title",
+}: EmptyStateProps) {
+  return (
+    <section
+      role="region"
+      aria-labelledby={id}
+      className="flex flex-col items-center rounded-xl border border-dashed border-border bg-card px-6 py-12 text-center"
+    >
+      <div className="text-muted mb-4">{icon ?? <DefaultIcon />}</div>
+      <h3 id={id} className="text-foreground text-base font-semibold">
+        {title}
+      </h3>
       <p className="text-muted mt-2 max-w-md text-sm leading-relaxed">
         {description}
       </p>
       {action ? (
-        <Link
-          href={action.href}
-          className="bg-primary text-primary-foreground mt-6 inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-medium no-underline hover:opacity-90"
-        >
+        <ButtonLink href={action.href} className="mt-6">
           {action.label}
-        </Link>
+        </ButtonLink>
       ) : null}
-    </div>
+    </section>
   );
 }

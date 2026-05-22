@@ -1,5 +1,6 @@
-import { TrustLabelBadge } from "@/components/business/trust-label-badge";
+import { TrustScoreDisplay } from "@/components/business/trust-score-display";
 import { VerificationBadge } from "@/components/business/verification-badge";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   formatClaimStatus,
   formatVerificationStatus,
@@ -21,39 +22,6 @@ type OwnerBusinessOverviewProps = {
   };
 };
 
-export function OwnerBusinessOverview({ business }: OwnerBusinessOverviewProps) {
-  const trustLabel = resolveTrustLabelForBusiness({
-    trustScore: business.trustScore,
-    claimStatus: business.claimStatus as ClaimStatus,
-    trustScoreReasons: business.trustScoreReasons,
-  });
-
-  return (
-    <section className="rounded-xl border border-border bg-card p-6">
-      <h2 className="text-lg font-semibold">Business overview</h2>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Metric label="Trust score" value={`${business.trustScore}/100`} />
-        <Metric label="Reviews" value={String(business.reviewCount)} />
-        <Metric label="Complaints" value={String(business.complaintCount)} />
-        <Metric
-          label="Verification"
-          value={formatVerificationStatus(business.verificationStatus)}
-        />
-      </div>
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <TrustLabelBadge trustLabel={trustLabel} />
-        <VerificationBadge
-          claimStatus={business.claimStatus}
-          verificationStatus={business.verificationStatus}
-        />
-        <span className="text-muted text-xs">
-          Claim: {formatClaimStatus(business.claimStatus)}
-        </span>
-      </div>
-    </section>
-  );
-}
-
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg bg-muted/30 px-3 py-3">
@@ -62,5 +30,43 @@ function Metric({ label, value }: { label: string; value: string }) {
         {value}
       </p>
     </div>
+  );
+}
+
+export function OwnerBusinessOverview({ business }: OwnerBusinessOverviewProps) {
+  const trustLabel = resolveTrustLabelForBusiness({
+    trustScore: business.trustScore,
+    claimStatus: business.claimStatus as ClaimStatus,
+    trustScoreReasons: business.trustScoreReasons,
+  });
+
+  return (
+    <Card>
+      <CardContent className="py-6">
+        <h2 className="text-lg font-semibold">Business overview</h2>
+        <div className="mt-4">
+          <TrustScoreDisplay
+            trustScore={business.trustScore}
+            trustLabel={trustLabel}
+            variant="featured"
+          />
+        </div>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <Metric label="Reviews" value={String(business.reviewCount)} />
+          <Metric label="Complaints" value={String(business.complaintCount)} />
+          <Metric
+            label="Verification"
+            value={formatVerificationStatus(business.verificationStatus)}
+          />
+          <Metric label="Claim status" value={formatClaimStatus(business.claimStatus)} />
+        </div>
+        <div className="mt-4">
+          <VerificationBadge
+            claimStatus={business.claimStatus}
+            verificationStatus={business.verificationStatus}
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 }

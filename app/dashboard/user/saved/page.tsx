@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { SavedBusinessList } from "@/components/dashboard/saved-business-list";
 import { getSessionUser } from "@/lib/auth/session";
 import { getUserSavedBusinesses } from "@/server/queries/saved-businesses";
@@ -17,14 +18,11 @@ export default async function UserSavedPage() {
   const saved = await getUserSavedBusinesses(user.id, user.id);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Saved businesses</h1>
-        <p className="text-muted mt-2 text-sm">
-          Businesses you bookmarked for later comparison.
-        </p>
-      </div>
+    <DashboardShell
+      title="Saved businesses"
+      description="Businesses you bookmarked to compare trust signals before you pay."
+    >
       <SavedBusinessList items={saved} />
-    </div>
+    </DashboardShell>
   );
 }

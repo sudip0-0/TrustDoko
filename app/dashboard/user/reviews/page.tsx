@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { UserReviewsList } from "@/components/dashboard/user-reviews-list";
 import { getSessionUser } from "@/lib/auth/session";
 import { getUserReviews } from "@/server/queries/reviews";
@@ -17,14 +18,11 @@ export default async function UserReviewsPage() {
   const reviews = await getUserReviews(user.id, user.id);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">My reviews</h1>
-        <p className="text-muted mt-2 text-sm">
-          Reviews you have submitted and their moderation status.
-        </p>
-      </div>
+    <DashboardShell
+      title="My reviews"
+      description="Reviews you have submitted and their moderation status."
+    >
       <UserReviewsList reviews={reviews} />
-    </div>
+    </DashboardShell>
   );
 }

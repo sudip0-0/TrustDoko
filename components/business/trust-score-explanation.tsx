@@ -1,3 +1,6 @@
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { copy } from "@/lib/copy/messages";
+
 type TrustScoreExplanationProps = {
   trustScore: number;
   reasons: string[] | null;
@@ -15,31 +18,35 @@ export function TrustScoreExplanation({
         ];
 
   return (
-    <section
-      className="rounded-xl border border-border bg-card p-6"
+    <Card
+      id="trust-score"
+      className="scroll-mt-24"
       aria-labelledby="trust-score-heading"
     >
-      <h2 id="trust-score-heading" className="text-lg font-semibold">
-        How this trust score is calculated
-      </h2>
-      <p className="text-muted mt-2 text-sm leading-relaxed">
-        Trust score:{" "}
-        <span className="text-foreground font-semibold tabular-nums">
-          {trustScore}/100
-        </span>
-        . The number reflects community-reported signals on TrustDoko, not a
-        legal finding or guarantee of safety.
-      </p>
-      <ul className="text-muted mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed">
-        {items.map((reason, index) => (
-          <li key={`${index}-${reason.slice(0, 32)}`}>{reason}</li>
-        ))}
-      </ul>
-      <p className="text-muted mt-4 text-xs leading-relaxed">
-        Scores update when new reviews, complaints, owner responses, or
-        verification changes are recorded. Use this as one input alongside your
-        own research before purchasing.
-      </p>
-    </section>
+      <CardContent className="py-6">
+        <CardTitle>
+          <h2 id="trust-score-heading" className="text-lg font-semibold">
+            How this trust score is calculated
+          </h2>
+        </CardTitle>
+        <CardDescription className="mt-2">
+          Trust score:{" "}
+          <span className="text-foreground font-semibold tabular-nums">
+            {trustScore}/100
+          </span>
+          . {copy.trust.disclaimer}
+        </CardDescription>
+        <ul className="text-muted mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed">
+          {items.map((reason, index) => (
+            <li key={`${index}-${reason.slice(0, 32)}`}>{reason}</li>
+          ))}
+        </ul>
+        <p className="text-muted mt-4 text-xs leading-relaxed">
+          Scores update when new reviews, complaints, owner responses, or
+          verification changes are recorded. Use this alongside your own research
+          before paying — especially for prepayment or bank transfer.
+        </p>
+      </CardContent>
+    </Card>
   );
 }

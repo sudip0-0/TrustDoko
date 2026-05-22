@@ -2,6 +2,9 @@
 
 import { useActionState } from "react";
 
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/input";
 import {
   respondToReviewAction,
   type ReviewActionState,
@@ -23,39 +26,39 @@ export function OwnerReviewResponseForm({
 
   if (state.success) {
     return (
-      <p className="text-sm text-green-800" role="status">
+      <Alert variant="success" className="mt-3">
         {state.message}
-      </p>
+      </Alert>
     );
   }
 
   return (
-    <form action={formAction} className="mt-3 space-y-2">
+    <form action={formAction} className="mt-3 space-y-3">
       <input type="hidden" name="reviewId" value={reviewId} />
       {state.error ? (
-        <p className="text-sm text-destructive" role="alert">
-          {state.error}
-        </p>
+        <Alert variant="error">{state.error}</Alert>
       ) : null}
-      <textarea
+      <label htmlFor={`review-response-${reviewId}`} className="text-foreground block text-sm font-medium">
+        Your public response
+      </label>
+      <Textarea
+        id={`review-response-${reviewId}`}
         name="body"
         required
         rows={3}
         minLength={20}
         maxLength={3000}
-        placeholder="Post a public response to this review…"
-        className="border-border bg-background w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+        placeholder="Explain how you addressed this customer's experience. Minimum 20 characters."
+        aria-invalid={Boolean(state.fieldErrors?.body)}
       />
       {state.fieldErrors?.body ? (
-        <p className="text-sm text-red-600">{state.fieldErrors.body[0]}</p>
+        <p className="text-destructive text-sm" role="alert">
+          {state.fieldErrors.body[0]}
+        </p>
       ) : null}
-      <button
-        type="submit"
-        disabled={isPending}
-        className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium hover:bg-accent disabled:opacity-60"
-      >
+      <Button type="submit" variant="secondary" size="sm" disabled={isPending} aria-busy={isPending}>
         {isPending ? "Posting…" : "Post response"}
-      </button>
+      </Button>
     </form>
   );
 }

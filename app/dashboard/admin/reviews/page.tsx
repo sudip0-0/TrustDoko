@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { ModerationStatusBadge } from "@/components/admin/moderation-status-badge";
 import { ReviewModerationActions } from "@/components/admin/review-moderation-actions";
 import { getReviewsForModeration } from "@/server/queries/admin/reviews";
@@ -23,7 +24,10 @@ export default async function AdminReviewsPage() {
       </div>
 
       {reviews.length === 0 ? (
-        <p className="text-muted text-sm">No reviews in the moderation queue.</p>
+        <EmptyState
+          title="Queue is clear"
+          description="No reviews waiting for moderation right now."
+        />
       ) : (
         <ul className="list-none space-y-6 p-0">
           {reviews.map((review) => (

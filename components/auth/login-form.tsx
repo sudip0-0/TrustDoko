@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 import { FormField } from "@/components/auth/form-field";
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { copy } from "@/lib/copy/messages";
 import { loginAction, type AuthActionState } from "@/server/actions/auth";
 
 const initialState: AuthActionState = {};
@@ -13,10 +16,7 @@ type LoginFormProps = {
 };
 
 export function LoginForm({ callbackUrl }: LoginFormProps) {
-  const [state, formAction, isPending] = useActionState(
-    loginAction,
-    initialState,
-  );
+  const [state, formAction, isPending] = useActionState(loginAction, initialState);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -25,12 +25,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
       ) : null}
 
       {state.error ? (
-        <p
-          className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
-          role="alert"
-        >
-          {state.error}
-        </p>
+        <Alert variant="error">{state.error}</Alert>
       ) : null}
 
       <FormField
@@ -50,17 +45,15 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
         errors={state.fieldErrors?.password}
       />
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="bg-primary text-primary-foreground w-full rounded-lg px-4 py-2.5 text-sm font-semibold hover:opacity-90 disabled:opacity-60"
-      >
+      <p className="text-muted text-xs leading-relaxed">{copy.errors.signInRequired}</p>
+
+      <Button type="submit" disabled={isPending} aria-busy={isPending} className="w-full">
         {isPending ? "Signing in…" : "Sign in"}
-      </button>
+      </Button>
 
       <p className="text-muted text-center text-sm">
         No account?{" "}
-        <Link href="/register" className="text-primary font-medium">
+        <Link href="/register" className="text-primary font-medium no-underline hover:underline">
           Create one
         </Link>
       </p>

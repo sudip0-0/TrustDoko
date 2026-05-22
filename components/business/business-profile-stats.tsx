@@ -1,3 +1,4 @@
+import { Card, CardContent } from "@/components/ui/card";
 import type { BusinessProfileData } from "@/server/queries/business-profile";
 
 type BusinessProfileStatsProps = {
@@ -12,33 +13,32 @@ export function BusinessProfileStats({ business }: BusinessProfileStatsProps) {
 
   return (
     <section
-      className="grid gap-4 sm:grid-cols-3"
-      aria-label="Trust and reputation summary"
+      className="grid gap-4 sm:grid-cols-2"
+      aria-label="Reputation summary"
     >
-      <div className="rounded-xl border border-border bg-card p-5">
-        <p className="text-muted text-sm font-medium">Trust score</p>
-        <p className="text-foreground mt-1 text-2xl font-bold">
-          {business.trustScore}
-          <span className="text-muted text-base font-normal"> / 100</span>
-        </p>
-      </div>
-      <div className="rounded-xl border border-border bg-card p-5">
-        <p className="text-muted text-sm font-medium">Average rating</p>
-        <p className="text-foreground mt-1 text-2xl font-bold">{ratingText}</p>
-        <p className="text-muted mt-1 text-xs">
-          {business.reviewCount} approved review
-          {business.reviewCount === 1 ? "" : "s"}
-        </p>
-      </div>
-      <div className="rounded-xl border border-border bg-card p-5">
-        <p className="text-muted text-sm font-medium">Complaints on record</p>
-        <p className="text-foreground mt-1 text-2xl font-bold">
-          {business.complaintSummary.total}
-        </p>
-        <p className="text-muted mt-1 text-xs">
-          {business.complaintSummary.unresolved} unresolved
-        </p>
-      </div>
+      <Card>
+        <CardContent>
+          <p className="text-muted text-sm font-medium">Average rating</p>
+          <p className="text-foreground mt-2 text-2xl font-bold tabular-nums">
+            {ratingText}
+          </p>
+          <p className="text-muted mt-1 text-xs">
+            {business.reviewCount} approved review
+            {business.reviewCount === 1 ? "" : "s"}
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <p className="text-muted text-sm font-medium">Complaints on record</p>
+          <p className="text-foreground mt-2 text-2xl font-bold tabular-nums">
+            {business.complaintSummary.total}
+          </p>
+          <p className="text-muted mt-1 text-xs">
+            {business.complaintSummary.unresolved} unresolved
+          </p>
+        </CardContent>
+      </Card>
     </section>
   );
 }

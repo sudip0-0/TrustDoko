@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ClaimPendingBanner } from "@/components/business/claim-pending-banner";
+import { ProfileSectionNav } from "@/components/business/profile-section-nav";
+import { ContentWidth } from "@/components/layout/content-width";
 import { BusinessProfileActions } from "@/components/business/business-profile-actions";
 import { BusinessProfileComplaints } from "@/components/business/business-profile-complaints";
 import { BusinessProfileHeader } from "@/components/business/business-profile-header";
@@ -81,8 +83,9 @@ export default async function BusinessProfilePage({
     : false;
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">
+    <ContentWidth size="lg" className="space-y-6 py-10">
       <BusinessProfileHeader business={business} />
+      <ProfileSectionNav />
       {business.claimStatus === "PENDING" ? (
         <ClaimPendingBanner businessName={business.name} />
       ) : null}
@@ -152,6 +155,6 @@ export default async function BusinessProfilePage({
           ← Browse all businesses
         </Link>
       </p>
-    </div>
+    </ContentWidth>
   );
 }

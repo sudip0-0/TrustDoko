@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { NotificationsPanel } from "@/components/dashboard/notifications-panel";
 import { ProfileSummaryCard } from "@/components/dashboard/profile-summary-card";
 import { getSessionUser } from "@/lib/auth/session";
@@ -30,19 +31,13 @@ export default async function UserDashboardOverviewPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Welcome back{profile.name ? `, ${profile.name}` : ""}
-        </h1>
-        <p className="text-muted mt-2 text-sm">
-          Track your reviews, complaints, saved businesses, and account activity.
-        </p>
-      </div>
-
+    <DashboardShell
+      title={`Welcome back${profile.name ? `, ${profile.name}` : ""}`}
+      description="Track your reviews, complaints, saved businesses, and account activity."
+    >
       <ProfileSummaryCard profile={profile} />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <QuickLink
           href="/dashboard/user/reviews"
           label="My reviews"
@@ -58,15 +53,11 @@ export default async function UserDashboardOverviewPage() {
           label="Saved businesses"
           count={profile.savedCount}
         />
-        <QuickLink
-          href="/dashboard/user/settings"
-          label="Settings"
-          count={null}
-        />
+        <QuickLink href="/dashboard/user/settings" label="Settings" count={null} />
       </div>
 
       <NotificationsPanel notifications={notifications} />
-    </div>
+    </DashboardShell>
   );
 }
 
@@ -82,7 +73,7 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="rounded-xl border border-border bg-card p-4 no-underline transition-shadow hover:shadow-sm"
+      className="focus-visible:ring-ring min-h-11 rounded-xl border border-border bg-card p-4 no-underline transition-shadow hover:shadow-sm focus-visible:ring-2 focus-visible:outline-none"
     >
       <p className="text-foreground text-sm font-semibold">{label}</p>
       {count !== null ? (

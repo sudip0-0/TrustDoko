@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**User & business dashboards — complete.**
+**UI/UX overhaul — complete.**
 
-Dedicated user and business owner dashboards with sub-navigation, empty/loading states, notifications preview, saved businesses, and access-controlled queries. Next: file uploads (TD-0801) or search enhancements.
+Cohesive design system (tokens + `components/ui`), refreshed public pages, trust score display, unified forms/alerts, dashboard shell, empty/loading/error patterns, and accessibility pass. Next: file uploads (TD-0801) or search enhancements.
 
 ---
 
@@ -42,6 +42,7 @@ Dedicated user and business owner dashboards with sub-navigation, empty/loading 
 | Milestone 7 (admin moderation) | **DONE** (2026-05-21)                                        |
 | Milestone 7 QA (admin)         | **Passed** (2026-05-21)                                      |
 | User & business dashboards     | **DONE** (2026-05-21)                                        |
+| UI/UX overhaul                 | **DONE** (2026-05-21)                                        |
 | Milestone 3 (reviews)          | **DONE** (2026-05-22)                                        |
 | Milestone 3 QA (reviews)       | **Passed** (2026-05-22)                                      |
 | Milestone 4 (complaints)       | **DONE** (2026-05-22)                                        |
@@ -1218,6 +1219,49 @@ npm run typecheck  # pass
 npm test           # pass (151)
 npm run build      # pass
 ```
+
+---
+
+## UI/UX overhaul (2026-05-21)
+
+### Design direction
+
+- **Tone:** Clean, credible consumer-protection UX for Nepali shoppers (not generic SaaS gradients).
+- **Typography:** Plus Jakarta Sans (UI) + Source Serif 4 (headings) in `app/layout.tsx`.
+- **Color:** Warm stone neutrals + teal primary; semantic tokens for destructive, success, warning, trust bands in `app/globals.css`.
+- **Copy:** Centralized in `lib/copy/messages.ts` (trust disclaimers, Nepal context, form helpers, empty states).
+
+### What shipped
+
+| Area | Highlights |
+|------|------------|
+| Foundation | `components/ui/*` (Button, Card, Badge, Alert, Input, Skeleton, PageHeader, FormSection); global `focus-visible`; `lib/trust-score/display-utils.ts` |
+| Public | Home/about/directory refresh; sticky header + mobile nav; auth/claim card layouts; `ContentWidth`, filter card with active count |
+| Trust | `TrustScoreDisplay` (compact/featured/inline); business cards + profile header/stats/explanation; badges via `ui/Badge` |
+| Forms | Review, complaint, claim, owner responses, profile edit, account settings — shared Alert/Button/Input patterns |
+| Dashboard | `DashboardShell`, `UserSubNav` + `DashboardNav` + `AdminNav` with `aria-current`; `EmptyState`/`Skeleton`; `app/dashboard/error.tsx`, admin `loading.tsx` |
+
+### Manual test checklist
+
+| Check | Notes |
+|-------|-------|
+| Mobile 375px | Home hero, directory filters stack, profile section nav, dashboard quick-link tiles |
+| Keyboard | Tab through header nav, forms, filters; visible focus rings on buttons/inputs |
+| Trust meter | Business card compact meter; profile header featured meter; owner dashboard cards |
+| Forms | Success/error alerts (`role="status"` / `role="alert"`); submit disabled + `aria-busy` while pending |
+| Dashboard | User sub-nav + top nav highlight active route; admin empty queues use `EmptyState` |
+| Screen reader | Trust score `aria-label` on featured meter; empty regions `aria-labelledby` |
+
+### Validation
+
+```bash
+npm run lint       # pass (after empty-state import fix)
+npm run typecheck  # pass
+npm test           # pass (151)
+npm run build      # pass
+```
+
+Seed password for manual QA: **`trustdoko12`**.
 
 ---
 

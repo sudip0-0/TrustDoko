@@ -1,51 +1,68 @@
+import { ContentWidth } from "@/components/layout/content-width";
+import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/page-header";
+import { copy } from "@/lib/copy/messages";
+
+const labels = [
+  { name: "Highly Trusted", range: "80+", detail: "Strong positive community signals" },
+  { name: "Trusted", range: "65–79", detail: "Generally positive track record" },
+  { name: "Mixed Reputation", range: "45–64", detail: "Balance of praise and concerns" },
+  { name: "Risky", range: "25–44", detail: "Notable negative signals" },
+  { name: "High Risk", range: "Below 25", detail: "Serious community concerns" },
+  {
+    name: "Under Review",
+    range: "—",
+    detail: "Claim, reviews, or complaints still being moderated",
+  },
+] as const;
+
 export default function AboutPage() {
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold tracking-tight">About TrustDoko</h1>
-      <p className="text-muted mt-4 leading-relaxed">
-        TrustDoko is building a public trust layer for Nepali businesses —
-        combining reviews, complaints, verification, and transparent trust
-        scores.
-      </p>
+    <ContentWidth size="md" className="py-12 sm:py-16">
+      <PageHeader
+        eyebrow="Transparency"
+        title="About TrustDoko"
+        description="A public trust layer for Nepali shoppers — combining reviews, complaints, verification, and clear trust scores before you pay online sellers or social shops."
+      />
 
-      <section className="mt-10 space-y-4">
-        <h2 className="text-xl font-semibold">Trust scores</h2>
+      <section className="mt-10 space-y-4" aria-labelledby="mission-heading">
+        <h2 id="mission-heading" className="text-xl font-semibold">
+          Why we built this
+        </h2>
         <p className="text-muted leading-relaxed">
-          Each business receives a score from 0 to 100 based on community
-          signals: approved review ratings and volume, complaint reports (with
-          extra weight for open or high-severity items), verification tier,
-          owner response rate, profile completeness, account age, and recent
-          rating trends. Scores are not legal judgments and do not guarantee an
-          outcome for any purchase.
-        </p>
-        <ul className="text-muted list-disc space-y-2 pl-5 leading-relaxed">
-          <li>
-            <strong className="text-foreground">Highly Trusted</strong> — 80+
-            with strong positive signals
-          </li>
-          <li>
-            <strong className="text-foreground">Trusted</strong> — 65–79
-          </li>
-          <li>
-            <strong className="text-foreground">Mixed Reputation</strong> — 45–64
-          </li>
-          <li>
-            <strong className="text-foreground">Risky</strong> — 25–44
-          </li>
-          <li>
-            <strong className="text-foreground">High Risk</strong> — below 25
-          </li>
-          <li>
-            <strong className="text-foreground">Under Review</strong> — claim,
-            review, or complaint moderation still in progress; the numeric score
-            may change when data is finalized
-          </li>
-        </ul>
-        <p className="text-muted text-sm leading-relaxed">
-          Business profiles list the main factors that influenced the latest
-          score so you can see why a label was applied.
+          Many Nepalis buy from Instagram pages, Facebook shops, and small websites
+          without a reliable place to see complaint history or whether a business
+          responds to customers. TrustDoko collects community-reported signals in one
+          profile so you can make a more informed choice — especially before sending
+          NPR in advance.
         </p>
       </section>
-    </div>
+
+      <section className="mt-10" aria-labelledby="scores-heading">
+        <h2 id="scores-heading" className="text-xl font-semibold">
+          How trust scores work
+        </h2>
+        <p className="text-muted mt-4 leading-relaxed">
+          Each business receives a score from 0 to 100 based on approved review
+          ratings, complaint reports (with extra weight for open or serious issues),
+          verification tier, owner responses, profile completeness, and recent trends.
+        </p>
+        <p className="text-muted mt-4 text-sm leading-relaxed">{copy.trust.disclaimer}</p>
+
+        <ul className="mt-8 grid list-none gap-3 p-0 sm:grid-cols-2">
+          {labels.map((item) => (
+            <li key={item.name}>
+              <Card>
+                <CardContent className="py-4">
+                  <p className="text-foreground font-semibold">{item.name}</p>
+                  <p className="text-primary text-sm tabular-nums">{item.range}</p>
+                  <p className="text-muted mt-1 text-sm">{item.detail}</p>
+                </CardContent>
+              </Card>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </ContentWidth>
   );
 }

@@ -2,6 +2,9 @@
 
 import { useActionState } from "react";
 
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/input";
 import {
   respondToComplaintAction,
   type ComplaintActionState,
@@ -23,48 +26,40 @@ export function OwnerComplaintResponseForm({
 
   if (state.success) {
     return (
-      <p className="text-sm text-green-800" role="status">
+      <Alert variant="success" className="mt-3">
         {state.message}
-      </p>
+      </Alert>
     );
   }
 
   return (
     <form action={formAction} className="mt-3 space-y-3">
       <input type="hidden" name="complaintId" value={complaintId} />
-      {state.error ? (
-        <p className="text-sm text-destructive" role="alert">
-          {state.error}
+      {state.error ? <Alert variant="error">{state.error}</Alert> : null}
+      <label
+        htmlFor={`response-${complaintId}`}
+        className="text-foreground block text-sm font-medium"
+      >
+        Your public response
+      </label>
+      <Textarea
+        id={`response-${complaintId}`}
+        name="body"
+        required
+        rows={3}
+        minLength={20}
+        maxLength={3000}
+        placeholder="Explain how you are addressing this complaint. Minimum 20 characters."
+        aria-invalid={Boolean(state.fieldErrors?.body)}
+      />
+      {state.fieldErrors?.body ? (
+        <p className="text-destructive text-sm" role="alert">
+          {state.fieldErrors.body[0]}
         </p>
       ) : null}
-      <div>
-        <label
-          htmlFor={`response-${complaintId}`}
-          className="text-foreground block text-sm font-medium"
-        >
-          Your response
-        </label>
-        <textarea
-          id={`response-${complaintId}`}
-          name="body"
-          required
-          rows={3}
-          minLength={20}
-          maxLength={3000}
-          placeholder="Explain how you are addressing this complaint…"
-          className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
-        />
-        {state.fieldErrors?.body ? (
-          <p className="mt-1 text-sm text-red-600">{state.fieldErrors.body[0]}</p>
-        ) : null}
-      </div>
-      <button
-        type="submit"
-        disabled={isPending}
-        className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-accent disabled:opacity-60"
-      >
+      <Button type="submit" variant="secondary" size="sm" disabled={isPending} aria-busy={isPending}>
         {isPending ? "Posting…" : "Post response"}
-      </button>
+      </Button>
     </form>
   );
 }

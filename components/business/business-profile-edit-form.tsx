@@ -2,6 +2,10 @@
 
 import { useActionState } from "react";
 
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input, Select, Textarea } from "@/components/ui/input";
 import { ownerBusinessTypes } from "@/lib/business/owner-editable-fields";
 import { formatBusinessType } from "@/lib/business/display";
 import {
@@ -23,177 +27,175 @@ export function BusinessProfileEditForm({ business }: BusinessProfileEditFormPro
   );
 
   return (
-    <section className="rounded-xl border border-border bg-card p-6">
-      <h2 className="text-lg font-semibold">Edit profile</h2>
-      <p className="text-muted mt-1 text-sm">
-        Update contact and description fields. Name and trust scores cannot be
-        changed here.
-      </p>
-
-      {state.success ? (
-        <p className="mt-4 text-sm text-green-800" role="status">
-          {state.message}
+    <Card>
+      <CardContent className="py-6">
+        <h2 className="text-lg font-semibold">Edit profile</h2>
+        <p className="text-muted mt-1 text-sm">
+          Update contact and description fields. Name and trust scores cannot be
+          changed here.
         </p>
-      ) : null}
-      {state.error ? (
-        <p className="mt-4 text-sm text-destructive" role="alert">
-          {state.error}
-        </p>
-      ) : null}
 
-      <form action={formAction} className="mt-6 space-y-4">
-        <input type="hidden" name="businessId" value={business.id} />
+        {state.message ? (
+          <Alert variant="success" className="mt-4">
+            {state.message}
+          </Alert>
+        ) : null}
+        {state.error ? (
+          <Alert variant="error" className="mt-4">
+            {state.error}
+          </Alert>
+        ) : null}
 
-        <div>
-          <label htmlFor="description" className="text-foreground block text-sm font-medium">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={4}
-            defaultValue={business.description ?? ""}
-            className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
-          />
-        </div>
+        <form action={formAction} className="mt-6 space-y-4">
+          <input type="hidden" name="businessId" value={business.id} />
 
-        <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="phone" className="text-foreground block text-sm font-medium">
-              Phone
+            <label htmlFor="description" className="text-foreground block text-sm font-medium">
+              Description
             </label>
-            <input
-              id="phone"
-              name="phone"
-              defaultValue={business.phone ?? ""}
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
+            <Textarea
+              id="description"
+              name="description"
+              rows={4}
+              defaultValue={business.description ?? ""}
+              className="mt-1.5"
             />
           </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="phone" className="text-foreground block text-sm font-medium">
+                Phone
+              </label>
+              <Input
+                id="phone"
+                name="phone"
+                defaultValue={business.phone ?? ""}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="text-foreground block text-sm font-medium">
+                Email
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                defaultValue={business.email ?? ""}
+                className="mt-1.5"
+              />
+            </div>
+          </div>
+
           <div>
-            <label htmlFor="email" className="text-foreground block text-sm font-medium">
-              Email
+            <label htmlFor="websiteUrl" className="text-foreground block text-sm font-medium">
+              Website
             </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              defaultValue={business.email ?? ""}
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
+            <Input
+              id="websiteUrl"
+              name="websiteUrl"
+              defaultValue={business.websiteUrl ?? ""}
+              className="mt-1.5"
             />
           </div>
-        </div>
 
-        <div>
-          <label htmlFor="websiteUrl" className="text-foreground block text-sm font-medium">
-            Website
-          </label>
-          <input
-            id="websiteUrl"
-            name="websiteUrl"
-            defaultValue={business.websiteUrl ?? ""}
-            className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
-          />
-        </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label htmlFor="facebookUrl" className="text-foreground block text-sm font-medium">
+                Facebook
+              </label>
+              <Input
+                id="facebookUrl"
+                name="facebookUrl"
+                defaultValue={business.facebookUrl ?? ""}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <label htmlFor="instagramUrl" className="text-foreground block text-sm font-medium">
+                Instagram
+              </label>
+              <Input
+                id="instagramUrl"
+                name="instagramUrl"
+                defaultValue={business.instagramUrl ?? ""}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <label htmlFor="tiktokUrl" className="text-foreground block text-sm font-medium">
+                TikTok
+              </label>
+              <Input
+                id="tiktokUrl"
+                name="tiktokUrl"
+                defaultValue={business.tiktokUrl ?? ""}
+                className="mt-1.5"
+              />
+            </div>
+          </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="city" className="text-foreground block text-sm font-medium">
+                City
+              </label>
+              <Input
+                id="city"
+                name="city"
+                defaultValue={business.city ?? ""}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <label htmlFor="province" className="text-foreground block text-sm font-medium">
+                Province
+              </label>
+              <Input
+                id="province"
+                name="province"
+                defaultValue={business.province ?? ""}
+                className="mt-1.5"
+              />
+            </div>
+          </div>
+
           <div>
-            <label htmlFor="facebookUrl" className="text-foreground block text-sm font-medium">
-              Facebook
+            <label htmlFor="address" className="text-foreground block text-sm font-medium">
+              Address
             </label>
-            <input
-              id="facebookUrl"
-              name="facebookUrl"
-              defaultValue={business.facebookUrl ?? ""}
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
+            <Input
+              id="address"
+              name="address"
+              defaultValue={business.address ?? ""}
+              className="mt-1.5"
             />
           </div>
-          <div>
-            <label htmlFor="instagramUrl" className="text-foreground block text-sm font-medium">
-              Instagram
-            </label>
-            <input
-              id="instagramUrl"
-              name="instagramUrl"
-              defaultValue={business.instagramUrl ?? ""}
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label htmlFor="tiktokUrl" className="text-foreground block text-sm font-medium">
-              TikTok
-            </label>
-            <input
-              id="tiktokUrl"
-              name="tiktokUrl"
-              defaultValue={business.tiktokUrl ?? ""}
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
-            />
-          </div>
-        </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="city" className="text-foreground block text-sm font-medium">
-              City
+            <label htmlFor="businessType" className="text-foreground block text-sm font-medium">
+              Business type
             </label>
-            <input
-              id="city"
-              name="city"
-              defaultValue={business.city ?? ""}
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
-            />
+            <Select
+              id="businessType"
+              name="businessType"
+              defaultValue={business.businessType}
+              className="mt-1.5"
+            >
+              {ownerBusinessTypes.map((type) => (
+                <option key={type} value={type}>
+                  {formatBusinessType(type)}
+                </option>
+              ))}
+            </Select>
           </div>
-          <div>
-            <label htmlFor="province" className="text-foreground block text-sm font-medium">
-              Province
-            </label>
-            <input
-              id="province"
-              name="province"
-              defaultValue={business.province ?? ""}
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
-            />
-          </div>
-        </div>
 
-        <div>
-          <label htmlFor="address" className="text-foreground block text-sm font-medium">
-            Address
-          </label>
-          <input
-            id="address"
-            name="address"
-            defaultValue={business.address ?? ""}
-            className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="businessType" className="text-foreground block text-sm font-medium">
-            Business type
-          </label>
-          <select
-            id="businessType"
-            name="businessType"
-            defaultValue={business.businessType}
-            className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm"
-          >
-            {ownerBusinessTypes.map((type) => (
-              <option key={type} value={type}>
-                {formatBusinessType(type)}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isPending}
-          className="bg-primary text-primary-foreground rounded-lg px-5 py-2.5 text-sm font-semibold hover:opacity-90 disabled:opacity-60"
-        >
-          {isPending ? "Saving…" : "Save changes"}
-        </button>
-      </form>
-    </section>
+          <Button type="submit" disabled={isPending} aria-busy={isPending}>
+            {isPending ? "Saving…" : "Save changes"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

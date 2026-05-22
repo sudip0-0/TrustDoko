@@ -2,6 +2,11 @@
 
 import { useActionState } from "react";
 
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input, Select, Textarea } from "@/components/ui/input";
+import { copy } from "@/lib/copy/messages";
 import {
   complaintAmountRangeLabels,
   complaintAmountRanges,
@@ -29,167 +34,146 @@ export function ComplaintForm({ businessSlug, businessName }: ComplaintFormProps
   );
 
   return (
-    <section
-      id="report-issue"
-      className="scroll-mt-24 rounded-xl border border-border bg-card p-6"
-    >
-      <h2 className="text-xl font-semibold">Report an issue</h2>
-      <p className="text-muted mt-1 text-sm leading-relaxed">
-        File a complaint about {businessName} for delivery problems, refunds,
-        misleading pricing, or other serious issues. This is separate from
-        writing a review.
-      </p>
-
-      {state.success ? (
-        <p
-          className="mt-4 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-900"
-          role="status"
-        >
-          {state.message}
+    <Card id="report-issue" className="scroll-mt-24">
+      <CardContent className="py-6">
+        <h2 className="text-xl font-semibold">Report a serious issue</h2>
+        <p className="text-muted mt-1 text-sm leading-relaxed">
+          {copy.forms.complaintHelper} Reporting about {businessName}.
         </p>
-      ) : null}
 
-      {state.error ? (
-        <p className="mt-4 text-sm text-destructive" role="alert">
-          {state.error}
-        </p>
-      ) : null}
+        {state.success && state.message ? (
+          <Alert variant="success" className="mt-4">
+            {state.message}
+          </Alert>
+        ) : null}
 
-      {!state.success ? (
-        <form action={formAction} className="mt-6 space-y-5">
-          <input type="hidden" name="businessSlug" value={businessSlug} />
+        {state.error ? (
+          <Alert variant="error" className="mt-4">
+            {state.error}
+          </Alert>
+        ) : null}
 
-          <div>
-            <label htmlFor="category" className="text-foreground block text-sm font-medium">
-              Complaint category <span className="text-red-600">*</span>
-            </label>
-            <select
-              id="category"
-              name="category"
-              required
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              {complaintCategories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {complaintCategoryLabels[cat]}
+        {!state.success ? (
+          <form action={formAction} className="mt-6 space-y-5">
+            <input type="hidden" name="businessSlug" value={businessSlug} />
+
+            <div>
+              <label htmlFor="category" className="text-foreground block text-sm font-medium">
+                Issue category <span className="text-destructive">*</span>
+              </label>
+              <Select
+                id="category"
+                name="category"
+                required
+                defaultValue=""
+                className="mt-1.5"
+                aria-invalid={Boolean(state.fieldErrors?.category)}
+              >
+                <option value="" disabled>
+                  Select a category
                 </option>
-              ))}
-            </select>
-            {state.fieldErrors?.category ? (
-              <p className="mt-1 text-sm text-red-600">{state.fieldErrors.category[0]}</p>
-            ) : null}
-          </div>
+                {complaintCategories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {complaintCategoryLabels[cat]}
+                  </option>
+                ))}
+              </Select>
+              {state.fieldErrors?.category ? (
+                <p className="text-destructive mt-1 text-sm" role="alert">
+                  {state.fieldErrors.category[0]}
+                </p>
+              ) : null}
+            </div>
 
-          <div>
-            <label htmlFor="description" className="text-foreground block text-sm font-medium">
-              What happened? <span className="text-red-600">*</span>
+            <div>
+              <label htmlFor="description" className="text-foreground block text-sm font-medium">
+                What happened? <span className="text-destructive">*</span>
+              </label>
+              <Textarea
+                id="description"
+                name="description"
+                required
+                rows={5}
+                minLength={30}
+                maxLength={5000}
+                className="mt-1.5"
+                placeholder="Describe what you ordered, amounts paid (NPR), dates, and what the seller did or failed to do. Minimum 30 characters."
+                aria-invalid={Boolean(state.fieldErrors?.description)}
+              />
+              {state.fieldErrors?.description ? (
+                <p className="text-destructive mt-1 text-sm" role="alert">
+                  {state.fieldErrors.description[0]}
+                </p>
+              ) : null}
+            </div>
+
+            <div>
+              <label
+                htmlFor="experienceDate"
+                className="text-foreground block text-sm font-medium"
+              >
+                When did this happen? <span className="text-destructive">*</span>
+              </label>
+              <Input
+                id="experienceDate"
+                name="experienceDate"
+                type="date"
+                required
+                max={new Date().toISOString().slice(0, 10)}
+                className="mt-1.5"
+                aria-invalid={Boolean(state.fieldErrors?.experienceDate)}
+              />
+              {state.fieldErrors?.experienceDate ? (
+                <p className="text-destructive mt-1 text-sm" role="alert">
+                  {state.fieldErrors.experienceDate[0]}
+                </p>
+              ) : null}
+            </div>
+
+            <div>
+              <label htmlFor="amountRange" className="text-foreground block text-sm font-medium">
+                Amount involved (optional)
+              </label>
+              <Select id="amountRange" name="amountRange" className="mt-1.5" defaultValue="">
+                <option value="">Not specified</option>
+                {complaintAmountRanges.map((range) => (
+                  <option key={range} value={range}>
+                    {complaintAmountRangeLabels[range]}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <Alert variant="info" title="Proof documents">
+              File uploads are coming soon. Include order IDs, chat screenshots, or payment
+              references in your description for now.
+            </Alert>
+
+            <label className="flex cursor-pointer items-start gap-3 text-sm">
+              <input
+                id="allowAdminContact"
+                type="checkbox"
+                name="allowAdminContact"
+                value="true"
+                className="mt-1 size-4 rounded border-border"
+              />
+              <span>
+                TrustDoko admins may contact me privately about this report. Your details
+                are not shown on the public profile.
+              </span>
             </label>
-            <textarea
-              id="description"
-              name="description"
-              required
-              rows={5}
-              minLength={30}
-              maxLength={5000}
-              placeholder="Describe the issue in detail: what you ordered, what went wrong, and any steps you already took."
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
-            />
-            {state.fieldErrors?.description ? (
-              <p className="mt-1 text-sm text-red-600">
-                {state.fieldErrors.description[0]}
-              </p>
-            ) : null}
-          </div>
 
-          <div>
-            <label
-              htmlFor="experienceDate"
-              className="text-foreground block text-sm font-medium"
+            <Button
+              type="submit"
+              disabled={isPending}
+              aria-busy={isPending}
+              className="w-full sm:w-auto"
             >
-              When did this happen? <span className="text-red-600">*</span>
-            </label>
-            <input
-              id="experienceDate"
-              name="experienceDate"
-              type="date"
-              required
-              max={new Date().toISOString().slice(0, 10)}
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
-            />
-            {state.fieldErrors?.experienceDate ? (
-              <p className="mt-1 text-sm text-red-600">
-                {state.fieldErrors.experienceDate[0]}
-              </p>
-            ) : null}
-          </div>
-
-          <div>
-            <label htmlFor="amountRange" className="text-foreground block text-sm font-medium">
-              Amount involved (optional)
-            </label>
-            <select
-              id="amountRange"
-              name="amountRange"
-              className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
-              defaultValue=""
-            >
-              <option value="">Not specified</option>
-              {complaintAmountRanges.map((range) => (
-                <option key={range} value={range}>
-                  {complaintAmountRangeLabels[range]}
-                </option>
-              ))}
-            </select>
-            {state.fieldErrors?.amountRange ? (
-              <p className="mt-1 text-sm text-red-600">
-                {state.fieldErrors.amountRange[0]}
-              </p>
-            ) : null}
-          </div>
-
-          <div>
-            <label htmlFor="proof" className="text-foreground block text-sm font-medium">
-              Proof (optional)
-            </label>
-            <input
-              id="proof"
-              name="proof"
-              type="file"
-              disabled
-              className="text-muted mt-1.5 w-full cursor-not-allowed text-sm opacity-60"
-            />
-            <p className="text-muted mt-1 text-xs">
-              File uploads will be available in a future update. You can describe
-              evidence in your report for now.
-            </p>
-          </div>
-
-          <label className="flex cursor-pointer items-start gap-3 text-sm">
-            <input
-              type="checkbox"
-              name="allowAdminContact"
-              value="true"
-              className="mt-1"
-            />
-            <span>
-              I allow TrustDoko admins to contact me about this report for
-              follow-up. Your contact details are not shown publicly.
-            </span>
-          </label>
-
-          <button
-            type="submit"
-            disabled={isPending}
-            className="bg-primary text-primary-foreground w-full rounded-lg px-5 py-2.5 text-sm font-semibold hover:opacity-90 disabled:opacity-60 sm:w-auto"
-          >
-            {isPending ? "Submitting…" : "Submit complaint"}
-          </button>
-        </form>
-      ) : null}
-    </section>
+              {isPending ? "Submitting…" : "Submit complaint"}
+            </Button>
+          </form>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }

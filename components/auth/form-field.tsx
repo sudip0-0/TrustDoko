@@ -1,3 +1,5 @@
+import { Input } from "@/components/ui/input";
+
 type FormFieldProps = {
   id: string;
   label: string;
@@ -8,6 +10,7 @@ type FormFieldProps = {
   defaultValue?: string;
   placeholder?: string;
   errors?: string[];
+  hint?: string;
 };
 
 export function FormField({
@@ -20,13 +23,22 @@ export function FormField({
   defaultValue,
   placeholder,
   errors,
+  hint,
 }: FormFieldProps) {
+  const hasError = Boolean(errors?.[0]);
+
   return (
     <div className="space-y-1.5">
       <label htmlFor={id} className="text-foreground block text-sm font-medium">
         {label}
+        {required ? (
+          <span className="text-destructive ml-0.5" aria-hidden="true">
+            *
+          </span>
+        ) : null}
       </label>
-      <input
+      {hint ? <p className="text-muted text-xs leading-relaxed">{hint}</p> : null}
+      <Input
         id={id}
         name={name}
         type={type}
@@ -34,10 +46,11 @@ export function FormField({
         required={required}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className="border-border bg-background text-foreground focus:ring-primary/30 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2"
+        aria-invalid={hasError}
+        aria-describedby={hasError ? `${id}-error` : undefined}
       />
       {errors?.[0] ? (
-        <p className="text-sm text-red-600" role="alert">
+        <p id={`${id}-error`} className="text-destructive text-sm" role="alert">
           {errors[0]}
         </p>
       ) : null}

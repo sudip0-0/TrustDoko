@@ -2,6 +2,10 @@
 
 import { useActionState } from "react";
 
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input, Select, Textarea } from "@/components/ui/input";
+import { copy } from "@/lib/copy/messages";
 import { claimMethodLabels, claimMethods } from "@/lib/claims/method-labels";
 import {
   submitClaimAction,
@@ -23,12 +27,9 @@ export function ClaimForm({ businessSlug, businessName }: ClaimFormProps) {
 
   if (state.success) {
     return (
-      <p
-        className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900"
-        role="status"
-      >
+      <Alert variant="success" role="status">
         {state.message}
-      </p>
+      </Alert>
     );
   }
 
@@ -36,42 +37,46 @@ export function ClaimForm({ businessSlug, businessName }: ClaimFormProps) {
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="businessSlug" value={businessSlug} />
 
-      {state.error ? (
-        <p className="text-sm text-destructive" role="alert">
-          {state.error}
-        </p>
-      ) : null}
+      <p className="text-muted text-sm leading-relaxed">{copy.forms.claimHelper}</p>
+
+      {state.error ? <Alert variant="error">{state.error}</Alert> : null}
 
       <div>
         <label htmlFor="ownerName" className="text-foreground block text-sm font-medium">
-          Owner name <span className="text-red-600">*</span>
+          Owner name <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id="ownerName"
           name="ownerName"
           required
           maxLength={120}
-          className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+          className="mt-1.5"
+          aria-invalid={Boolean(state.fieldErrors?.ownerName)}
         />
         {state.fieldErrors?.ownerName ? (
-          <p className="mt-1 text-sm text-red-600">{state.fieldErrors.ownerName[0]}</p>
+          <p className="text-destructive mt-1 text-sm" role="alert">
+            {state.fieldErrors.ownerName[0]}
+          </p>
         ) : null}
       </div>
 
       <div>
         <label htmlFor="ownerEmail" className="text-foreground block text-sm font-medium">
-          Owner email <span className="text-red-600">*</span>
+          Owner email <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id="ownerEmail"
           name="ownerEmail"
           type="email"
           required
           maxLength={200}
-          className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+          className="mt-1.5"
+          aria-invalid={Boolean(state.fieldErrors?.ownerEmail)}
         />
         {state.fieldErrors?.ownerEmail ? (
-          <p className="mt-1 text-sm text-red-600">{state.fieldErrors.ownerEmail[0]}</p>
+          <p className="text-destructive mt-1 text-sm" role="alert">
+            {state.fieldErrors.ownerEmail[0]}
+          </p>
         ) : null}
       </div>
 
@@ -79,26 +84,20 @@ export function ClaimForm({ businessSlug, businessName }: ClaimFormProps) {
         <label htmlFor="ownerPhone" className="text-foreground block text-sm font-medium">
           Owner phone (optional)
         </label>
-        <input
+        <Input
           id="ownerPhone"
           name="ownerPhone"
           type="tel"
           maxLength={30}
-          className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+          className="mt-1.5"
         />
       </div>
 
       <div>
         <label htmlFor="method" className="text-foreground block text-sm font-medium">
-          Verification method <span className="text-red-600">*</span>
+          Verification method <span className="text-destructive">*</span>
         </label>
-        <select
-          id="method"
-          name="method"
-          required
-          defaultValue=""
-          className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
-        >
+        <Select id="method" name="method" required defaultValue="" className="mt-1.5">
           <option value="" disabled>
             Select how you can verify ownership
           </option>
@@ -107,54 +106,44 @@ export function ClaimForm({ businessSlug, businessName }: ClaimFormProps) {
               {claimMethodLabels[method]}
             </option>
           ))}
-        </select>
+        </Select>
         {state.fieldErrors?.method ? (
-          <p className="mt-1 text-sm text-red-600">{state.fieldErrors.method[0]}</p>
+          <p className="text-destructive mt-1 text-sm" role="alert">
+            {state.fieldErrors.method[0]}
+          </p>
         ) : null}
       </div>
 
       <div>
         <label htmlFor="message" className="text-foreground block text-sm font-medium">
-          Message <span className="text-red-600">*</span>
+          Message <span className="text-destructive">*</span>
         </label>
-        <textarea
+        <Textarea
           id="message"
           name="message"
           required
           rows={4}
           minLength={20}
           maxLength={2000}
-          placeholder={`Explain your relationship to ${businessName} and how you can verify ownership.`}
-          className="border-border bg-background mt-1.5 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+          className="mt-1.5"
+          placeholder={`Explain your relationship to ${businessName} and how TrustDoko can verify you operate this business.`}
+          aria-invalid={Boolean(state.fieldErrors?.message)}
         />
         {state.fieldErrors?.message ? (
-          <p className="mt-1 text-sm text-red-600">{state.fieldErrors.message[0]}</p>
+          <p className="text-destructive mt-1 text-sm" role="alert">
+            {state.fieldErrors.message[0]}
+          </p>
         ) : null}
       </div>
 
-      <div>
-        <label htmlFor="document" className="text-foreground block text-sm font-medium">
-          Supporting document (optional)
-        </label>
-        <input
-          id="document"
-          name="document"
-          type="file"
-          disabled
-          className="text-muted mt-1.5 w-full cursor-not-allowed text-sm opacity-60"
-        />
-        <p className="text-muted mt-1 text-xs">
-          Document upload will be available in a future update.
-        </p>
-      </div>
+      <Alert variant="info" title="Documents">
+        Supporting document upload is coming soon. Include registration details or
+        official contact channels in your message.
+      </Alert>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="bg-primary text-primary-foreground w-full rounded-lg px-5 py-2.5 text-sm font-semibold hover:opacity-90 disabled:opacity-60 sm:w-auto"
-      >
+      <Button type="submit" disabled={isPending} aria-busy={isPending} className="w-full sm:w-auto">
         {isPending ? "Submitting…" : "Submit claim request"}
-      </button>
+      </Button>
     </form>
   );
 }

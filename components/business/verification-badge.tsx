@@ -1,20 +1,13 @@
 import {
   getVerificationBadgeDisplay,
-  type VerificationBadgeDisplay,
 } from "@/lib/business/verification-display";
+import { Badge, verificationToneToBadgeVariant } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 type VerificationBadgeProps = {
   claimStatus: string;
   verificationStatus: string;
   className?: string;
-};
-
-const toneStyles: Record<VerificationBadgeDisplay["tone"], string> = {
-  neutral: "border-border bg-muted/50 text-muted-foreground",
-  claimed: "border-blue-200 bg-blue-50/80 text-blue-900",
-  verified: "border-teal-200 bg-teal-50/80 text-teal-900",
-  premium: "border-violet-200 bg-violet-50/80 text-violet-900",
 };
 
 export function VerificationBadge({
@@ -25,15 +18,13 @@ export function VerificationBadge({
   const display = getVerificationBadgeDisplay(claimStatus, verificationStatus);
 
   return (
-    <span
+    <Badge
+      variant={verificationToneToBadgeVariant(display.tone)}
+      className={cn(className)}
       title={display.description}
-      className={cn(
-        "inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium",
-        toneStyles[display.tone],
-        className,
-      )}
+      aria-label={`Verification: ${display.label}. ${display.description}`}
     >
       {display.label}
-    </span>
+    </Badge>
   );
 }

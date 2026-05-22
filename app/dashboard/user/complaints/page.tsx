@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { UserComplaintsList } from "@/components/dashboard/user-complaints-list";
 import { getSessionUser } from "@/lib/auth/session";
 import { getDashboardComplaints } from "@/server/queries/complaints";
@@ -17,14 +18,11 @@ export default async function UserComplaintsPage() {
   const complaints = await getDashboardComplaints(user);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">My complaints</h1>
-        <p className="text-muted mt-2 text-sm">
-          Serious issues you reported and how they are being handled.
-        </p>
-      </div>
+    <DashboardShell
+      title="My complaints"
+      description="Serious issues you reported and how they are being handled."
+    >
       <UserComplaintsList complaints={complaints} />
-    </div>
+    </DashboardShell>
   );
 }

@@ -16,7 +16,7 @@ export function UserSubNav() {
 
   return (
     <nav
-      className="mb-6 -mx-1 flex gap-2 overflow-x-auto border-b border-border px-1 pb-4"
+      className="-mx-1 mb-6 flex gap-2 overflow-x-auto border-b border-border px-1 pb-4"
       aria-label="Your dashboard"
     >
       {links.map((link) => {
@@ -28,10 +28,11 @@ export function UserSubNav() {
           <Link
             key={link.href}
             href={link.href}
+            aria-current={active ? "page" : undefined}
             className={
               active
-                ? "shrink-0 rounded-lg bg-teal-50 px-3 py-1.5 text-sm font-medium text-teal-900 no-underline"
-                : "text-muted shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium no-underline hover:bg-muted/40 hover:text-foreground"
+                ? "bg-primary/10 text-primary shrink-0 rounded-lg px-3 py-1.5 text-sm font-semibold no-underline"
+                : "text-muted shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium no-underline hover:bg-accent hover:text-foreground"
             }
           >
             {link.label}

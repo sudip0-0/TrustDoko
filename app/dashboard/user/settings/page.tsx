@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AccountSettingsForm } from "@/components/dashboard/account-settings-form";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getSessionUser } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
@@ -14,14 +15,11 @@ export default async function UserSettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Account settings</h1>
-        <p className="text-muted mt-2 text-sm">
-          Manage how your name appears on TrustDoko.
-        </p>
-      </div>
+    <DashboardShell
+      title="Account settings"
+      description="Manage how your name appears on TrustDoko."
+    >
       <AccountSettingsForm name={user.name} email={user.email} />
-    </div>
+    </DashboardShell>
   );
 }

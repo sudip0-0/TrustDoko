@@ -1,35 +1,31 @@
 import Link from "next/link";
 
 import { LogoutButton } from "@/components/auth/logout-button";
+import { MobileNav } from "@/components/layout/mobile-nav";
+import { NavLinks } from "@/components/layout/nav-links";
+import { ButtonLink } from "@/components/ui/button";
 import { getSessionUser } from "@/lib/auth/session";
 
 const navItems = [
   { href: "/businesses", label: "Businesses" },
-  { href: "/about", label: "About" },
-] as const;
+  { href: "/about", label: "About trust scores" },
+];
 
 export async function SiteHeader() {
   const user = await getSessionUser();
 
   return (
-    <header className="border-b border-border bg-card">
-      <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="text-foreground text-lg font-bold no-underline">
+    <header className="sticky top-0 z-40 border-b border-border bg-card/95 shadow-sm backdrop-blur-sm">
+      <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <Link
+          href="/"
+          className="font-display text-foreground text-lg font-bold no-underline"
+        >
           Trust<span className="text-primary">Doko</span>
         </Link>
-        <nav
-          className="flex items-center gap-4 sm:gap-6"
-          aria-label="Main"
-        >
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-muted text-sm font-medium no-underline hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
+
+        <div className="hidden items-center gap-5 sm:flex">
+          <NavLinks items={navItems} className="flex items-center gap-5" />
           {user ? (
             <>
               <Link
@@ -48,15 +44,22 @@ export async function SiteHeader() {
               >
                 Sign in
               </Link>
-              <Link
-                href="/register"
-                className="bg-primary text-primary-foreground rounded-lg px-3 py-1.5 text-sm font-semibold no-underline hover:opacity-90"
-              >
+              <ButtonLink href="/register" size="sm">
                 Register
-              </Link>
+              </ButtonLink>
             </>
           )}
-        </nav>
+        </div>
+
+        <MobileNav
+          items={navItems}
+          isLoggedIn={Boolean(user)}
+          userLinks={
+            user
+              ? [{ href: "/dashboard/user", label: "Dashboard" }]
+              : undefined
+          }
+        />
       </div>
     </header>
   );

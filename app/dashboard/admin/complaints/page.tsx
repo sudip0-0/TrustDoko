@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { ComplaintModerationActions } from "@/components/admin/complaint-moderation-actions";
 import { ModerationStatusBadge } from "@/components/admin/moderation-status-badge";
 import { getComplaintsForModeration } from "@/server/queries/admin/complaints";
@@ -23,7 +24,10 @@ export default async function AdminComplaintsPage() {
       </div>
 
       {complaints.length === 0 ? (
-        <p className="text-muted text-sm">No open complaints in the queue.</p>
+        <EmptyState
+          title="Queue is clear"
+          description="No open complaints waiting for admin review."
+        />
       ) : (
         <ul className="list-none space-y-6 p-0">
           {complaints.map((complaint) => (

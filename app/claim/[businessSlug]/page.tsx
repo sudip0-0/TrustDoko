@@ -3,6 +3,10 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { ClaimForm } from "@/components/claims/claim-form";
+import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/page-header";
+import { Alert } from "@/components/ui/alert";
+import { copy } from "@/lib/copy/messages";
 import { getSessionUser } from "@/lib/auth/session";
 import { formatClaimStatus } from "@/lib/business/display";
 import { prisma } from "@/lib/db";
@@ -47,33 +51,34 @@ export default async function ClaimBusinessPage({ params }: ClaimPageProps) {
     business.claimStatus === "UNCLAIMED" || business.claimStatus === "REJECTED";
 
   return (
-    <div className="mx-auto w-full max-w-lg px-4 py-16 sm:px-6">
-      <h1 className="text-2xl font-bold">Claim this business</h1>
-      <p className="text-muted mt-3 text-sm leading-relaxed">
-        Request to manage <strong>{business.name}</strong> on TrustDoko. Claims are
-        reviewed by our team before you can edit the profile or respond to reviews.
-      </p>
-      <p className="text-muted mt-2 text-sm">
+    <div className="mx-auto w-full max-w-lg px-4 py-12 sm:px-6 sm:py-16">
+      <PageHeader
+        title="Claim this business"
+        description={`Request to manage ${business.name} on TrustDoko. ${copy.forms.claimHelper}`}
+      />
+      <p className="text-muted -mt-4 text-sm">
         Current status: {formatClaimStatus(business.claimStatus)}
       </p>
 
       {canSubmit ? (
-        <div className="mt-8">
-          <ClaimForm businessSlug={business.slug} businessName={business.name} />
-        </div>
+        <Card className="mt-8">
+          <CardContent className="py-6">
+            <ClaimForm businessSlug={business.slug} businessName={business.name} />
+          </CardContent>
+        </Card>
       ) : (
-        <p className="mt-6 rounded-lg border border-border bg-card px-4 py-3 text-sm">
+        <Alert variant="warning" className="mt-8">
           {business.claimStatus === "PENDING"
             ? "A claim for this business is already under review."
-            : "This business profile is already claimed."}
-        </p>
+            : "This business profile is already claimed by an approved owner."}
+        </Alert>
       )}
 
       <Link
         href={`/businesses/${business.slug}`}
         className="text-primary mt-8 inline-block text-sm font-medium no-underline hover:underline"
       >
-        ← Back to business
+        ← Back to business profile
       </Link>
     </div>
   );

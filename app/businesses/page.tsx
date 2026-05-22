@@ -4,6 +4,9 @@ import { BusinessCard } from "@/components/business/business-card";
 import { BusinessListEmpty } from "@/components/business/business-list-empty";
 import { BusinessListFilters } from "@/components/business/business-list-filters";
 import { BusinessListPagination } from "@/components/business/business-list-pagination";
+import { ContentWidth } from "@/components/layout/content-width";
+import { PageHeader } from "@/components/ui/page-header";
+import { copy } from "@/lib/copy/messages";
 import { hasActiveBusinessFilters } from "@/lib/search/business-filters";
 import { parseBusinessListFilters } from "@/lib/validations/business-list";
 import {
@@ -33,19 +36,15 @@ export default async function BusinessesPage({
   ]);
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <header className="max-w-2xl">
-        <h1 className="text-3xl font-bold tracking-tight">Browse businesses</h1>
-        <p className="text-muted mt-3 text-sm leading-relaxed sm:text-base">
-          Compare trust scores, ratings, and complaint signals before you buy from
-          online sellers and social shops in Nepal.
-        </p>
-        <p className="text-muted mt-2 text-xs leading-relaxed sm:text-sm">
-          Trust labels (Highly Trusted, Mixed, High Risk) summarize reputation from
-          reviews and complaints — not legal findings. Search by name, city, category,
-          or social links.
-        </p>
-      </header>
+    <ContentWidth>
+      <PageHeader
+        eyebrow="Directory"
+        title="Browse businesses"
+        description="Compare trust scores, ratings, and complaint signals before you buy from online sellers and social shops in Nepal."
+      />
+      <p className="text-muted -mt-4 max-w-2xl text-sm leading-relaxed">
+        {copy.trust.communityReported} Search by name, city, category, or social links.
+      </p>
 
       <div className="mt-8 space-y-8">
         <BusinessListFilters filters={filters} options={filterOptions} />
@@ -55,8 +54,11 @@ export default async function BusinessesPage({
         ) : (
           <>
             {hasActiveBusinessFilters(filters) ? (
-              <p className="text-muted text-sm">
-                {result.total} result{result.total === 1 ? "" : "s"} found
+              <p className="text-muted text-sm" role="status">
+                <span className="text-foreground font-semibold tabular-nums">
+                  {result.total}
+                </span>{" "}
+                result{result.total === 1 ? "" : "s"} found
               </p>
             ) : null}
 
@@ -77,6 +79,6 @@ export default async function BusinessesPage({
           </>
         )}
       </div>
-    </div>
+    </ContentWidth>
   );
 }

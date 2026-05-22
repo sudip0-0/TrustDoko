@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { ClaimReviewActions } from "@/components/admin/claim-review-actions";
 import { TrustLabelBadge } from "@/components/business/trust-label-badge";
 import { resolveTrustLabelForBusiness } from "@/lib/trust-score";
@@ -27,7 +28,10 @@ export default async function AdminClaimsPage() {
       </div>
 
       {pendingClaims.length === 0 ? (
-        <p className="text-muted text-sm">No pending claims.</p>
+        <EmptyState
+          title="No pending claims"
+          description="New ownership requests will appear here for review."
+        />
       ) : (
         <ul className="list-none space-y-6 p-0">
           {pendingClaims.map((claim) => {

@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { SaveBusinessButton } from "@/components/business/save-business-button";
+import { Badge } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/ui/button";
 import type { BusinessProfileData } from "@/server/queries/business-profile";
 
 type BusinessProfileActionsProps = {
@@ -21,49 +23,41 @@ export function BusinessProfileActions({
   const isPending = business.claimStatus === "PENDING";
 
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-border bg-card p-6 sm:flex-row sm:flex-wrap">
-      <Link
-        href={`/businesses/${business.slug}#write-review`}
-        className="bg-primary text-primary-foreground inline-flex justify-center rounded-lg px-5 py-2.5 text-sm font-semibold no-underline hover:opacity-90"
-      >
+    <section
+      className="flex flex-col gap-3 rounded-xl border border-border bg-card p-6 sm:flex-row sm:flex-wrap"
+      aria-label="Actions for this business"
+    >
+      <ButtonLink href={`/businesses/${business.slug}#write-review`} size="md">
         Write a review
-      </Link>
-      <Link
+      </ButtonLink>
+      <ButtonLink
         href={`/businesses/${business.slug}#report-issue`}
-        className="inline-flex justify-center rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground no-underline hover:bg-accent"
+        variant="secondary"
+        size="md"
       >
         Report an issue
-      </Link>
+      </ButtonLink>
       {canClaim ? (
-        <Link
-          href={`/claim/${business.slug}`}
-          className="inline-flex justify-center rounded-lg border border-primary px-5 py-2.5 text-sm font-semibold text-primary no-underline hover:bg-accent"
-        >
+        <ButtonLink href={`/claim/${business.slug}`} variant="outline" size="md">
           Claim this business
-        </Link>
+        </ButtonLink>
       ) : null}
       {isPending ? (
-        <span className="inline-flex cursor-default justify-center rounded-lg border border-amber-200 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-900">
+        <Badge variant="warning" className="min-h-11 px-4 py-2.5">
           Claim pending review
-        </span>
+        </Badge>
       ) : null}
       {showSave && !viewerIsOwner ? (
-        <SaveBusinessButton
-          businessId={business.id}
-          initialSaved={initialSaved}
-        />
+        <SaveBusinessButton businessId={business.id} initialSaved={initialSaved} />
       ) : null}
       {viewerIsOwner ? (
-        <Link
-          href="/dashboard/business"
-          className="inline-flex justify-center rounded-lg border border-primary bg-primary/5 px-5 py-2.5 text-sm font-semibold text-primary no-underline hover:bg-accent"
-        >
+        <ButtonLink href="/dashboard/business" variant="outline" size="md">
           Manage my business
-        </Link>
+        </ButtonLink>
       ) : null}
       <Link
         href="/businesses"
-        className="text-muted inline-flex justify-center px-2 py-2.5 text-sm no-underline hover:text-foreground sm:ml-auto"
+        className="text-muted inline-flex min-h-11 items-center px-2 text-sm no-underline hover:text-foreground sm:ml-auto"
       >
         ← All businesses
       </Link>

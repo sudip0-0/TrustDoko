@@ -1,4 +1,4 @@
-import { TrustLabelBadge } from "@/components/business/trust-label-badge";
+import { TrustScoreDisplay } from "@/components/business/trust-score-display";
 import { VerificationBadge } from "@/components/business/verification-badge";
 import { VerificationLegend } from "@/components/business/verification-legend";
 import {
@@ -7,6 +7,7 @@ import {
   formatVerificationStatus,
 } from "@/lib/business/display";
 import { getVerificationBadgeDisplay } from "@/lib/business/verification-display";
+import { copy } from "@/lib/copy/messages";
 import { resolveTrustLabelForBusiness } from "@/lib/trust-score";
 import type { ClaimStatus } from "@prisma/client";
 import type { BusinessProfileData } from "@/server/queries/business-profile";
@@ -37,28 +38,35 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
 
   return (
     <header className="rounded-xl border border-border bg-card p-6 sm:p-8">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{business.name}</h1>
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            {business.name}
+          </h1>
           {business.category ? (
             <p className="text-muted mt-2 text-sm">{business.category.name}</p>
           ) : null}
+          <p className="text-muted mt-3 max-w-2xl text-sm leading-relaxed">
+            {copy.trust.beforeYouPay}
+          </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-foreground text-sm font-semibold tabular-nums">
-            {business.trustScore}
-            <span className="text-muted font-normal">/100</span>
-          </span>
-          <TrustLabelBadge trustLabel={trustLabel} />
-          <VerificationBadge
-            claimStatus={business.claimStatus}
-            verificationStatus={business.verificationStatus}
+        <div className="w-full shrink-0 lg:max-w-xs">
+          <TrustScoreDisplay
+            trustScore={business.trustScore}
+            trustLabel={trustLabel}
+            variant="featured"
           />
+          <div className="mt-3">
+            <VerificationBadge
+              claimStatus={business.claimStatus}
+              verificationStatus={business.verificationStatus}
+            />
+          </div>
         </div>
       </div>
 
       {business.description ? (
-        <p className="text-muted mt-4 max-w-3xl leading-relaxed">
+        <p className="text-muted mt-6 max-w-3xl leading-relaxed">
           {business.description}
         </p>
       ) : null}
@@ -109,7 +117,7 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
               href={business.websiteUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary font-medium"
+              className="text-primary font-medium no-underline hover:underline"
             >
               Website
             </a>
@@ -119,7 +127,7 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
               href={business.facebookUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary font-medium"
+              className="text-primary font-medium no-underline hover:underline"
             >
               Facebook
             </a>
@@ -129,7 +137,7 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
               href={business.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary font-medium"
+              className="text-primary font-medium no-underline hover:underline"
             >
               Instagram
             </a>
@@ -139,7 +147,7 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
               href={business.tiktokUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary font-medium"
+              className="text-primary font-medium no-underline hover:underline"
             >
               TikTok
             </a>

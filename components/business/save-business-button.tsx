@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 
+import { Button } from "@/components/ui/button";
 import { toggleSaveBusinessAction } from "@/server/actions/saved-businesses";
 
 type SaveBusinessButtonProps = {
@@ -33,14 +34,17 @@ export function SaveBusinessButton({
 
   return (
     <div className="inline-flex flex-col items-start gap-1">
-      <button
+      <Button
         type="button"
+        variant={saved ? "secondary" : "outline"}
+        size="sm"
         onClick={handleClick}
         disabled={pending}
-        className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium hover:bg-muted/40 disabled:opacity-60"
+        aria-pressed={saved}
+        aria-busy={pending}
       >
-        {pending ? "Saving…" : saved ? "Saved ✓" : "Save business"}
-      </button>
+        {pending ? "Saving…" : saved ? "Saved" : "Save business"}
+      </Button>
       {message ? (
         <span className="text-muted text-xs" role="status">
           {message}
