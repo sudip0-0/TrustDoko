@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function BusinessDashboardPage() {
   const user = await getSessionUser();
-  const businesses = user ? await getOwnedBusinesses(user.id) : [];
+  const businesses = user ? await getOwnedBusinesses(user) : [];
 
   return (
     <div className="space-y-6">

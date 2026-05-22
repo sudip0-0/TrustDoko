@@ -16,39 +16,41 @@ Dedicated user and business owner dashboards with sub-navigation, empty/loading 
 
 ## Current status summary
 
-| Area | Status |
-|------|--------|
-| Product scope | Defined in `README.md` |
-| Architecture | Defined in `ARCHITECTURE.md` |
-| Task backlog | TD-0001, TD-0002, TD-0003 **DONE** |
-| Next.js app | **Initialized** (App Router, landing page) |
-| TypeScript | **Strict** (`strict`, `noUncheckedIndexedAccess`) |
-| Tailwind CSS | **Configured** (v4, `@theme` tokens) |
-| ESLint / Prettier | **Configured** |
-| Prisma | **MVP schema v2** (`expand_mvp_schema`) |
-| PostgreSQL | **Docker** (`trustdoko-postgres`, port **5433**) |
-| Seed data | **10 categories + 12 sample businesses** |
-| Auth | **Auth.js v5** (credentials, JWT session) — TD-0103 **DONE** |
-| Zod | **Env validation** (`lib/validations/env.ts`) |
-| Git repository | Not initialized |
-| Phase 0 QA (npm) | **Passed** (2026-05-21) |
-| Milestone 1 QA (npm) | **Passed** (2026-05-21) |
-| TD-0101 / TD-0102 | **DONE** (2026-05-21) |
-| TD-0103 | **DONE** (2026-05-21) |
-| TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **140 passing** |
-| Milestone 5 QA (trust score) | **Passed** (2026-05-21) |
-| Milestone 7 (admin moderation) | **DONE** (2026-05-21) |
-| Milestone 7 QA (admin) | **Passed** (2026-05-21) |
-| User & business dashboards | **DONE** (2026-05-21) |
-| Milestone 3 (reviews) | **DONE** (2026-05-22) |
-| Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
-| Milestone 4 (complaints) | **DONE** (2026-05-22) |
-| Milestone 4 QA (complaints) | **Passed** (2026-05-22) |
-| Milestone 6 (business claims) | **DONE** (2026-05-22) |
-| Milestone 6 QA (claims) | **Passed** (2026-05-21) |
-| Milestone 5 (trust score) | **DONE** (2026-05-21) |
-| Milestone 2 QA (directory) | **Passed** (2026-05-21) |
+
+| Area                           | Status                                                       |
+| ------------------------------ | ------------------------------------------------------------ |
+| Product scope                  | Defined in `README.md`                                       |
+| Architecture                   | Defined in `ARCHITECTURE.md`                                 |
+| Task backlog                   | TD-0001, TD-0002, TD-0003 **DONE**                           |
+| Next.js app                    | **Initialized** (App Router, landing page)                   |
+| TypeScript                     | **Strict** (`strict`, `noUncheckedIndexedAccess`)            |
+| Tailwind CSS                   | **Configured** (v4, `@theme` tokens)                         |
+| ESLint / Prettier              | **Configured**                                               |
+| Prisma                         | **MVP schema v2** (`expand_mvp_schema`)                      |
+| PostgreSQL                     | **Docker** (`trustdoko-postgres`, port **5433**)             |
+| Seed data                      | **10 categories + 12 sample businesses**                     |
+| Auth                           | **Auth.js v5** (credentials, JWT session) — TD-0103 **DONE** |
+| Zod                            | **Env validation** (`lib/validations/env.ts`)                |
+| Git repository                 | Not initialized                                              |
+| Phase 0 QA (npm)               | **Passed** (2026-05-21)                                      |
+| Milestone 1 QA (npm)           | **Passed** (2026-05-21)                                      |
+| TD-0101 / TD-0102              | **DONE** (2026-05-21)                                        |
+| TD-0103                        | **DONE** (2026-05-21)                                        |
+| TD-0104                        | **DONE** (2026-05-21)                                        |
+| Unit tests (Vitest)            | **151 passing**                                              |
+| Milestone 5 QA (trust score)   | **Passed** (2026-05-21)                                      |
+| Milestone 7 (admin moderation) | **DONE** (2026-05-21)                                        |
+| Milestone 7 QA (admin)         | **Passed** (2026-05-21)                                      |
+| User & business dashboards     | **DONE** (2026-05-21)                                        |
+| Milestone 3 (reviews)          | **DONE** (2026-05-22)                                        |
+| Milestone 3 QA (reviews)       | **Passed** (2026-05-22)                                      |
+| Milestone 4 (complaints)       | **DONE** (2026-05-22)                                        |
+| Milestone 4 QA (complaints)    | **Passed** (2026-05-22)                                      |
+| Milestone 6 (business claims)  | **DONE** (2026-05-22)                                        |
+| Milestone 6 QA (claims)        | **Passed** (2026-05-21)                                      |
+| Milestone 5 (trust score)      | **DONE** (2026-05-21)                                        |
+| Milestone 2 QA (directory)     | **Passed** (2026-05-21)                                      |
+
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
 
@@ -82,13 +84,15 @@ docker-compose.yml
 
 ### Planning review (2026-05-21)
 
-| Check | Result |
-|-------|--------|
-| All six planning docs present | Yes |
-| Implementation order documented | Yes |
-| Main modules identified | Yes |
-| Assumptions documented | Yes |
-| MVP scope realistic | Yes |
+
+| Check                           | Result |
+| ------------------------------- | ------ |
+| All six planning docs present   | Yes    |
+| Implementation order documented | Yes    |
+| Main modules identified         | Yes    |
+| Assumptions documented          | Yes    |
+| MVP scope realistic             | Yes    |
+
 
 Remaining gap: git repo not initialized.
 
@@ -100,75 +104,86 @@ See `ARCHITECTURE.md` § Main modules for full table. Core MVP modules: presenta
 
 ---
 
-
 ## Short implementation plan
 
 Execute in order. Each phase should finish validation (`pnpm lint`, `pnpm typecheck`, `pnpm test` when available) before moving on.
 
 ### Phase 0 — Foundation (P0)
 
-| Step | Task ID | Outcome |
-|------|---------|---------|
-| 0.1 | TD-0001 | ~~Init Next.js~~ **DONE** |
-| 0.2 | — | Init git (optional); `.env.example` **DONE** |
-| 0.3 | TD-0003 | ~~ESLint, Prettier, typecheck~~ **DONE** |
-| 0.4 | TD-0101 | ~~Prisma + PostgreSQL~~ **DONE** (Docker, port 5433) |
-| 0.5 | TD-0102 | ~~Core schema + migration~~ **DONE** |
-| 0.6 | TD-0103 | Auth (register, login, logout, protected routes) |
-| 0.7 | TD-0104 | `lib/permissions` + tests |
+
+| Step | Task ID | Outcome                                              |
+| ---- | ------- | ---------------------------------------------------- |
+| 0.1  | TD-0001 | ~~Init Next.js~~ **DONE**                            |
+| 0.2  | —       | Init git (optional); `.env.example` **DONE**         |
+| 0.3  | TD-0003 | ~~ESLint, Prettier, typecheck~~ **DONE**             |
+| 0.4  | TD-0101 | ~~Prisma + PostgreSQL~~ **DONE** (Docker, port 5433) |
+| 0.5  | TD-0102 | ~~Core schema + migration~~ **DONE**                 |
+| 0.6  | TD-0103 | Auth (register, login, logout, protected routes)     |
+| 0.7  | TD-0104 | `lib/permissions` + tests                            |
+
 
 **Exit criteria:** App runs locally; user can sign up/login; schema migrated; lint/typecheck pass.
 
 ### Phase 1 — Public discovery (P0)
 
-| Step | Task ID | Outcome |
-|------|---------|---------|
-| 1.1 | TD-0201 | Category seed script |
-| 1.2 | TD-0202 | `/businesses` listing (pagination, empty/loading states) |
-| 1.3 | TD-0203 | Search + filters (URL query params) |
-| 1.4 | TD-0204 | `/businesses/[slug]` profile (public info, trust label placeholder) |
+
+| Step | Task ID | Outcome                                                             |
+| ---- | ------- | ------------------------------------------------------------------- |
+| 1.1  | TD-0201 | Category seed script                                                |
+| 1.2  | TD-0202 | `/businesses` listing (pagination, empty/loading states)            |
+| 1.3  | TD-0203 | Search + filters (URL query params)                                 |
+| 1.4  | TD-0204 | `/businesses/[slug]` profile (public info, trust label placeholder) |
+
 
 **Exit criteria:** Anonymous users can browse and open business profiles.
 
 ### Phase 2 — Reviews + moderation core (P0)
 
-| Step | Task ID | Outcome |
-|------|---------|---------|
-| 2.1 | TD-0301 | Review submission flow |
-| 2.2 | TD-0302 | `lib/moderation` status rules + tests |
-| 2.3 | TD-0303 | Approved reviews on profile; author sees pending state |
-| 2.4 | TD-0501 | `lib/trust-score` calculate + label + tests |
-| 2.5 | TD-0502 | Recalculate score on review/complaint/verification changes |
+
+| Step | Task ID | Outcome                                                    |
+| ---- | ------- | ---------------------------------------------------------- |
+| 2.1  | TD-0301 | Review submission flow                                     |
+| 2.2  | TD-0302 | `lib/moderation` status rules + tests                      |
+| 2.3  | TD-0303 | Approved reviews on profile; author sees pending state     |
+| 2.4  | TD-0501 | `lib/trust-score` calculate + label + tests                |
+| 2.5  | TD-0502 | Recalculate score on review/complaint/verification changes |
+
 
 **Exit criteria:** Users submit reviews; risky content queued; trust score updates deterministically.
 
 ### Phase 3 — Complaints (P0)
 
-| Step | Task ID | Outcome |
-|------|---------|---------|
-| 3.1 | TD-0401 | Complaint submission (proof optional, private by default) |
-| 3.2 | TD-0402 | Status workflow + audit logging |
-| 3.3 | TD-0403 | Public complaint summary on profile (careful wording) |
+
+| Step | Task ID | Outcome                                                   |
+| ---- | ------- | --------------------------------------------------------- |
+| 3.1  | TD-0401 | Complaint submission (proof optional, private by default) |
+| 3.2  | TD-0402 | Status workflow + audit logging                           |
+| 3.3  | TD-0403 | Public complaint summary on profile (careful wording)     |
+
 
 **Exit criteria:** Complaints submitted and moderated; no private proof on public pages.
 
 ### Phase 4 — Business ownership (P0)
 
-| Step | Task ID | Outcome |
-|------|---------|---------|
-| 4.1 | TD-0601 | Business claim request + admin review |
-| 4.2 | TD-0602 | Business dashboard (edit profile, reply to reviews/complaints) |
-| 4.3 | TD-0603 | Verification badges on profile |
+
+| Step | Task ID | Outcome                                                        |
+| ---- | ------- | -------------------------------------------------------------- |
+| 4.1  | TD-0601 | Business claim request + admin review                          |
+| 4.2  | TD-0602 | Business dashboard (edit profile, reply to reviews/complaints) |
+| 4.3  | TD-0603 | Verification badges on profile                                 |
+
 
 **Exit criteria:** Verified owners manage only their claimed businesses.
 
 ### Phase 5 — Admin + files + launch prep (P0–P1)
 
-| Step | Task ID | Outcome |
-|------|---------|---------|
-| 5.1 | TD-0701–0704 | Admin dashboard + moderation queues + audit logs |
-| 5.2 | TD-0801–0802 | File upload service; proof on review/complaint |
-| 5.3 | TD-0901–0904 | Domain tests, fake seed data, SEO metadata, security pass |
+
+| Step | Task ID      | Outcome                                                   |
+| ---- | ------------ | --------------------------------------------------------- |
+| 5.1  | TD-0701–0704 | Admin dashboard + moderation queues + audit logs          |
+| 5.2  | TD-0801–0802 | File upload service; proof on review/complaint            |
+| 5.3  | TD-0901–0904 | Domain tests, fake seed data, SEO metadata, security pass |
+
 
 **Exit criteria:** Full MVP flows in `AGENTS.md` QA list work end-to-end locally.
 
@@ -180,13 +195,15 @@ Mobile app, browser extension, badge widget, advanced fraud ML, monetization (se
 
 ## Decisions to confirm before Phase 0
 
-| Decision | Recommendation | Blocker if unresolved |
-|----------|----------------|----------------------|
-| Auth provider | Auth.js (per README) | Blocks TD-0103 |
-| Package manager | pnpm (per README) | Blocks consistent scripts |
-| Postgres host | Neon or local Docker | Blocks TD-0101 |
-| File storage | Cloudinary or S3-compatible | Blocks TD-0801 (can defer to Phase 5) |
-| shadcn/ui | Yes for faster trustworthy UI | Optional; not blocking |
+
+| Decision        | Recommendation                | Blocker if unresolved                 |
+| --------------- | ----------------------------- | ------------------------------------- |
+| Auth provider   | Auth.js (per README)          | Blocks TD-0103                        |
+| Package manager | pnpm (per README)             | Blocks consistent scripts             |
+| Postgres host   | Neon or local Docker          | Blocks TD-0101                        |
+| File storage    | Cloudinary or S3-compatible   | Blocks TD-0801 (can defer to Phase 5) |
+| shadcn/ui       | Yes for faster trustworthy UI | Optional; not blocking                |
+
 
 Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` after init.
 
@@ -194,17 +211,19 @@ Record final choices in `README.md` and close **KI-0001** in `KNOWN-ISSUES.md` a
 
 ## Risks and blockers
 
-| ID | Risk | Mitigation in plan |
-|----|------|-------------------|
-| KI-0001 | Stack not bound to code | Confirm during Phase 0.1 |
+
+| ID      | Risk                               | Mitigation in plan                                    |
+| ------- | ---------------------------------- | ----------------------------------------------------- |
+| KI-0001 | Stack not bound to code            | Confirm during Phase 0.1                              |
 | KI-0002 | Legal wording on complaints/labels | Use moderation + safe labels from day one (Phase 2–3) |
-| KI-0003 | Fake reviews | Rate limits + moderation queue in Phase 2 |
-| KI-0004 | Business impersonation | Claim verification + admin approval in Phase 4 |
-| KI-0005 | Proof file exposure | Private-by-default storage in Phase 3/5 |
-| KI-0006 | Trust score fairness | Simple formula + tests in Phase 2 |
-| KI-0007 | Moderation backlog | Start with minimal admin queues in Phase 5 |
-| — | No git repo | Init git in Phase 0.2 |
-| — | No database provisioned | Set up Postgres before TD-0101 |
+| KI-0003 | Fake reviews                       | Rate limits + moderation queue in Phase 2             |
+| KI-0004 | Business impersonation             | Claim verification + admin approval in Phase 4        |
+| KI-0005 | Proof file exposure                | Private-by-default storage in Phase 3/5               |
+| KI-0006 | Trust score fairness               | Simple formula + tests in Phase 2                     |
+| KI-0007 | Moderation backlog                 | Start with minimal admin queues in Phase 5            |
+| —       | No git repo                        | Init git in Phase 0.2                                 |
+| —       | No database provisioned            | Set up Postgres before TD-0101                        |
+
 
 ---
 
@@ -335,7 +354,7 @@ None.
 
 - `package.json`, `pnpm-lock.yaml`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`
 - `eslint.config.mjs`, `.prettierrc`, `.prettierignore`, `.env.example`, `.gitignore`
-- `app/**`, `components/**`, `lib/**`, `prisma/schema.prisma`, `server/**`, `types/**`
+- `app/`**, `components/`**, `lib/**`, `prisma/schema.prisma`, `server/**`, `types/**`
 - `README.md`, `TASKS.md`, `PROGRESS.md`
 
 #### Validation
@@ -361,18 +380,20 @@ None.
 
 #### Checklist
 
-| # | Check | Result |
-|---|--------|--------|
-| 1 | `npm install` succeeds | Pass (after clean `node_modules`; `.npmrc` added) |
-| 2 | `npm run dev` runs locally | Pass — http://localhost:3000 returns 200 |
-| 3 | TypeScript | Pass — `npx tsc --noEmit` |
-| 4 | Lint | Pass — `npm run lint` |
-| 5 | Tailwind | Pass — theme classes in rendered HTML (`text-primary`, `bg-card`, etc.) |
-| 6 | Folder structure | Pass — `app/`, `components/`, `lib/`, `prisma/`, `types/`, `server/` |
-| 7 | Environment variables | Pass — `.env.example` documents all vars |
-| 8 | README.md | Pass — setup + npm/pnpm commands |
-| 9 | PROGRESS.md | Pass — this entry |
-| 10 | Dependencies | Pass — no unnecessary packages; all deps used or required for tooling |
+
+| #   | Check                      | Result                                                                  |
+| --- | -------------------------- | ----------------------------------------------------------------------- |
+| 1   | `npm install` succeeds     | Pass (after clean `node_modules`; `.npmrc` added)                       |
+| 2   | `npm run dev` runs locally | Pass — [http://localhost:3000](http://localhost:3000) returns 200       |
+| 3   | TypeScript                 | Pass — `npx tsc --noEmit`                                               |
+| 4   | Lint                       | Pass — `npm run lint`                                                   |
+| 5   | Tailwind                   | Pass — theme classes in rendered HTML (`text-primary`, `bg-card`, etc.) |
+| 6   | Folder structure           | Pass — `app/`, `components/`, `lib/`, `prisma/`, `types/`, `server/`    |
+| 7   | Environment variables      | Pass — `.env.example` documents all vars                                |
+| 8   | README.md                  | Pass — setup + npm/pnpm commands                                        |
+| 9   | PROGRESS.md                | Pass — this entry                                                       |
+| 10  | Dependencies               | Pass — no unnecessary packages; all deps used or required for tooling   |
+
 
 #### Commands run
 
@@ -392,15 +413,17 @@ npx tsc --noEmit     # pass
 
 #### Dependency audit
 
-| Package | Verdict |
-|---------|---------|
-| `next`, `react`, `react-dom` | Required |
-| `@prisma/client`, `prisma` | Required (schema + postinstall) |
-| `zod` | Used in `lib/validations/env.ts` |
-| `clsx`, `tailwind-merge` | Used in `lib/utils.ts` |
-| `tailwindcss`, `@tailwindcss/postcss` | Required for styling |
-| `eslint*`, `prettier*` | Required for lint/format |
-| `@eslint/eslintrc` | Required for flat ESLint + Next config |
+
+| Package                               | Verdict                                |
+| ------------------------------------- | -------------------------------------- |
+| `next`, `react`, `react-dom`          | Required                               |
+| `@prisma/client`, `prisma`            | Required (schema + postinstall)        |
+| `zod`                                 | Used in `lib/validations/env.ts`       |
+| `clsx`, `tailwind-merge`              | Used in `lib/utils.ts`                 |
+| `tailwindcss`, `@tailwindcss/postcss` | Required for styling                   |
+| `eslint*`, `prettier*`                | Required for lint/format               |
+| `@eslint/eslintrc`                    | Required for flat ESLint + Next config |
+
 
 No packages removed.
 
@@ -418,7 +441,7 @@ No packages removed.
 - Implemented full Prisma schema (User, Business, Category, Review, Complaint, claims, files, audit).
 - Applied migration `20260521150137_init`.
 - Seeded 10 MVP categories.
-- Added `lib/db/health.ts`, `server/queries/health.ts`, `npm run docker:*` and `db:seed` scripts.
+- Added `lib/db/health.ts`, `server/queries/health.ts`, `npm run docker:`* and `db:seed` scripts.
 
 #### Changed files
 
@@ -451,7 +474,7 @@ No packages removed.
 - Auth.js v5 with Credentials provider (email/password, bcrypt).
 - Routes: `/login`, `/register`, `/api/auth/[...nextauth]`.
 - Server actions: `registerAction`, `loginAction`, `logoutAction`.
-- Protected `/dashboard/*` via middleware (`getToken`) + layout guard.
+- Protected `/dashboard/`* via middleware (`getToken`) + layout guard.
 - Session exposes `id`, `email`, `name`, `role` via `getSessionUser()`.
 - Header shows Sign in / Register or Dashboard / Sign out.
 
@@ -486,7 +509,7 @@ No packages removed.
 
 #### Changed files
 
-- `lib/permissions/**`, `vitest.config.ts`, `package.json`
+- `lib/permissions/`**, `vitest.config.ts`, `package.json`
 - `README.md`, `TASKS.md`, `PROGRESS.md`
 
 #### Validation
@@ -547,7 +570,7 @@ No packages removed.
 #### Changed files
 
 - `app/businesses/page.tsx`, `app/businesses/loading.tsx`, `app/businesses/[slug]/page.tsx`
-- `components/business/*`, `server/queries/businesses.ts`
+- `components/business/`*, `server/queries/businesses.ts`
 - `lib/trust-score/labels.ts`, `lib/validations/business-list.ts`
 - `TASKS.md`, `PROGRESS.md`
 
@@ -568,27 +591,29 @@ No packages removed.
 
 #### Checklist
 
-| # | Check | Result |
-|---|--------|--------|
-| 1 | Business listing `/businesses` loads | **Pass** |
-| 2 | Profile loads by slug | **Pass** (`sample-kathmandu-threads`) |
-| 3 | Search (name, city, social) | **Pass** |
-| 4 | Filters (individual + combined) | **Pass** |
-| 5 | Sort (trust, rating, reviews, newest) | **Pass** |
-| 6 | Empty state (no results) | **Pass** |
-| 7 | Loading states (listing + profile) | **Pass** |
-| 8 | Business cards show trust/rating/verification | **Pass** |
-| 9 | Profile with missing optional fields | **Pass** (null-safe components) |
-| 10 | Responsive layout | **Pass** (mobile-first grid/filters) |
-| 11 | Efficient queries | **Pass** (parallel listing fetch; `cache()` profile dedupe; single `groupBy` for complaints) |
-| 12 | PROGRESS.md updated | **Pass** (this entry) |
+
+| #   | Check                                         | Result                                                                                       |
+| --- | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 1   | Business listing `/businesses` loads          | **Pass**                                                                                     |
+| 2   | Profile loads by slug                         | **Pass** (`sample-kathmandu-threads`)                                                        |
+| 3   | Search (name, city, social)                   | **Pass**                                                                                     |
+| 4   | Filters (individual + combined)               | **Pass**                                                                                     |
+| 5   | Sort (trust, rating, reviews, newest)         | **Pass**                                                                                     |
+| 6   | Empty state (no results)                      | **Pass**                                                                                     |
+| 7   | Loading states (listing + profile)            | **Pass**                                                                                     |
+| 8   | Business cards show trust/rating/verification | **Pass**                                                                                     |
+| 9   | Profile with missing optional fields          | **Pass** (null-safe components)                                                              |
+| 10  | Responsive layout                             | **Pass** (mobile-first grid/filters)                                                         |
+| 11  | Efficient queries                             | **Pass** (parallel listing fetch; `cache()` profile dedupe; single `groupBy` for complaints) |
+| 12  | PROGRESS.md updated                           | **Pass** (this entry)                                                                        |
+
 
 #### Fixes applied during QA
 
 - Invalid URL filter params no longer 500 (Zod `.catch()` on enums/coercion).
 - `getBusinessProfile` wrapped in React `cache()` to avoid duplicate DB fetch (metadata + page).
 - Complaint counts use one `groupBy` query instead of two `count` queries.
-- Added [`app/not-found.tsx`](app/not-found.tsx) for invalid business slugs.
+- Added `[app/not-found.tsx](app/not-found.tsx)` for invalid business slugs.
 - Clean `.next` + rebuild if dev Turbopack corrupts production `next start` (missing `[turbopack]_runtime.js`).
 
 #### Commands
@@ -613,10 +638,10 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 #### Completed
 
 - Schema: `BusinessClaim` owner contact fields + `TRUSTED_SELLER` verification tier.
-- Claim flow: [`/claim/[slug]`](app/claim/[businessSlug]/page.tsx) form, profile CTA, pending banner.
+- Claim flow: `[/claim/[slug]](app/claim/[businessSlug]/page.tsx)` form, profile CTA, pending banner.
 - Actions: submit/approve/reject claims, owner profile edit, review respond, admin verification tier.
-- Owner dashboard: [`/dashboard/business`](app/dashboard/business/page.tsx) and per-business manage page.
-- Admin queue: [`/dashboard/admin/claims`](app/dashboard/admin/claims/page.tsx).
+- Owner dashboard: `[/dashboard/business](app/dashboard/business/page.tsx)` and per-business manage page.
+- Admin queue: `[/dashboard/admin/claims](app/dashboard/admin/claims/page.tsx)`.
 - Verification badges: composite display (Unverified, Claimed, Contact/Document/Social/Trusted seller) + legend.
 - Access control: owner routes use `isBusinessOwner`; profile edit and review respond actions require claimed ownership (admins use separate admin flows).
 
@@ -637,14 +662,14 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### Completed
 
-- Layout: [`app/dashboard/admin/layout.tsx`](app/dashboard/admin/layout.tsx) with `requireAdminPage` + [`AdminNav`](components/admin/admin-nav.tsx).
+- Layout: `[app/dashboard/admin/layout.tsx](app/dashboard/admin/layout.tsx)` with `requireAdminPage` + `[AdminNav](components/admin/admin-nav.tsx)`.
 - Routes: overview, reviews, complaints, claims, businesses, users.
-- Security: [`middleware.ts`](middleware.ts) blocks non-`ADMIN` on `/dashboard/admin/*`; all actions check `isAdmin`.
-- Review moderation: approve, reject, flag, under review, delete — [`moderateReviewAction`](server/actions/admin/reviews.ts).
-- Complaint moderation: status updates + private admin note — [`moderateComplaintAction`](server/actions/admin/complaints.ts).
-- Claims: existing approve/reject with audit ( [`lib/claims/approve.ts`](lib/claims/approve.ts) ).
-- User management: trust level / flag suspicious users — [`updateUserTrustLevelAction`](server/actions/admin/users.ts).
-- Audit trail: [`recordAuditLog`](lib/moderation/audit-log.ts) + overview [`AuditTrailList`](components/admin/audit-trail-list.tsx).
+- Security: `[middleware.ts](middleware.ts)` blocks non-`ADMIN` on `/dashboard/admin/`*; all actions check `isAdmin`.
+- Review moderation: approve, reject, flag, under review, delete — `[moderateReviewAction](server/actions/admin/reviews.ts)`.
+- Complaint moderation: status updates + private admin note — `[moderateComplaintAction](server/actions/admin/complaints.ts)`.
+- Claims: existing approve/reject with audit ( `[lib/claims/approve.ts](lib/claims/approve.ts)` ).
+- User management: trust level / flag suspicious users — `[updateUserTrustLevelAction](server/actions/admin/users.ts)`.
+- Audit trail: `[recordAuditLog](lib/moderation/audit-log.ts)` + overview `[AuditTrailList](components/admin/audit-trail-list.tsx)`.
 - Stats: pending reviews, complaints, claims, totals on admin home.
 
 #### Validation
@@ -664,19 +689,21 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### QA checklist (11 items)
 
-| # | Check | Result |
-|---|--------|--------|
-| 1 | Admin dashboard accessible only to admins | Pass — middleware + `requireAdminPage` layout + `requireAdminQuery` on all admin queries |
-| 2 | Normal users cannot access admin pages | Pass — `USER` role redirected to `/dashboard/user` (middleware + layout) |
-| 3 | Business owners cannot access admin pages | Pass — `BUSINESS` role same redirect; unit tests in `admin-access-qa.test.ts` |
-| 4 | Review moderation actions work | Pass — approve/reject/flag/under review/delete + transitions + audit |
-| 5 | Complaint moderation actions work | Pass — status updates + admin note + `moderateComplaintAction` |
-| 6 | Claim approval/rejection works | Pass — `approveBusinessClaim` / `rejectBusinessClaim` + audit + trust recalc |
-| 7 | Audit trail records admin actions | Pass — `recordAuditLog` + claim audit rows; overview lists recent logs |
-| 8 | Dashboard stats are accurate | Pass — pending reviews = PENDING+UNDER_REVIEW; open complaints aligned with queue; claims = PENDING |
-| 9 | Moderation updates public profile data | Pass — `revalidatePath` on business slug + listings; only APPROVED reviews on public profile |
-| 10 | Trust score recalculates after moderation | Pass — review/complaint/claim actions call `recalculateTrustScore` |
-| 11 | PROGRESS.md updated | Pass — this section |
+
+| #   | Check                                     | Result                                                                                              |
+| --- | ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 1   | Admin dashboard accessible only to admins | Pass — middleware + `requireAdminPage` layout + `requireAdminQuery` on all admin queries            |
+| 2   | Normal users cannot access admin pages    | Pass — `USER` role redirected to `/dashboard/user` (middleware + layout)                            |
+| 3   | Business owners cannot access admin pages | Pass — `BUSINESS` role same redirect; unit tests in `admin-access-qa.test.ts`                       |
+| 4   | Review moderation actions work            | Pass — approve/reject/flag/under review/delete + transitions + audit                                |
+| 5   | Complaint moderation actions work         | Pass — status updates + admin note + `moderateComplaintAction`                                      |
+| 6   | Claim approval/rejection works            | Pass — `approveBusinessClaim` / `rejectBusinessClaim` + audit + trust recalc                        |
+| 7   | Audit trail records admin actions         | Pass — `recordAuditLog` + claim audit rows; overview lists recent logs                              |
+| 8   | Dashboard stats are accurate              | Pass — pending reviews = PENDING+UNDER_REVIEW; open complaints aligned with queue; claims = PENDING |
+| 9   | Moderation updates public profile data    | Pass — `revalidatePath` on business slug + listings; only APPROVED reviews on public profile        |
+| 10  | Trust score recalculates after moderation | Pass — review/complaint/claim actions call `recalculateTrustScore`                                  |
+| 11  | PROGRESS.md updated                       | Pass — this section                                                                                 |
+
 
 #### QA fixes (session)
 
@@ -686,12 +713,14 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### Manual role access smoke
 
-| Role | `/dashboard/admin` | Expected |
-|------|-------------------|----------|
-| Unauthenticated | Redirect | `/login?callbackUrl=...` |
-| `USER` | Redirect | `/dashboard/user` |
-| `BUSINESS` | Redirect | `/dashboard/user` |
-| `ADMIN` | 200 | Admin overview with stats |
+
+| Role            | `/dashboard/admin` | Expected                  |
+| --------------- | ------------------ | ------------------------- |
+| Unauthenticated | Redirect           | `/login?callbackUrl=...`  |
+| `USER`          | Redirect           | `/dashboard/user`         |
+| `BUSINESS`      | Redirect           | `/dashboard/user`         |
+| `ADMIN`         | 200                | Admin overview with stats |
+
 
 #### Validation (QA)
 
@@ -730,20 +759,22 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### QA checklist (12 items)
 
-| # | Check | Result |
-|---|--------|--------|
-| 1 | Score always 0–100 | Pass — `clampScore` + extreme-input tests |
-| 2 | Score changes when reviews change | Pass — rating/volume tests; `recalculateTrustScore` on review actions |
-| 3 | Score changes when complaints change | Pass — complaint penalty tests; hooks on complaint actions |
-| 4 | Score improves with verification | Pass — tier bonus tests; verification/claim hooks |
-| 5 | Score improves with response behavior | Pass — response rate tests; review/complaint respond hooks |
-| 6 | Unresolved complaints reduce score | Pass — dedicated unresolved penalty test |
-| 7 | Labels match numeric ranges | Pass — boundary tests 80/65/45/25; Under Review override |
-| 8 | Explanation text understandable | Pass — educational factors (rating, complaints, verification, response) always in reasons |
-| 9 | No defamatory wording | Pass — banned-word scan over reasons/factors |
-| 10 | Displays on cards and profiles | Pass — `resolveTrustLabelForListing` / `resolveTrustLabelForBusiness`, `TrustScoreExplanation` |
-| 11 | Tests cover major scenarios | Pass — `trust-score-qa.test.ts` + calculate/labels/explanations suites |
-| 12 | PROGRESS.md updated | Pass — this section |
+
+| #   | Check                                 | Result                                                                                         |
+| --- | ------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| 1   | Score always 0–100                    | Pass — `clampScore` + extreme-input tests                                                      |
+| 2   | Score changes when reviews change     | Pass — rating/volume tests; `recalculateTrustScore` on review actions                          |
+| 3   | Score changes when complaints change  | Pass — complaint penalty tests; hooks on complaint actions                                     |
+| 4   | Score improves with verification      | Pass — tier bonus tests; verification/claim hooks                                              |
+| 5   | Score improves with response behavior | Pass — response rate tests; review/complaint respond hooks                                     |
+| 6   | Unresolved complaints reduce score    | Pass — dedicated unresolved penalty test                                                       |
+| 7   | Labels match numeric ranges           | Pass — boundary tests 80/65/45/25; Under Review override                                       |
+| 8   | Explanation text understandable       | Pass — educational factors (rating, complaints, verification, response) always in reasons      |
+| 9   | No defamatory wording                 | Pass — banned-word scan over reasons/factors                                                   |
+| 10  | Displays on cards and profiles        | Pass — `resolveTrustLabelForListing` / `resolveTrustLabelForBusiness`, `TrustScoreExplanation` |
+| 11  | Tests cover major scenarios           | Pass — `trust-score-qa.test.ts` + calculate/labels/explanations suites                         |
+| 12  | PROGRESS.md updated                   | Pass — this section                                                                            |
+
 
 #### QA fixes (session)
 
@@ -765,18 +796,20 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### QA checklist (10 items)
 
-| # | Check | Result |
-|---|--------|--------|
-| 1 | Users can submit business claim requests | Pass — `/claim/[slug]`, `submitClaimAction`, auth required |
-| 2 | Claim requests stored correctly | Pass — `BusinessClaim` fields + audit log |
-| 3 | Duplicate claims prevented | Pass — pre-check + transactional re-check for PENDING/CLAIMED |
-| 4 | Owners access only approved claimed businesses | Pass — `getOwnedBusinesses` / `getBusinessForOwnerEdit` filter `CLAIMED` + `claimedByUserId` |
-| 5 | Owners cannot edit unclaimed businesses | Pass — owner dashboard 404; `updateBusinessProfileAction` uses `isBusinessOwner` |
-| 6 | Verification badges display correctly | Pass — `getVerificationBadgeDisplay` + `VerificationBadge` + unit tests |
-| 7 | Profile edit permissions restricted | Pass — Zod allowlist + `buildOwnerUpdateData` |
-| 8 | Review/complaint responses tied to owner | Pass — `respondToReviewAction` / `respondToComplaintAction` require `isBusinessOwner` (non-admin) |
-| 9 | Admin approve/reject claims | Pass — `/dashboard/admin/claims`, `approveClaimAction` / `rejectClaimAction` |
-| 10 | PROGRESS.md updated | Pass — this section |
+
+| #   | Check                                          | Result                                                                                            |
+| --- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| 1   | Users can submit business claim requests       | Pass — `/claim/[slug]`, `submitClaimAction`, auth required                                        |
+| 2   | Claim requests stored correctly                | Pass — `BusinessClaim` fields + audit log                                                         |
+| 3   | Duplicate claims prevented                     | Pass — pre-check + transactional re-check for PENDING/CLAIMED                                     |
+| 4   | Owners access only approved claimed businesses | Pass — `getOwnedBusinesses` / `getBusinessForOwnerEdit` filter `CLAIMED` + `claimedByUserId`      |
+| 5   | Owners cannot edit unclaimed businesses        | Pass — owner dashboard 404; `updateBusinessProfileAction` uses `isBusinessOwner`                  |
+| 6   | Verification badges display correctly          | Pass — `getVerificationBadgeDisplay` + `VerificationBadge` + unit tests                           |
+| 7   | Profile edit permissions restricted            | Pass — Zod allowlist + `buildOwnerUpdateData`                                                     |
+| 8   | Review/complaint responses tied to owner       | Pass — `respondToReviewAction` / `respondToComplaintAction` require `isBusinessOwner` (non-admin) |
+| 9   | Admin approve/reject claims                    | Pass — `/dashboard/admin/claims`, `approveClaimAction` / `rejectClaimAction`                      |
+| 10  | PROGRESS.md updated                            | Pass — this section                                                                               |
+
 
 #### Permission fixes (QA session)
 
@@ -788,11 +821,13 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### Manual access-control smoke (seed users)
 
-| Role | Account | Verified |
-|------|---------|----------|
-| Normal user | Register or use any non-owner account | Cannot open `/dashboard/business/[otherId]`; can submit claim on unclaimed business |
-| Business owner | `sample-owner@trustdoko.local` | Sees `sample-valley-mobile-hub` only; can edit profile and respond to reviews/complaints |
-| Admin | `admin@trustdoko.local` | `/dashboard/admin/claims` approve/reject; no owner profile edit via owner action |
+
+| Role           | Account                               | Verified                                                                                 |
+| -------------- | ------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Normal user    | Register or use any non-owner account | Cannot open `/dashboard/business/[otherId]`; can submit claim on unclaimed business      |
+| Business owner | `sample-owner@trustdoko.local`        | Sees `sample-valley-mobile-hub` only; can edit profile and respond to reviews/complaints |
+| Admin          | `admin@trustdoko.local`               | `/dashboard/admin/claims` approve/reject; no owner profile edit via owner action         |
+
 
 #### Validation (QA)
 
@@ -808,7 +843,7 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 #### Completed
 
 - Schema: `experienceDate`, `amountRange`, `allowAdminContact`; categories `MISLEADING_PRICING`, `NO_RESPONSE`, `DUPLICATE_BUSINESS` (migration `complaint_submission_fields`).
-- Domain: `lib/complaints/*`, `lib/validations/complaint.ts`, `lib/moderation/complaint-status.ts`, status transitions + audit logging.
+- Domain: `lib/complaints/`*, `lib/validations/complaint.ts`, `lib/moderation/complaint-status.ts`, status transitions + audit logging.
 - Actions: `submitComplaintAction`, `respondToComplaintAction`, `updateComplaintStatusAction` (admin).
 - Profile: four-bucket public summary; `#report-issue` form; `/report/[slug]` redirects to profile anchor.
 - Dashboard: user complaint list with status labels.
@@ -833,20 +868,22 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### Checklist
 
-| # | Check | Result |
-|---|--------|--------|
-| 1 | Logged-in users can submit complaints | **Pass** — `submitComplaintAction` + `ComplaintForm` on profile `#report-issue` |
-| 2 | Logged-out users cannot submit complaints | **Pass** — `ComplaintSignInCta` only; server action returns sign-in error; `/dashboard` middleware |
-| 3 | Complaint validation works | **Pass** — Zod in `lib/validations/complaint.ts` (5 tests) |
-| 4 | Complaint categories are correct | **Pass** — 9 public categories + labels (`lib/complaints/__tests__/categories.test.ts`) |
-| 5 | Complaint statuses work correctly | **Pass** — initial status rules + transition map (9 tests) |
-| 6 | Private proof is not publicly visible | **Pass** — explicit selects omit `proofFileId`; disabled upload UI; no proof in profile query |
-| 7 | Business profile shows complaint summary | **Pass** — four buckets in `BusinessProfileComplaints` |
-| 8 | User dashboard shows user's own complaints | **Pass** — `getDashboardComplaints` scoped to session user |
-| 9 | Owner responds only on own claimed business | **Pass** — `canReplyToComplaint` owner-only; action + panel enforce |
-| 10 | Users cannot access others' private complaint details | **Pass** — `getUserComplaints` throws on userId mismatch; no public detail route |
-| 11 | Public wording avoids risky scam labels | **Pass** — neutral summary copy; trust label uses "High Risk" only |
-| 12 | PROGRESS.md updated | **Pass** (this entry) |
+
+| #   | Check                                                 | Result                                                                                             |
+| --- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| 1   | Logged-in users can submit complaints                 | **Pass** — `submitComplaintAction` + `ComplaintForm` on profile `#report-issue`                    |
+| 2   | Logged-out users cannot submit complaints             | **Pass** — `ComplaintSignInCta` only; server action returns sign-in error; `/dashboard` middleware |
+| 3   | Complaint validation works                            | **Pass** — Zod in `lib/validations/complaint.ts` (5 tests)                                         |
+| 4   | Complaint categories are correct                      | **Pass** — 9 public categories + labels (`lib/complaints/__tests__/categories.test.ts`)            |
+| 5   | Complaint statuses work correctly                     | **Pass** — initial status rules + transition map (9 tests)                                         |
+| 6   | Private proof is not publicly visible                 | **Pass** — explicit selects omit `proofFileId`; disabled upload UI; no proof in profile query      |
+| 7   | Business profile shows complaint summary              | **Pass** — four buckets in `BusinessProfileComplaints`                                             |
+| 8   | User dashboard shows user's own complaints            | **Pass** — `getDashboardComplaints` scoped to session user                                         |
+| 9   | Owner responds only on own claimed business           | **Pass** — `canReplyToComplaint` owner-only; action + panel enforce                                |
+| 10  | Users cannot access others' private complaint details | **Pass** — `getUserComplaints` throws on userId mismatch; no public detail route                   |
+| 11  | Public wording avoids risky scam labels               | **Pass** — neutral summary copy; trust label uses "High Risk" only                                 |
+| 12  | PROGRESS.md updated                                   | **Pass** (this entry)                                                                              |
+
 
 #### Fixes during QA
 
@@ -904,22 +941,24 @@ npm run build         # pass
 
 #### Checklist
 
-| # | Check | Result |
-|---|--------|--------|
-| 1 | Logged-in users can submit reviews | **Pass** — `submitReviewAction` + profile form |
-| 2 | Logged-out users prompted to sign in | **Pass** — `ReviewSignInCta` + login `callbackUrl` |
-| 3 | Review validation works | **Pass** — Zod in `lib/validations/review.ts` (7 tests) |
-| 4 | Approved reviews display publicly | **Pass** — `getApprovedReviewsForBusiness` filters `APPROVED` |
-| 5 | Pending reviews hidden publicly | **Pass** — excluded from public query; author sees banner |
-| 6 | Users can edit own reviews | **Pass** — `updateReviewAction` + edit form |
-| 7 | Users cannot edit others' reviews | **Pass** — `canEditReview` enforced (10 permission tests) |
-| 8 | Users can delete own reviews | **Pass** — `deleteReviewAction` |
-| 9 | Helpful vote works | **Pass** — `voteReviewHelpfulAction`; no self-votes |
-| 10 | Duplicate review prevention | **Pass** — `@@unique([businessId, userId])` + submit→update + P2002 handling |
-| 11 | Average rating updates | **Pass** — `recalculateBusinessReviewAggregates` (approved only) |
-| 12 | Review count updates | **Pass** — same aggregate helper |
-| 13 | Risky keywords → PENDING | **Pass** — `lib/moderation/review-status.ts` (5 tests) |
-| 14 | PROGRESS.md updated | **Pass** (this entry) |
+
+| #   | Check                                | Result                                                                       |
+| --- | ------------------------------------ | ---------------------------------------------------------------------------- |
+| 1   | Logged-in users can submit reviews   | **Pass** — `submitReviewAction` + profile form                               |
+| 2   | Logged-out users prompted to sign in | **Pass** — `ReviewSignInCta` + login `callbackUrl`                           |
+| 3   | Review validation works              | **Pass** — Zod in `lib/validations/review.ts` (7 tests)                      |
+| 4   | Approved reviews display publicly    | **Pass** — `getApprovedReviewsForBusiness` filters `APPROVED`                |
+| 5   | Pending reviews hidden publicly      | **Pass** — excluded from public query; author sees banner                    |
+| 6   | Users can edit own reviews           | **Pass** — `updateReviewAction` + edit form                                  |
+| 7   | Users cannot edit others' reviews    | **Pass** — `canEditReview` enforced (10 permission tests)                    |
+| 8   | Users can delete own reviews         | **Pass** — `deleteReviewAction`                                              |
+| 9   | Helpful vote works                   | **Pass** — `voteReviewHelpfulAction`; no self-votes                          |
+| 10  | Duplicate review prevention          | **Pass** — `@@unique([businessId, userId])` + submit→update + P2002 handling |
+| 11  | Average rating updates               | **Pass** — `recalculateBusinessReviewAggregates` (approved only)             |
+| 12  | Review count updates                 | **Pass** — same aggregate helper                                             |
+| 13  | Risky keywords → PENDING             | **Pass** — `lib/moderation/review-status.ts` (5 tests)                       |
+| 14  | PROGRESS.md updated                  | **Pass** (this entry)                                                        |
+
 
 #### Fixes during QA
 
@@ -954,14 +993,16 @@ npm run build         # pass
 - Restored `next` to `^15.1.0`, removed `openssl` dependency, ran clean `npm install`.
 - Added npm `overrides` so nested deps cannot pin Next 9.
 
-#### Smoke test (dev on http://localhost:3000)
+#### Smoke test (dev on [http://localhost:3000](http://localhost:3000))
 
-| Route | Status |
-|-------|--------|
-| `/`, `/businesses`, search, profile, invalid slug | 200 |
-| `/login`, `/register`, `/about` | 200 |
-| `/api/auth/session` | 200 (`null` when logged out) |
-| Server logs | No `[auth][error]` JWT errors |
+
+| Route                                             | Status                        |
+| ------------------------------------------------- | ----------------------------- |
+| `/`, `/businesses`, search, profile, invalid slug | 200                           |
+| `/login`, `/register`, `/about`                   | 200                           |
+| `/api/auth/session`                               | 200 (`null` when logged out)  |
+| Server logs                                       | No `[auth][error]` JWT errors |
+
 
 #### Validation
 
@@ -1031,18 +1072,20 @@ Full Phase 1 / Milestone 1 sign-off (foundation + database + auth + permissions)
 
 #### Checklist
 
-| # | Check | Result |
-|---|--------|--------|
-| 1 | `npm install` | **Pass** |
-| 2 | `npm run dev` | **Pass** (app ready; uses port 3001 if 3000 is busy) |
-| 3 | `npx tsc --noEmit` | **Pass** |
-| 4 | `npm run lint` | **Pass** |
-| 5 | Tailwind | **Pass** (`text-primary`, `bg-card` in rendered HTML) |
-| 6 | Folder structure | **Pass** (`app/`, `components/`, `lib/`, `prisma/`, `server/`, `types/`) |
-| 7 | Environment variables | **Pass** (`.env.example` documents DB, auth, Cloudinary) |
-| 8 | README.md | **Pass** (Docker, npm commands, auth routes) |
-| 9 | PROGRESS.md | **Pass** (this entry) |
-| 10 | Dependencies | **Pass** (removed deprecated `@types/bcryptjs`; all others justified) |
+
+| #   | Check                 | Result                                                                   |
+| --- | --------------------- | ------------------------------------------------------------------------ |
+| 1   | `npm install`         | **Pass**                                                                 |
+| 2   | `npm run dev`         | **Pass** (app ready; uses port 3001 if 3000 is busy)                     |
+| 3   | `npx tsc --noEmit`    | **Pass**                                                                 |
+| 4   | `npm run lint`        | **Pass**                                                                 |
+| 5   | Tailwind              | **Pass** (`text-primary`, `bg-card` in rendered HTML)                    |
+| 6   | Folder structure      | **Pass** (`app/`, `components/`, `lib/`, `prisma/`, `server/`, `types/`) |
+| 7   | Environment variables | **Pass** (`.env.example` documents DB, auth, Cloudinary)                 |
+| 8   | README.md             | **Pass** (Docker, npm commands, auth routes)                             |
+| 9   | PROGRESS.md           | **Pass** (this entry)                                                    |
+| 10  | Dependencies          | **Pass** (removed deprecated `@types/bcryptjs`; all others justified)    |
+
 
 #### Commands run
 
@@ -1062,15 +1105,17 @@ npm test             # pass (28 tests)
 
 #### Dependency audit
 
-| Package | Verdict |
-|---------|---------|
-| `next`, `react`, `react-dom` | Required |
-| `next-auth`, `bcryptjs` | Auth (TD-0103) |
-| `@prisma/client`, `prisma` | Database |
-| `zod` | Validation |
-| `clsx`, `tailwind-merge` | UI utilities |
-| `vitest`, `tsx` | Tests + seed |
-| Tooling (eslint, prettier, tailwind, typescript) | Required |
+
+| Package                                          | Verdict        |
+| ------------------------------------------------ | -------------- |
+| `next`, `react`, `react-dom`                     | Required       |
+| `next-auth`, `bcryptjs`                          | Auth (TD-0103) |
+| `@prisma/client`, `prisma`                       | Database       |
+| `zod`                                            | Validation     |
+| `clsx`, `tailwind-merge`                         | UI utilities   |
+| `vitest`, `tsx`                                  | Tests + seed   |
+| Tooling (eslint, prettier, tailwind, typescript) | Required       |
+
 
 Removed: `@types/bcryptjs` (bcryptjs ships its own types).
 
@@ -1107,7 +1152,7 @@ Removed: `@types/bcryptjs` (bcryptjs ships its own types).
 
 #### Key files
 
-- `app/dashboard/user/**`, `app/dashboard/business/**`
+- `app/dashboard/user/`**, `app/dashboard/business/`**
 - `components/dashboard/*`, `components/business/save-business-button.tsx`, `owner-business-overview.tsx`, `owner-verification-section.tsx`
 - `server/queries/user-dashboard.ts`, `saved-businesses.ts`
 - `server/actions/account.ts`, `saved-businesses.ts`
@@ -1124,6 +1169,55 @@ npm run build      # pass
 #### Next suggested task
 
 - **TD-0801:** File uploads for claim/verification evidence.
+
+---
+
+### 2026-05-21 - Dashboard quality check (QA)
+
+#### Checklist
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | User dashboard shows only current user's reviews | **Pass** — `getUserReviews(userId, requesterId)` throws on mismatch; pages use `sessionUser.id` |
+| 2 | User dashboard shows only current user's complaints | **Pass** — `getDashboardComplaints` → `getUserComplaints` with same guard |
+| 3 | User dashboard empty states | **Pass** — `UserReviewsList`, `UserComplaintsList`, `SavedBusinessList`, business list `EmptyState` |
+| 4 | Business dashboard shows only claimed businesses | **Pass** — `getOwnedBusinesses(viewer)` filters `CLAIMED` + `claimedByUserId` |
+| 5 | Owner cannot view another owner's dashboard data | **Pass** — `getBusinessForOwnerEdit` + `notFound()`; owner panels return null for non-owners |
+| 6 | Business profile edits validated | **Pass** — `updateBusinessProfileSchema` + `isBusinessOwner` on action; unit tests added |
+| 7 | Review responses work | **Pass** — `respondToReviewAction` owner-only; seed adds approved review on Valley Mobile Hub for owner response UI |
+| 8 | Complaint responses work | **Pass** — `respondToComplaintAction` + `canReplyToComplaint` (owner only) |
+| 9 | Trust score explanation visible | **Pass** — `TrustScoreExplanation` on owner manage page |
+| 10 | Dashboard works on mobile | **Pass** — responsive grids, `overflow-x-auto` sub-nav, `min-h-11` empty-state actions |
+| 11 | PROGRESS.md updated | **Pass** (this section) |
+
+#### Permission fixes (QA session)
+
+- `respondToReviewAction`: removed admin bypass; owner-only replies on dashboard/public profile.
+- `getOwnerComplaintsForBusiness`: verifies `businessId` matches ownership record before returning data.
+- `getOwnedBusinesses`: accepts `SessionUser` only (no arbitrary `userId` parameter).
+- `OwnerReviewsPanel`: returns null when viewer is not the claimed owner.
+- User overview: `notFound()` when profile summary requester mismatch.
+- Seed: passwords for manual login (`trustdoko12`); `sample-unclaimed-owner@trustdoko.local` for owner-without-claim QA.
+
+#### Manual smoke (seed accounts, password `trustdoko12`)
+
+| Role | Account | Verified |
+|------|---------|----------|
+| Normal user | `sample-reviewer@trustdoko.local` | `/dashboard/user` scoped data; `/dashboard/business/[id]` → **404** |
+| Business owner (claimed) | `sample-owner@trustdoko.local` | Manage page shows trust explanation, profile edit, complaint response forms |
+| Business owner (no claim) | `sample-unclaimed-owner@trustdoko.local` | `/dashboard/business` empty state; manage URL → **404** |
+| Admin | `admin@trustdoko.local` | `/dashboard/admin` OK; owner manage URL → **404** (no cross-owner access) |
+
+All accounts use password **`trustdoko12`** after `npm run db:seed`.
+
+#### Validation (QA)
+
+```bash
+npm run lint       # pass
+npm run typecheck  # pass
+npm test           # pass (151)
+npm run build      # pass
+```
 
 ---
 
@@ -1152,3 +1246,4 @@ npm run build      # pass
 ### Next suggested task
 - Next task
 ```
+

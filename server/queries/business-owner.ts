@@ -48,12 +48,12 @@ function parseTrustScoreReasons(value: unknown): string[] | null {
 }
 
 export async function getOwnedBusinesses(
-  userId: string,
+  viewer: SessionUser,
 ): Promise<OwnedBusinessListItem[]> {
   const businesses = await prisma.business.findMany({
     where: {
       claimStatus: ClaimStatus.CLAIMED,
-      claimedByUserId: userId,
+      claimedByUserId: viewer.id,
     },
     orderBy: { name: "asc" },
     select: {

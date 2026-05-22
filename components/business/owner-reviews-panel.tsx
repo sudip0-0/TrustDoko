@@ -51,8 +51,12 @@ export async function OwnerReviewsPanel({
   sessionUser,
   business,
 }: OwnerReviewsPanelProps) {
+  if (!isBusinessOwner(sessionUser, business)) {
+    return null;
+  }
+
   const { reviews } = await getApprovedReviewsForBusiness(businessId, 1);
-  const allowRespond = isBusinessOwner(sessionUser, business);
+  const allowRespond = true;
 
   if (reviews.length === 0) {
     return (

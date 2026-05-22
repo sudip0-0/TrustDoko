@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 import { NotificationsPanel } from "@/components/dashboard/notifications-panel";
 import { ProfileSummaryCard } from "@/components/dashboard/profile-summary-card";
@@ -25,7 +26,7 @@ export default async function UserDashboardOverviewPage() {
   ]);
 
   if (!profile) {
-    return null;
+    notFound();
   }
 
   return (

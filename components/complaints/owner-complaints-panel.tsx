@@ -1,5 +1,6 @@
 import type { ClaimStatus } from "@prisma/client";
 
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { OwnerComplaintResponseForm } from "@/components/complaints/owner-complaint-response-form";
 import {
   canReplyToComplaint,
@@ -69,11 +70,21 @@ export async function OwnerComplaintsPanel({
     business,
   );
 
-  if (complaints.length === 0) {
-    return null;
-  }
-
   const allowRespond = canReplyToComplaint(sessionUser, business);
+
+  if (complaints.length === 0) {
+    return (
+      <section className="rounded-xl border border-border bg-card p-6">
+        <h2 className="text-xl font-semibold">Complaints on {businessName}</h2>
+        <div className="mt-4">
+          <EmptyState
+            title="No open complaints"
+            description="When community members report issues on your business, they appear here so you can respond."
+          />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="rounded-xl border border-border bg-card p-6">

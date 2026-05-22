@@ -9,7 +9,12 @@ import {
   VerificationStatus,
 } from "@prisma/client";
 
+import { hashPassword } from "../lib/auth/password";
+
 const prisma = new PrismaClient();
+
+/** Shared dev password for seeded accounts (see README / PROGRESS dashboard QA). */
+const SEED_USER_PASSWORD = "trustdoko12";
 
 const categories = [
   {
@@ -301,6 +306,12 @@ async function main() {
       title: "Good momos",
       body: "Tasted fresh and well packed. Slightly late delivery during rain.",
     },
+    {
+      businessSlug: "sample-valley-mobile-hub",
+      rating: 4,
+      title: "Fair pricing on accessories",
+      body: "Bought a phone case and screen guard. Items matched the listing and arrived within a week.",
+    },
   ] as const;
 
   for (const item of sampleReviews) {
@@ -378,6 +389,16 @@ async function main() {
     },
   });
 
+  const unclaimedOwner = await prisma.user.upsert({
+    where: { email: "sample-unclaimed-owner@trustdoko.local" },
+    update: { name: "Unclaimed Owner (QA)", role: "BUSINESS" },
+    create: {
+      email: "sample-unclaimed-owner@trustdoko.local",
+      name: "Unclaimed Owner (QA)",
+      role: "BUSINESS",
+    },
+  });
+
   const valleyMobile = await prisma.business.findUnique({
     where: { slug: "sample-valley-mobile-hub" },
     select: { id: true },
@@ -432,6 +453,17 @@ async function main() {
   });
 
   void sampleAdmin;
+
+  const seedPasswordHash = await hashPassword(SEED_USER_PASSWORD);
+  for (const account of [reviewer, sampleOwner, unclaimedOwner, sampleAdmin]) {
+    await prisma.user.update({
+      where: { id: account.id },
+      data: { passwordHash: seedPasswordHash },
+    });
+  }
+  console.log(
+    `Set seed login password "${SEED_USER_PASSWORD}" for reviewer, owner, and admin accounts.`,
+  );
 
   await prisma.complaint.deleteMany({
     where: {

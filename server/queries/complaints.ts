@@ -90,7 +90,23 @@ export async function getOwnerComplaintsForBusiness(
     claimStatus: ClaimStatus;
   },
 ): Promise<OwnerComplaintListItem[]> {
-  if (!canViewBusinessComplaints(viewer, business)) {
+  const record = await prisma.business.findUnique({
+    where: { id: businessId },
+    select: { claimedByUserId: true, claimStatus: true },
+  });
+
+  if (!record) {
+    return [];
+  }
+
+  if (
+    record.claimedByUserId !== business.claimedByUserId ||
+    record.claimStatus !== business.claimStatus
+  ) {
+    return [];
+  }
+
+  if (!canViewBusinessComplaints(viewer, record)) {
     return [];
   }
 
