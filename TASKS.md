@@ -534,60 +534,60 @@ Acceptance criteria:
 
 ### TD-0701: Create admin dashboard shell
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Admin-only route exists
-- [ ] Non-admin users blocked server-side
-- [ ] Dashboard navigation exists
-- [ ] Basic metrics shown
+- [x] Admin-only route exists
+- [x] Non-admin users blocked server-side
+- [x] Dashboard navigation exists
+- [x] Basic metrics shown
 
 ---
 
 ### TD-0702: Add review moderation queue
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Admin can view pending/flagged reviews
-- [ ] Admin can approve review
-- [ ] Admin can reject review
-- [ ] Admin can mark review under review
-- [ ] Audit log records action
+- [x] Admin can view pending/flagged reviews
+- [x] Admin can approve review
+- [x] Admin can reject review
+- [x] Admin can mark review under review
+- [x] Audit log records action
 
 ---
 
 ### TD-0703: Add complaint moderation queue
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Admin can view complaints
-- [ ] Admin can update complaint status
-- [ ] Admin can add private note
+- [x] Admin can view complaints
+- [x] Admin can update complaint status
+- [x] Admin can add private note
 - [ ] Admin can view proof files securely
-- [ ] Audit log records action
+- [x] Audit log records action
 
 ---
 
 ### TD-0704: Add business claim moderation queue
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Admin can view pending claims
-- [ ] Admin can approve claim
-- [ ] Admin can reject claim
-- [ ] Business ownership updates on approval
-- [ ] Audit log records action
+- [x] Admin can view pending claims
+- [x] Admin can approve claim
+- [x] Admin can reject claim
+- [x] Business ownership updates on approval
+- [x] Audit log records action
 
 ---
 

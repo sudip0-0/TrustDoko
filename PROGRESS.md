@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 5 (trust score) — complete.**
+**Milestone 7 (admin moderation) — complete.**
 
-Deterministic trust score engine with explanations, recalculation hooks, and UI on cards, profiles, and admin. Next: admin moderation UI (TD-0703) or search enhancements.
+Admin dashboard with review, complaint, claim, business, and user queues; server-side route protection; audit trail. Next: file uploads (TD-0801) or search enhancements.
 
 ---
 
@@ -36,8 +36,9 @@ Deterministic trust score engine with explanations, recalculation hooks, and UI 
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **128 passing** |
+| Unit tests (Vitest) | **131 passing** |
 | Milestone 5 QA (trust score) | **Passed** (2026-05-21) |
+| Milestone 7 (admin moderation) | **DONE** (2026-05-21) |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 4 (complaints) | **DONE** (2026-05-22) |
@@ -626,7 +627,34 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### Next suggested task
 
-- **TD-0703:** Admin moderation UI.
+- **TD-0801:** File upload service.
+
+---
+
+### 2026-05-21 - Milestone 7: Admin dashboard and moderation (TD-0701–0704)
+
+#### Completed
+
+- Layout: [`app/dashboard/admin/layout.tsx`](app/dashboard/admin/layout.tsx) with `requireAdminPage` + [`AdminNav`](components/admin/admin-nav.tsx).
+- Routes: overview, reviews, complaints, claims, businesses, users.
+- Security: [`middleware.ts`](middleware.ts) blocks non-`ADMIN` on `/dashboard/admin/*`; all actions check `isAdmin`.
+- Review moderation: approve, reject, flag, under review, delete — [`moderateReviewAction`](server/actions/admin/reviews.ts).
+- Complaint moderation: status updates + private admin note — [`moderateComplaintAction`](server/actions/admin/complaints.ts).
+- Claims: existing approve/reject with audit ( [`lib/claims/approve.ts`](lib/claims/approve.ts) ).
+- User management: trust level / flag suspicious users — [`updateUserTrustLevelAction`](server/actions/admin/users.ts).
+- Audit trail: [`recordAuditLog`](lib/moderation/audit-log.ts) + overview [`AuditTrailList`](components/admin/audit-trail-list.tsx).
+- Stats: pending reviews, complaints, claims, totals on admin home.
+
+#### Validation
+
+- `npm test`: pass
+- `npm run typecheck`: pass
+- `npm run lint`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0801:** Secure proof file viewing for admins.
 
 ---
 

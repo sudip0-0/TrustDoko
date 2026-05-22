@@ -164,6 +164,7 @@ export async function submitClaimAction(
   revalidatePath(`/businesses/${business.slug}`);
   revalidatePath(`/claim/${business.slug}`);
   revalidatePath("/dashboard/user");
+  revalidatePath("/dashboard/admin");
   revalidatePath("/dashboard/admin/claims");
 
   return {
@@ -203,6 +204,7 @@ export async function approveClaimAction(
       revalidatePath("/dashboard/business");
       revalidatePath(`/dashboard/business/${claim.businessId}`);
     }
+    revalidatePath("/dashboard/admin");
     revalidatePath("/dashboard/admin/claims");
     return { success: true, message: "Claim approved." };
   } catch {
@@ -235,6 +237,7 @@ export async function rejectClaimAction(
     if (claim?.business.slug) {
       revalidatePath(`/businesses/${claim.business.slug}`);
     }
+    revalidatePath("/dashboard/admin");
     revalidatePath("/dashboard/admin/claims");
     return { success: true, message: "Claim rejected." };
   } catch {

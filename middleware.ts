@@ -16,6 +16,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  if (request.nextUrl.pathname.startsWith("/dashboard/admin")) {
+    if (!token) {
+      const loginUrl = new URL("/login", request.nextUrl.origin);
+      loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    if (token.role !== "ADMIN") {
+      return NextResponse.redirect(
+        new URL("/dashboard/user", request.nextUrl.origin),
+      );
+    }
+  }
+
   return NextResponse.next();
 }
 

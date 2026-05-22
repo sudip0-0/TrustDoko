@@ -21,10 +21,10 @@ export function DashboardNav({ user }: DashboardNavProps) {
       </Link>
       {isAdmin(user) ? (
         <Link
-          href="/dashboard/admin/claims"
+          href="/dashboard/admin"
           className="text-muted font-medium no-underline hover:text-primary"
         >
-          Admin: Claims
+          Admin
         </Link>
       ) : null}
     </nav>
