@@ -135,6 +135,16 @@ describe("calculateTrustScore", () => {
     expect(result.label.key).toBe("UNDER_REVIEW");
   });
 
+  it("increases score when average rating improves with same review count", () => {
+    const lower = calculateTrustScore(
+      baseInput({ averageRating: 2.5, reviewCount: 5 }),
+    );
+    const higher = calculateTrustScore(
+      baseInput({ averageRating: 4.8, reviewCount: 5 }),
+    );
+    expect(higher.score).toBeGreaterThan(lower.score);
+  });
+
   it("always clamps score between 0 and 100", () => {
     const high = calculateTrustScore(
       baseInput({

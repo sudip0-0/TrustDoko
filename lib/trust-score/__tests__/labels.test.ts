@@ -32,4 +32,11 @@ describe("getTrustLabelFromScore", () => {
       getTrustLabelFromResult(90, { underReview: true }).label,
     ).toBe(UNDER_REVIEW_LABEL.label);
   });
+
+  it("matches label thresholds at boundaries", () => {
+    expect(getTrustLabelFromScore(79).key).toBe("TRUSTED");
+    expect(getTrustLabelFromScore(64).key).toBe("MIXED");
+    expect(getTrustLabelFromScore(44).key).toBe("RISKY");
+    expect(getTrustLabelFromScore(24).key).toBe("HIGH_RISK");
+  });
 });

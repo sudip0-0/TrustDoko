@@ -23,6 +23,13 @@ function clampScore(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
+function clampUnit(value: number): number {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.max(0, Math.min(1, value));
+}
+
 function verificationBonus(status: VerificationStatus): number {
   switch (status) {
     case VerificationStatus.CONTACT_VERIFIED:
@@ -70,6 +77,16 @@ function resolveUnderReview(input: TrustScoreInput): boolean {
 }
 
 export function calculateTrustScore(input: TrustScoreInput): TrustScoreResult {
+  const responseRate = clampUnit(input.responseRate);
+  const profileCompleteness = clampUnit(input.profileCompleteness);
+  const averageRating = Math.min(5, Math.max(0, input.averageRating));
+  const reviewCount = Math.max(0, Math.floor(input.reviewCount));
+  const complaintCount = Math.max(0, Math.floor(input.complaintCount));
+  const unresolvedComplaintCount = Math.max(
+    0,
+    Math.floor(input.unresolvedComplaintCount),
+  );
+
   const factors: TrustScoreFactor[] = [];
   let score = TRUST_SCORE_BASE;
 
@@ -79,14 +96,13 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScoreResult {
     description: `Starting from a neutral baseline of ${TRUST_SCORE_BASE} points.`,
   });
 
-  if (input.reviewCount >= 1) {
-    const ratingImpact =
-      (Math.min(5, Math.max(0, input.averageRating)) / 5) * RATING_MAX_POINTS;
+  if (reviewCount >= 1) {
+    const ratingImpact = (averageRating / 5) * RATING_MAX_POINTS;
     score += ratingImpact;
     factors.push({
       key: "RATING",
       impact: ratingImpact,
-      description: `Average community rating is ${input.averageRating.toFixed(1)} out of 5 across ${input.reviewCount} approved review${input.reviewCount === 1 ? "" : "s"} (${ratingImpact >= 0 ? "helps" : "lowers"} score).`,
+      description: `Average community rating is ${averageRating.toFixed(1)} out of 5 across ${reviewCount} approved review${reviewCount === 1 ? "" : "s"} (${ratingImpact >= 0 ? "helps" : "lowers"} score).`,
     });
   } else {
     factors.push({
@@ -97,25 +113,22 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScoreResult {
     });
   }
 
-  const volumeImpact = Math.min(
-    REVIEW_VOLUME_MAX_POINTS,
-    input.reviewCount * 2,
-  );
+  const volumeImpact = Math.min(REVIEW_VOLUME_MAX_POINTS, reviewCount * 2);
   if (volumeImpact > 0) {
     score += volumeImpact;
     factors.push({
       key: "REVIEW_VOLUME",
       impact: volumeImpact,
-      description: `${input.reviewCount} approved review${input.reviewCount === 1 ? "" : "s"} add context from the community (helps score).`,
+      description: `${reviewCount} approved review${reviewCount === 1 ? "" : "s"} add context from the community (helps score).`,
     });
   }
 
   let complaintPenalty = 0;
-  if (input.complaintCount > 0) {
-    complaintPenalty += Math.min(12, input.complaintCount * 3);
+  if (complaintCount > 0) {
+    complaintPenalty += Math.min(12, complaintCount * 3);
   }
-  if (input.unresolvedComplaintCount > 0) {
-    complaintPenalty += Math.min(10, input.unresolvedComplaintCount * 4);
+  if (unresolvedComplaintCount > 0) {
+    complaintPenalty += Math.min(10, unresolvedComplaintCount * 4);
   }
   if (input.highSeverityOpenCount > 0) {
     complaintPenalty += Math.min(8, input.highSeverityOpenCount * 4);
@@ -126,9 +139,9 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScoreResult {
     factors.push({
       key: "COMPLAINTS",
       impact: -complaintPenalty,
-      description: `${input.complaintCount} community report${input.complaintCount === 1 ? "" : "s"} on file, including ${input.unresolvedComplaintCount} still open (lowers score).`,
+      description: `${complaintCount} community report${complaintCount === 1 ? "" : "s"} on file, including ${unresolvedComplaintCount} still open (lowers score).`,
     });
-  } else if (input.complaintCount === 0) {
+  } else if (complaintCount === 0) {
     factors.push({
       key: "COMPLAINTS",
       impact: 0,
@@ -146,14 +159,13 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScoreResult {
     description: verificationDescription(input.verificationStatus),
   });
 
-  const responseImpact =
-    input.responseRate * RESPONSE_RATE_MAX_POINTS;
+  const responseImpact = responseRate * RESPONSE_RATE_MAX_POINTS;
   if (responseImpact > 0) {
     score += responseImpact;
     factors.push({
       key: "RESPONSE_RATE",
       impact: responseImpact,
-      description: `The business responded to ${Math.round(input.responseRate * 100)}% of eligible reviews and complaints (helps score).`,
+      description: `The business responded to ${Math.round(responseRate * 100)}% of eligible reviews and complaints (helps score).`,
     });
   } else {
     factors.push({
@@ -165,13 +177,13 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScoreResult {
   }
 
   const completenessImpact =
-    input.profileCompleteness * PROFILE_COMPLETENESS_MAX_POINTS;
+    profileCompleteness * PROFILE_COMPLETENESS_MAX_POINTS;
   if (completenessImpact > 0) {
     score += completenessImpact;
     factors.push({
       key: "PROFILE_COMPLETENESS",
       impact: completenessImpact,
-      description: `Public profile details are ${Math.round(input.profileCompleteness * 100)}% complete (helps score).`,
+      description: `Public profile details are ${Math.round(profileCompleteness * 100)}% complete (helps score).`,
     });
   } else {
     factors.push({

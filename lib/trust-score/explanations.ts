@@ -1,4 +1,12 @@
-import type { TrustScoreFactor } from "./types";
+import type { TrustScoreFactor, TrustScoreFactorKey } from "./types";
+
+/** Always show these factors so explanations stay understandable. */
+const EDUCATIONAL_FACTOR_KEYS = new Set<TrustScoreFactorKey>([
+  "RATING",
+  "COMPLAINTS",
+  "VERIFICATION",
+  "RESPONSE_RATE",
+]);
 
 /** Public-facing neutral copy derived from factor breakdown. */
 export function buildTrustScoreReasons(factors: TrustScoreFactor[]): string[] {
@@ -8,7 +16,8 @@ export function buildTrustScoreReasons(factors: TrustScoreFactor[]): string[] {
     if (factor.key === "BASE") {
       continue;
     }
-    if (Math.abs(factor.impact) < 0.01) {
+    const isEducational = EDUCATIONAL_FACTOR_KEYS.has(factor.key);
+    if (Math.abs(factor.impact) < 0.01 && !isEducational) {
       continue;
     }
     reasons.push(factor.description);

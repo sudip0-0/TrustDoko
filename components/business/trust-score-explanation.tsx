@@ -31,8 +31,8 @@ export function TrustScoreExplanation({
         legal finding or guarantee of safety.
       </p>
       <ul className="text-muted mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed">
-        {items.map((reason) => (
-          <li key={reason}>{reason}</li>
+        {items.map((reason, index) => (
+          <li key={`${index}-${reason.slice(0, 32)}`}>{reason}</li>
         ))}
       </ul>
       <p className="text-muted mt-4 text-xs leading-relaxed">

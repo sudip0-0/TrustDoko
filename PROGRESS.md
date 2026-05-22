@@ -36,7 +36,8 @@ Deterministic trust score engine with explanations, recalculation hooks, and UI 
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **114 passing** |
+| Unit tests (Vitest) | **128 passing** |
+| Milestone 5 QA (trust score) | **Passed** (2026-05-21) |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 4 (complaints) | **DONE** (2026-05-22) |
@@ -650,6 +651,41 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 #### Next suggested task
 
 - **TD-0703:** Admin moderation UI.
+
+---
+
+### 2026-05-21 - Milestone 5 QA: Trust score quality check
+
+#### QA checklist (12 items)
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | Score always 0–100 | Pass — `clampScore` + extreme-input tests |
+| 2 | Score changes when reviews change | Pass — rating/volume tests; `recalculateTrustScore` on review actions |
+| 3 | Score changes when complaints change | Pass — complaint penalty tests; hooks on complaint actions |
+| 4 | Score improves with verification | Pass — tier bonus tests; verification/claim hooks |
+| 5 | Score improves with response behavior | Pass — response rate tests; review/complaint respond hooks |
+| 6 | Unresolved complaints reduce score | Pass — dedicated unresolved penalty test |
+| 7 | Labels match numeric ranges | Pass — boundary tests 80/65/45/25; Under Review override |
+| 8 | Explanation text understandable | Pass — educational factors (rating, complaints, verification, response) always in reasons |
+| 9 | No defamatory wording | Pass — banned-word scan over reasons/factors |
+| 10 | Displays on cards and profiles | Pass — `resolveTrustLabelForListing` / `resolveTrustLabelForBusiness`, `TrustScoreExplanation` |
+| 11 | Tests cover major scenarios | Pass — `trust-score-qa.test.ts` + calculate/labels/explanations suites |
+| 12 | PROGRESS.md updated | Pass — this section |
+
+#### QA fixes (session)
+
+- Clamp `responseRate`, `profileCompleteness`, `averageRating`, and counts in `calculateTrustScore`.
+- Clamp `responseRate` in `gatherTrustScoreInputs`.
+- Explanations always include key educational factors at zero impact.
+- Stable list keys in `TrustScoreExplanation`.
+
+#### Validation (QA)
+
+- `npm test`: pass
+- `npm run lint`: pass
+- `npm run typecheck`: pass
+- `npm run build`: pass
 
 ---
 

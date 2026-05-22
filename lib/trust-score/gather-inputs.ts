@@ -108,8 +108,10 @@ export async function gatherTrustScoreInputs(
 
   const eligibleTotal = eligibleReviews + eligibleComplaints;
   const respondedTotal = reviewsWithResponse + complaintsWithResponse;
-  const responseRate =
-    eligibleTotal > 0 ? respondedTotal / eligibleTotal : 0;
+  const responseRate = Math.min(
+    1,
+    Math.max(0, eligibleTotal > 0 ? respondedTotal / eligibleTotal : 0),
+  );
 
   const recentCutoff = new Date();
   recentCutoff.setDate(recentCutoff.getDate() - 90);
