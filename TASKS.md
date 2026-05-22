@@ -595,30 +595,30 @@ Acceptance criteria:
 
 ### TD-0801: Add file upload service
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Acceptance criteria:
 
-- [ ] Upload service exists
-- [ ] MIME type validation exists
-- [ ] File size limit exists
-- [ ] Private/public visibility stored
-- [ ] Proof uploads default to private
+- [x] Upload service exists
+- [x] MIME type validation exists
+- [x] File size limit exists
+- [x] Private/public visibility stored
+- [x] Proof uploads default to private
 
 ---
 
 ### TD-0802: Attach proof to review and complaint
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Acceptance criteria:
 
-- [ ] User can upload proof during review if enabled
-- [ ] User can upload proof during complaint
-- [ ] Proof is not publicly displayed
-- [ ] Admin can access proof
+- [x] User can upload proof during review if enabled
+- [x] User can upload proof during complaint
+- [x] Proof is not publicly displayed
+- [x] Admin can access proof
 
 ---
 

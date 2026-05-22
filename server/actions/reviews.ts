@@ -1,6 +1,6 @@
 "use server";
 
-import { Prisma, ReviewStatus } from "@prisma/client";
+import { FilePurpose, Prisma, ReviewStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { getSessionUser } from "@/lib/auth/session";
@@ -10,6 +10,7 @@ import { canDeleteReview, canEditReview } from "@/lib/permissions/review";
 import { recalculateBusinessReviewAggregates } from "@/lib/reviews/aggregates";
 import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import { isReviewRateLimited } from "@/lib/reviews/rate-limit";
+import { processProofUploadFromFormData } from "@/lib/storage/process-proof";
 import { prisma } from "@/lib/db";
 import {
   parseReviewFormData,
@@ -114,6 +115,20 @@ export async function submitReviewAction(
     };
   }
 
+  const proofResult = await processProofUploadFromFormData({
+    formData,
+    ownerUserId: user.id,
+    purpose: FilePurpose.REVIEW_PROOF,
+    businessId: business.id,
+  });
+
+  if (!proofResult.ok) {
+    if ("fieldErrors" in proofResult) {
+      return { fieldErrors: proofResult.fieldErrors };
+    }
+    return { error: proofResult.error };
+  }
+
   const reviewData = buildReviewData(parsed.data);
 
   try {
@@ -122,6 +137,9 @@ export async function submitReviewAction(
         businessId: business.id,
         userId: user.id,
         ...reviewData,
+        ...(proofResult.proofFileId
+          ? { proofFileId: proofResult.proofFileId }
+          : {}),
       },
     });
   } catch (error) {
@@ -191,11 +209,30 @@ export async function updateReviewAction(
     return { error: "You can only edit your own reviews." };
   }
 
+  const proofResult = await processProofUploadFromFormData({
+    formData,
+    ownerUserId: user.id,
+    purpose: FilePurpose.REVIEW_PROOF,
+    businessId: review.businessId,
+  });
+
+  if (!proofResult.ok) {
+    if ("fieldErrors" in proofResult) {
+      return { fieldErrors: proofResult.fieldErrors };
+    }
+    return { error: proofResult.error };
+  }
+
   const reviewData = buildReviewData(parsed.data);
 
   await prisma.review.update({
     where: { id: review.id },
-    data: reviewData,
+    data: {
+      ...reviewData,
+      ...(proofResult.proofFileId
+        ? { proofFileId: proofResult.proofFileId }
+        : {}),
+    },
   });
 
   await recalculateBusinessReviewAggregates(review.businessId);

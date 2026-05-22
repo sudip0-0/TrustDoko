@@ -15,6 +15,7 @@ export type AdminComplaintRow = {
   authorEmail: string;
   businessName: string;
   businessSlug: string;
+  proofFileId: string | null;
 };
 
 const OPEN_STATUSES: ComplaintStatus[] = [
@@ -45,6 +46,7 @@ export async function getComplaintsForModeration(
       status: true,
       severity: true,
       adminNote: true,
+      proofFileId: true,
       createdAt: true,
       user: { select: { email: true } },
       business: { select: { name: true, slug: true } },
@@ -62,5 +64,6 @@ export async function getComplaintsForModeration(
     authorEmail: c.user.email,
     businessName: c.business.name,
     businessSlug: c.business.slug,
+    proofFileId: c.proofFileId,
   }));
 }

@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 
 import { FormField } from "@/components/auth/form-field";
+import { ProofFileField } from "@/components/forms/proof-file-field";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,12 +32,14 @@ type ReviewFormProps = {
   businessSlug: string;
   businessName: string;
   viewerReview?: ViewerReview | null;
+  proofUploadEnabled?: boolean;
 };
 
 export function ReviewForm({
   businessSlug,
   businessName,
   viewerReview,
+  proofUploadEnabled = false,
 }: ReviewFormProps) {
   const isEdit = Boolean(viewerReview);
   const [submitState, submitAction, isSubmitting] = useActionState(
@@ -74,7 +77,11 @@ export function ReviewForm({
           </Alert>
         ) : null}
 
-        <form action={submitAction} className="mt-6 space-y-5">
+        <form
+          action={submitAction}
+          encType={proofUploadEnabled ? "multipart/form-data" : undefined}
+          className="mt-6 space-y-5"
+        >
           <input type="hidden" name="businessSlug" value={businessSlug} />
           {isEdit && viewerReview ? (
             <input type="hidden" name="reviewId" value={viewerReview.id} />
@@ -195,9 +202,10 @@ export function ReviewForm({
             I would recommend this business
           </label>
 
-          <Alert variant="info" title="Photo proof">
-            {copy.forms.proofComingSoon}
-          </Alert>
+          <ProofFileField
+            enabled={proofUploadEnabled}
+            errors={state.fieldErrors?.proof}
+          />
 
           <Button
             type="submit"

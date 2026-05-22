@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminProofLink } from "@/components/admin/admin-proof-link";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ComplaintModerationActions } from "@/components/admin/complaint-moderation-actions";
 import { ModerationStatusBadge } from "@/components/admin/moderation-status-badge";
@@ -18,8 +19,8 @@ export default async function AdminComplaintsPage() {
       <div>
         <h2 className="text-lg font-semibold">Complaint moderation queue</h2>
         <p className="text-muted mt-1 text-sm">
-          Open community reports. Update status and add private admin notes.
-          Proof files remain private until a dedicated secure viewer is added.
+          Open community reports. Update status, add private admin notes, and
+          view attached proof when provided.
         </p>
       </div>
 
@@ -58,6 +59,11 @@ export default async function AdminComplaintsPage() {
                 <p className="text-muted mt-2 rounded-md bg-muted/30 px-3 py-2 text-sm">
                   <span className="font-medium">Admin note:</span>{" "}
                   {complaint.adminNote}
+                </p>
+              ) : null}
+              {complaint.proofFileId ? (
+                <p className="mt-3">
+                  <AdminProofLink proofFileId={complaint.proofFileId} />
                 </p>
               ) : null}
               <ComplaintModerationActions

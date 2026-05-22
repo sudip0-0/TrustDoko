@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**UI/UX overhaul — complete.**
+**Milestone 8 (file upload) — complete.**
 
-Cohesive design system (tokens + `components/ui`), refreshed public pages, trust score display, unified forms/alerts, dashboard shell, empty/loading/error patterns, and accessibility pass. Next: file uploads (TD-0801) or search enhancements.
+Cloudinary-backed private proof uploads for reviews and complaints, admin signed URL viewer, MIME/size validation. Next: search enhancements or Milestone 9 quality/launch pass.
 
 ---
 
@@ -43,6 +43,7 @@ Cohesive design system (tokens + `components/ui`), refreshed public pages, trust
 | Milestone 7 QA (admin)         | **Passed** (2026-05-21)                                      |
 | User & business dashboards     | **DONE** (2026-05-21)                                        |
 | UI/UX overhaul                 | **DONE** (2026-05-21)                                        |
+| Milestone 8 (file upload)      | **DONE** (2026-05-21)                                        |
 | Milestone 3 (reviews)          | **DONE** (2026-05-22)                                        |
 | Milestone 3 QA (reviews)       | **Passed** (2026-05-22)                                      |
 | Milestone 4 (complaints)       | **DONE** (2026-05-22)                                        |
@@ -1262,6 +1263,42 @@ npm run build      # pass
 ```
 
 Seed password for manual QA: **`trustdoko12`**.
+
+---
+
+## Milestone 8 — File upload (2026-05-21)
+
+### TD-0801 / TD-0802
+
+| Deliverable | Location |
+|-------------|----------|
+| Cloudinary SDK + env | `cloudinary` package; `CLOUDINARY_*` in `.env` / [`lib/validations/env.ts`](lib/validations/env.ts) |
+| Storage module | [`lib/storage/`](lib/storage/) — validate, upload, signed URLs, permissions |
+| Review proof | [`server/actions/reviews.ts`](server/actions/reviews.ts) submit/update |
+| Complaint proof | [`server/actions/complaints.ts`](server/actions/complaints.ts) submit |
+| Forms | [`components/forms/proof-file-field.tsx`](components/forms/proof-file-field.tsx); multipart when `isStorageConfigured()` |
+| Admin viewer | [`app/api/admin/proof/[fileAssetId]/route.ts`](app/api/admin/proof/[fileAssetId]/route.ts); links on admin review/complaint queues |
+
+**Rules:** JPEG/PNG/WebP/PDF, max 5 MB, `FileVisibility.PRIVATE`, Cloudinary `type: private`. Public/owner queries still omit `proofFileId` (see [`lib/complaints/selects.ts`](lib/complaints/selects.ts)).
+
+### Manual test checklist
+
+1. Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` in `.env`.
+2. Submit complaint with image proof → success; public profile has no proof URL.
+3. Submit review with PDF proof → admin queue shows **View proof** (signed redirect).
+4. Oversized or `.exe` file → field error, no DB row.
+5. Logged-out or non-admin hitting `/api/admin/proof/...` → 403.
+
+### Validation
+
+```bash
+npm run lint       # pass
+npm run typecheck  # pass
+npm test           # pass (155)
+npm run build      # pass
+```
+
+**Follow-on:** claim document upload (`BusinessClaim.documentFileId`), orphan asset cleanup on replace, TD-0703 full owner proof access, TD-0904 security review.
 
 ---
 

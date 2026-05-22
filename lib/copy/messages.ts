@@ -31,6 +31,17 @@ export const copy = {
       "Claim this profile if you operate the business. TrustDoko verifies claims before you can edit the profile or respond publicly.",
     proofComingSoon:
       "Photo proof uploads are coming soon. For now, describe your experience in detail.",
+    proofHelper:
+      "Optional: attach a receipt, chat screenshot, or PDF (JPEG, PNG, WebP, or PDF — max 5 MB). Proof is private and only visible to TrustDoko moderators.",
+    proofInvalidType:
+      "That file type is not supported. Use JPEG, PNG, WebP, or PDF.",
+    proofTooLarge: "That file is too large. Maximum size is 5 MB.",
+    proofEmpty: "The selected file is empty. Choose another file or continue without proof.",
+    proofUploadFailed:
+      "We could not upload your file. Try again in a moment or submit without proof.",
+    proofStorageUnavailable:
+      "File uploads are not available right now. You can still submit your report without proof.",
+    proofHasFile: "Proof file attached (moderators only)",
   },
   empty: {
     businesses:

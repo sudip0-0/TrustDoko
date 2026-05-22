@@ -19,6 +19,7 @@ import { ReviewForm } from "@/components/reviews/review-form";
 import { ReviewPendingBanner } from "@/components/reviews/review-pending-banner";
 import { ReviewSignInCta } from "@/components/reviews/review-sign-in-cta";
 import { getSessionUser } from "@/lib/auth/session";
+import { isStorageConfigured } from "@/lib/storage/config";
 import { isBusinessOwner } from "@/lib/permissions/business";
 import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
 import { getBusinessProfile } from "@/server/queries/business-profile";
@@ -82,6 +83,8 @@ export default async function BusinessProfilePage({
       })
     : false;
 
+  const proofUploadEnabled = isStorageConfigured();
+
   return (
     <ContentWidth size="lg" className="space-y-6 py-10">
       <BusinessProfileHeader business={business} />
@@ -108,6 +111,7 @@ export default async function BusinessProfilePage({
             businessSlug={business.slug}
             businessName={business.name}
             viewerReview={viewerReview}
+            proofUploadEnabled={proofUploadEnabled}
           />
         </div>
       ) : (
@@ -129,6 +133,7 @@ export default async function BusinessProfilePage({
         <ComplaintForm
           businessSlug={business.slug}
           businessName={business.name}
+          proofUploadEnabled={proofUploadEnabled}
         />
       ) : (
         <ComplaintSignInCta businessSlug={business.slug} />

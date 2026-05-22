@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { ProofFileField } from "@/components/forms/proof-file-field";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,9 +26,14 @@ const initialState: ComplaintActionState = {};
 type ComplaintFormProps = {
   businessSlug: string;
   businessName: string;
+  proofUploadEnabled?: boolean;
 };
 
-export function ComplaintForm({ businessSlug, businessName }: ComplaintFormProps) {
+export function ComplaintForm({
+  businessSlug,
+  businessName,
+  proofUploadEnabled = false,
+}: ComplaintFormProps) {
   const [state, formAction, isPending] = useActionState(
     submitComplaintAction,
     initialState,
@@ -54,7 +60,11 @@ export function ComplaintForm({ businessSlug, businessName }: ComplaintFormProps
         ) : null}
 
         {!state.success ? (
-          <form action={formAction} className="mt-6 space-y-5">
+          <form
+            action={formAction}
+            encType={proofUploadEnabled ? "multipart/form-data" : undefined}
+            className="mt-6 space-y-5"
+          >
             <input type="hidden" name="businessSlug" value={businessSlug} />
 
             <div>
@@ -144,10 +154,10 @@ export function ComplaintForm({ businessSlug, businessName }: ComplaintFormProps
               </Select>
             </div>
 
-            <Alert variant="info" title="Proof documents">
-              File uploads are coming soon. Include order IDs, chat screenshots, or payment
-              references in your description for now.
-            </Alert>
+            <ProofFileField
+              enabled={proofUploadEnabled}
+              errors={state.fieldErrors?.proof}
+            />
 
             <label className="flex cursor-pointer items-start gap-3 text-sm">
               <input

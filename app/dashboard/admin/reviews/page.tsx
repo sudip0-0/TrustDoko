@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminProofLink } from "@/components/admin/admin-proof-link";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ModerationStatusBadge } from "@/components/admin/moderation-status-badge";
 import { ReviewModerationActions } from "@/components/admin/review-moderation-actions";
@@ -57,6 +58,11 @@ export default async function AdminReviewsPage() {
               <p className="text-muted mt-2 text-sm leading-relaxed">
                 {review.body}
               </p>
+              {review.proofFileId ? (
+                <p className="mt-3">
+                  <AdminProofLink proofFileId={review.proofFileId} />
+                </p>
+              ) : null}
               <div className="mt-4">
                 <ReviewModerationActions reviewId={review.id} />
               </div>

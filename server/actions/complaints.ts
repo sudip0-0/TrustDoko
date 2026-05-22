@@ -1,6 +1,6 @@
 "use server";
 
-import { ComplaintStatus, Prisma } from "@prisma/client";
+import { ComplaintStatus, FilePurpose, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { recalculateBusinessComplaintCount } from "@/lib/complaints/aggregates";
@@ -9,6 +9,7 @@ import { isComplaintRateLimited } from "@/lib/complaints/rate-limit";
 import { getComplaintSeverity } from "@/lib/complaints/severity";
 import { canTransitionComplaintStatus } from "@/lib/complaints/status-transitions";
 import { getSessionUser } from "@/lib/auth/session";
+import { processProofUploadFromFormData } from "@/lib/storage/process-proof";
 import { prisma } from "@/lib/db";
 import { determineInitialComplaintStatus } from "@/lib/moderation/complaint-status";
 import { isAdmin } from "@/lib/permissions/admin";
@@ -105,6 +106,20 @@ export async function submitComplaintAction(
   const severity = getComplaintSeverity(parsed.data.category);
   const summary = buildComplaintSummary(parsed.data.description);
 
+  const proofResult = await processProofUploadFromFormData({
+    formData,
+    ownerUserId: user.id,
+    purpose: FilePurpose.COMPLAINT_PROOF,
+    businessId: business.id,
+  });
+
+  if (!proofResult.ok) {
+    if ("fieldErrors" in proofResult) {
+      return { fieldErrors: proofResult.fieldErrors };
+    }
+    return { error: proofResult.error };
+  }
+
   const complaint = await prisma.complaint.create({
     data: {
       businessId: business.id,
@@ -117,6 +132,9 @@ export async function submitComplaintAction(
       allowAdminContact: parsed.data.allowAdminContact ?? false,
       status,
       severity,
+      ...(proofResult.proofFileId
+        ? { proofFileId: proofResult.proofFileId }
+        : {}),
     },
     select: { id: true },
   });

@@ -17,6 +17,7 @@ export type AdminReviewRow = {
   businessId: string;
   businessName: string;
   businessSlug: string;
+  proofFileId: string | null;
 };
 
 export async function getReviewsForModeration(
@@ -39,6 +40,7 @@ export async function getReviewsForModeration(
       title: true,
       body: true,
       status: true,
+      proofFileId: true,
       createdAt: true,
       user: { select: { name: true, email: true } },
       business: { select: { id: true, name: true, slug: true } },
@@ -57,5 +59,6 @@ export async function getReviewsForModeration(
     businessId: r.business.id,
     businessName: r.business.name,
     businessSlug: r.business.slug,
+    proofFileId: r.proofFileId,
   }));
 }
