@@ -374,16 +374,21 @@ Public owner replies live on `BusinessResponse` (linked by `reviewId`), not inli
 id
 businessId
 userId
-category
-summary
+category (includes MISLEADING_PRICING, NO_RESPONSE, DUPLICATE_BUSINESS)
+summary (auto-truncated from description)
 description
+experienceDate
+amountRange (optional enum)
+allowAdminContact
 status: SUBMITTED | UNDER_REVIEW | BUSINESS_RESPONDED | RESOLVED | UNRESOLVED | REJECTED
 severity: LOW | MEDIUM | HIGH
-proofFileId
+proofFileId (private; UI placeholder until TD-0802)
 adminNote
 createdAt
 updatedAt
 ```
+
+Public profile shows aggregate counts only (`total`, `resolved`, `underReview`, `unresolved`) — neutral wording, no scam labels. Proof and admin notes are never exposed on public pages.
 
 Public owner replies live on `BusinessResponse` (linked by `complaintId`).
 

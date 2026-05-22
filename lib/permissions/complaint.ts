@@ -29,3 +29,10 @@ export function canViewComplaint(
   }
   return canManageBusiness(user, business);
 }
+
+export function canReplyToComplaint(
+  user: SessionUser | null | undefined,
+  business: BusinessOwnershipFields,
+): boolean {
+  return canManageBusiness(user, business);
+}

@@ -18,7 +18,7 @@ export function BusinessProfileActions({ business }: BusinessProfileActionsProps
         Write a review
       </Link>
       <Link
-        href={`/report/${business.slug}`}
+        href={`/businesses/${business.slug}#report-issue`}
         className="inline-flex justify-center rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground no-underline hover:bg-accent"
       >
         Report an issue

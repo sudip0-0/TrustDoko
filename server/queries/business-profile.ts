@@ -1,6 +1,6 @@
-import { ComplaintStatus, ReviewStatus } from "@prisma/client";
 import { cache } from "react";
 
+import { buildComplaintSummaryFromCounts } from "@/lib/complaints/summary";
 import { prisma } from "@/lib/db";
 
 export type BusinessProfileData = {
@@ -19,6 +19,7 @@ export type BusinessProfileData = {
   instagramUrl: string | null;
   tiktokUrl: string | null;
   claimStatus: string;
+  claimedByUserId: string | null;
   verificationStatus: string;
   trustScore: number;
   averageRating: number;
@@ -29,6 +30,7 @@ export type BusinessProfileData = {
     total: number;
     unresolved: number;
     resolved: number;
+    underReview: number;
   };
 };
 
@@ -52,23 +54,12 @@ async function fetchBusinessProfile(
     _count: { _all: true },
   });
 
-  const unresolvedStatuses = new Set<ComplaintStatus>([
-    ComplaintStatus.SUBMITTED,
-    ComplaintStatus.UNDER_REVIEW,
-    ComplaintStatus.BUSINESS_RESPONDED,
-    ComplaintStatus.UNRESOLVED,
-  ]);
-
-  let unresolved = 0;
-  let resolved = 0;
-  for (const row of complaintCounts) {
-    const count = row._count._all;
-    if (row.status === ComplaintStatus.RESOLVED) {
-      resolved = count;
-    } else if (unresolvedStatuses.has(row.status)) {
-      unresolved += count;
-    }
-  }
+  const complaintSummary = buildComplaintSummaryFromCounts(
+    complaintCounts.map((row) => ({
+      status: row.status,
+      count: row._count._all,
+    })),
+  );
 
   return {
     id: business.id,
@@ -86,17 +77,14 @@ async function fetchBusinessProfile(
     instagramUrl: business.instagramUrl,
     tiktokUrl: business.tiktokUrl,
     claimStatus: business.claimStatus,
+    claimedByUserId: business.claimedByUserId,
     verificationStatus: business.verificationStatus,
     trustScore: business.trustScore,
     averageRating: business.averageRating,
     reviewCount: business.reviewCount,
-    complaintCount: business.complaintCount,
+    complaintCount: complaintSummary.total,
     category: business.category,
-    complaintSummary: {
-      total: business.complaintCount,
-      unresolved,
-      resolved,
-    },
+    complaintSummary,
   };
 }
 

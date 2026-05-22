@@ -1,4 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import {
+  ComplaintCategory,
+  ComplaintSeverity,
+  ComplaintStatus,
+  PrismaClient,
+} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -328,6 +333,148 @@ async function main() {
   }
 
   console.log(`Seeded ${sampleReviews.length} sample approved reviews.`);
+
+  const sampleOwner = await prisma.user.upsert({
+    where: { email: "sample-owner@trustdoko.local" },
+    update: { name: "Sample Business Owner", role: "BUSINESS" },
+    create: {
+      email: "sample-owner@trustdoko.local",
+      name: "Sample Business Owner",
+      role: "BUSINESS",
+    },
+  });
+
+  const valleyMobile = await prisma.business.findUnique({
+    where: { slug: "sample-valley-mobile-hub" },
+    select: { id: true },
+  });
+
+  if (valleyMobile) {
+    await prisma.business.update({
+      where: { id: valleyMobile.id },
+      data: {
+        claimStatus: "CLAIMED",
+        claimedByUserId: sampleOwner.id,
+      },
+    });
+  }
+
+  await prisma.complaint.deleteMany({
+    where: {
+      business: {
+        slug: {
+          in: ["sample-valley-mobile-hub", "sample-kathmandu-threads"],
+        },
+      },
+    },
+  });
+
+  const sampleComplaints = [
+    {
+      businessSlug: "sample-valley-mobile-hub",
+      userId: reviewer.id,
+      category: ComplaintCategory.NON_DELIVERY,
+      summary: "Phone order never arrived after two weeks of promises.",
+      description:
+        "I paid in advance for a smartphone in January and the seller stopped replying after the second week. No tracking number was provided.",
+      status: ComplaintStatus.SUBMITTED,
+      severity: ComplaintSeverity.MEDIUM,
+      daysAgo: 12,
+    },
+    {
+      businessSlug: "sample-valley-mobile-hub",
+      userId: reviewer.id,
+      category: ComplaintCategory.FAKE_PRODUCT,
+      summary: "Received a counterfeit device that failed activation.",
+      description:
+        "The IMEI did not validate and the packaging differed from the official brand. Seller refused a refund when I raised fraud concerns.",
+      status: ComplaintStatus.UNDER_REVIEW,
+      severity: ComplaintSeverity.HIGH,
+      daysAgo: 8,
+    },
+    {
+      businessSlug: "sample-valley-mobile-hub",
+      userId: reviewer.id,
+      category: ComplaintCategory.REFUND_ISSUE,
+      summary: "Refund promised but not processed after return.",
+      description:
+        "I returned a defective charger and was told a refund would arrive within 7 days. It has been over a month with no payment.",
+      status: ComplaintStatus.RESOLVED,
+      severity: ComplaintSeverity.MEDIUM,
+      daysAgo: 30,
+    },
+    {
+      businessSlug: "sample-valley-mobile-hub",
+      userId: reviewer.id,
+      category: ComplaintCategory.NO_RESPONSE,
+      summary: "No reply to multiple messages about order status.",
+      description:
+        "I messaged on Instagram and email five times over two weeks about a pending order. No response at all.",
+      status: ComplaintStatus.UNRESOLVED,
+      severity: ComplaintSeverity.MEDIUM,
+      daysAgo: 20,
+    },
+    {
+      businessSlug: "sample-kathmandu-threads",
+      userId: reviewer.id,
+      category: ComplaintCategory.MISLEADING_PRICING,
+      summary: "Checkout price higher than advertised on social media.",
+      description:
+        "The Instagram post showed NPR 1,200 per item but at checkout I was charged NPR 1,800 without explanation. Support did not clarify.",
+      status: ComplaintStatus.RESOLVED,
+      severity: ComplaintSeverity.MEDIUM,
+      daysAgo: 45,
+    },
+  ] as const;
+
+  for (const item of sampleComplaints) {
+    const business = await prisma.business.findUnique({
+      where: { slug: item.businessSlug },
+      select: { id: true },
+    });
+    if (!business) {
+      continue;
+    }
+
+    const experienceDate = new Date();
+    experienceDate.setDate(experienceDate.getDate() - item.daysAgo);
+
+    await prisma.complaint.create({
+      data: {
+        businessId: business.id,
+        userId: item.userId,
+        category: item.category,
+        summary: item.summary,
+        description: item.description,
+        experienceDate,
+        status: item.status,
+        severity: item.severity,
+        allowAdminContact: true,
+      },
+    });
+  }
+
+  for (const slug of ["sample-valley-mobile-hub", "sample-kathmandu-threads"]) {
+    const business = await prisma.business.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+    if (!business) {
+      continue;
+    }
+    const count = await prisma.complaint.count({
+      where: {
+        businessId: business.id,
+        status: { not: ComplaintStatus.REJECTED },
+      },
+    });
+    await prisma.business.update({
+      where: { id: business.id },
+      data: { complaintCount: count },
+    });
+  }
+
+  console.log(`Seeded ${sampleComplaints.length} sample complaints.`);
 }
 
 main()

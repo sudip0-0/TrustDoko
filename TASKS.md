@@ -378,23 +378,23 @@ Acceptance criteria:
 
 ### TD-0401: Create complaint submission flow
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Authenticated user can submit complaint
-- [ ] Complaint category is required
-- [ ] Description is required
-- [ ] Proof upload is optional
-- [ ] Complaint starts with `SUBMITTED` or `UNDER_REVIEW`
-- [ ] Complaint is visible to submitter in dashboard
+- [x] Authenticated user can submit complaint
+- [x] Complaint category is required
+- [x] Description is required
+- [x] Proof upload is optional
+- [x] Complaint starts with `SUBMITTED` or `UNDER_REVIEW`
+- [x] Complaint is visible to submitter in dashboard
 
 ---
 
 ### TD-0402: Add complaint status workflow
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Statuses:
@@ -410,25 +410,25 @@ REJECTED
 
 Acceptance criteria:
 
-- [ ] Status transitions are controlled
-- [ ] Admin can change status
-- [ ] Business can respond but not arbitrarily resolve alone
-- [ ] Status changes are logged
+- [x] Status transitions are controlled
+- [x] Admin can change status
+- [x] Business can respond but not arbitrarily resolve alone
+- [x] Status changes are logged
 
 ---
 
 ### TD-0403: Show complaint summary on business profile
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Acceptance criteria:
 
-- [ ] Shows number of public/moderated complaints
-- [ ] Shows unresolved complaint count
-- [ ] Does not expose private proof
-- [ ] Does not expose admin notes
-- [ ] Uses careful wording
+- [x] Shows number of public/moderated complaints
+- [x] Shows unresolved complaint count
+- [x] Does not expose private proof
+- [x] Does not expose admin notes
+- [x] Uses careful wording
 
 ---
 

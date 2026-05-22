@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getSessionUser } from "@/lib/auth/session";
+import { getUserComplaints } from "@/server/queries/complaints";
 import { getUserReviews } from "@/server/queries/reviews";
 
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ function formatStatus(status: string): string {
 
 export default async function UserDashboardPage() {
   const user = await getSessionUser();
-  const reviews = user ? await getUserReviews(user.id) : [];
+  const [reviews, complaints] = user
+    ? await Promise.all([getUserReviews(user.id), getUserComplaints(user.id)])
+    : [[], []];
 
   return (
     <div className="space-y-6">
@@ -65,9 +68,43 @@ export default async function UserDashboardPage() {
       </section>
 
       <section className="rounded-xl border border-border bg-card p-6">
+        <h2 className="text-lg font-semibold">Your complaints</h2>
+        {complaints.length === 0 ? (
+          <p className="text-muted mt-3 text-sm">
+            You have not filed any complaints yet.{" "}
+            <Link href="/businesses" className="text-primary no-underline hover:underline">
+              Browse businesses
+            </Link>{" "}
+            to report a serious issue.
+          </p>
+        ) : (
+          <ul className="mt-4 list-none space-y-3 p-0">
+            {complaints.map((complaint) => (
+              <li
+                key={complaint.id}
+                className="border-b border-border pb-3 last:border-0 last:pb-0"
+              >
+                <Link
+                  href={`/businesses/${complaint.businessSlug}#report-issue`}
+                  className="text-foreground font-medium no-underline hover:text-primary"
+                >
+                  {complaint.businessName}
+                </Link>
+                <p className="text-muted mt-1 text-sm">
+                  {complaint.categoryLabel} · {complaint.statusLabel}
+                </p>
+                <p className="text-muted mt-1 line-clamp-2 text-xs">
+                  {complaint.summary}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-6">
         <h2 className="text-lg font-semibold">Coming soon</h2>
         <ul className="text-muted mt-3 list-inside list-disc space-y-1 text-sm">
-          <li>Your complaint reports</li>
           <li>Account settings</li>
         </ul>
       </section>

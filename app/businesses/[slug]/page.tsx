@@ -1,3 +1,4 @@
+import type { ClaimStatus } from "@prisma/client";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,10 +8,14 @@ import { BusinessProfileComplaints } from "@/components/business/business-profil
 import { BusinessProfileHeader } from "@/components/business/business-profile-header";
 import { BusinessProfileReviews } from "@/components/business/business-profile-reviews";
 import { BusinessProfileStats } from "@/components/business/business-profile-stats";
+import { ComplaintForm } from "@/components/complaints/complaint-form";
+import { ComplaintSignInCta } from "@/components/complaints/complaint-sign-in-cta";
+import { OwnerComplaintsPanel } from "@/components/complaints/owner-complaints-panel";
 import { ReviewForm } from "@/components/reviews/review-form";
 import { ReviewPendingBanner } from "@/components/reviews/review-pending-banner";
 import { ReviewSignInCta } from "@/components/reviews/review-sign-in-cta";
 import { getSessionUser } from "@/lib/auth/session";
+import { canManageBusiness } from "@/lib/permissions/business";
 import { getBusinessProfile } from "@/server/queries/business-profile";
 import {
   getApprovedReviewsForBusiness,
@@ -90,6 +95,31 @@ export default async function BusinessProfilePage({
         isLoggedIn={Boolean(sessionUser)}
       />
       <BusinessProfileComplaints business={business} />
+
+      {sessionUser ? (
+        <ComplaintForm
+          businessSlug={business.slug}
+          businessName={business.name}
+        />
+      ) : (
+        <ComplaintSignInCta businessSlug={business.slug} />
+      )}
+
+      {sessionUser &&
+      canManageBusiness(sessionUser, {
+        claimedByUserId: business.claimedByUserId,
+        claimStatus: business.claimStatus as ClaimStatus,
+      }) ? (
+        <OwnerComplaintsPanel
+          businessId={business.id}
+          businessName={business.name}
+          sessionUser={sessionUser}
+          business={{
+            claimedByUserId: business.claimedByUserId,
+            claimStatus: business.claimStatus as ClaimStatus,
+          }}
+        />
+      ) : null}
 
       <p className="text-muted text-center text-sm">
         <Link href="/businesses" className="no-underline hover:underline">

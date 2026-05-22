@@ -73,8 +73,19 @@ enum ComplaintCategory {
   REFUND_ISSUE
   POOR_SERVICE
   MISLEADING_INFO
+  MISLEADING_PRICING
+  NO_RESPONSE
   HARASSMENT
+  DUPLICATE_BUSINESS
   OTHER
+}
+
+enum ComplaintAmountRange {
+  UNDER_1000
+  AMOUNT_1000_5000
+  AMOUNT_5000_20000
+  OVER_20000
+  PREFER_NOT_SAY
 }
 
 enum BusinessClaimMethod {
@@ -243,18 +254,21 @@ model Review {
 }
 
 model Complaint {
-  id          String            @id @default(cuid())
-  businessId  String
-  userId      String
-  category    ComplaintCategory
-  summary     String
-  description String
-  status      ComplaintStatus   @default(SUBMITTED)
-  severity    ComplaintSeverity @default(MEDIUM)
-  proofFileId String?           @unique
-  adminNote   String?
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id                String                @id @default(cuid())
+  businessId        String
+  userId            String
+  category          ComplaintCategory
+  summary           String
+  description       String
+  experienceDate    DateTime
+  amountRange       ComplaintAmountRange?
+  allowAdminContact Boolean               @default(false)
+  status            ComplaintStatus       @default(SUBMITTED)
+  severity          ComplaintSeverity     @default(MEDIUM)
+  proofFileId       String?               @unique
+  adminNote         String?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
 
   business         Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)

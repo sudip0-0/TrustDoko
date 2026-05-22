@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 3 (reviews) — complete.**
+**Milestone 4 (complaints) — complete.**
 
-Review submission, moderation, display, edit/delete, helpful votes, and aggregate rating updates are live. Next: complaints (Milestone 4 / TD-0401).
+Complaint submission, status workflow, public summary on profiles, user dashboard list, and owner responses for claimed businesses are live. Next: trust score module (TD-0501) or business claims (TD-0601).
 
 ---
 
@@ -36,9 +36,11 @@ Review submission, moderation, display, edit/delete, helpful votes, and aggregat
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **59 passing** |
+| Unit tests (Vitest) | **74 passing** |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
+| Milestone 4 (complaints) | **DONE** (2026-05-22) |
+| Milestone 4 QA (complaints) | **Passed** (2026-05-22) |
 | Milestone 2 QA (directory) | **Passed** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
@@ -596,6 +598,32 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 #### Next suggested task
 
 - **TD-0301:** Review submission flow.
+
+---
+
+### 2026-05-22 - Milestone 4: Complaint / report system (TD-0401–0403)
+
+#### Completed
+
+- Schema: `experienceDate`, `amountRange`, `allowAdminContact`; categories `MISLEADING_PRICING`, `NO_RESPONSE`, `DUPLICATE_BUSINESS` (migration `complaint_submission_fields`).
+- Domain: `lib/complaints/*`, `lib/validations/complaint.ts`, `lib/moderation/complaint-status.ts`, status transitions + audit logging.
+- Actions: `submitComplaintAction`, `respondToComplaintAction`, `updateComplaintStatusAction` (admin).
+- Profile: four-bucket public summary; `#report-issue` form; `/report/[slug]` redirects to profile anchor.
+- Dashboard: user complaint list with status labels.
+- Owner panel: claimed owners respond via `BusinessResponse` → `BUSINESS_RESPONDED`.
+- Seed: sample complaints + claimed `sample-valley-mobile-hub` for owner testing.
+- Neutral public copy (Under Review, Unresolved Complaints); no scam auto-labeling.
+
+#### Validation
+
+- `npm test`: pass
+- `npm run typecheck`: pass
+- `npm run lint`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0501:** Trust score calculation module, or **TD-0601:** Business claim flow.
 
 ---
 
