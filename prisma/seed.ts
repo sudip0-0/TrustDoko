@@ -338,6 +338,36 @@ async function main() {
 
   console.log(`Seeded ${sampleReviews.length} sample approved reviews.`);
 
+  const savedSlugs = [
+    "sample-kathmandu-threads",
+    "sample-pokhara-outfit-co",
+  ] as const;
+
+  for (const slug of savedSlugs) {
+    const business = await prisma.business.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+    if (!business) {
+      continue;
+    }
+    await prisma.savedBusiness.upsert({
+      where: {
+        userId_businessId: {
+          userId: reviewer.id,
+          businessId: business.id,
+        },
+      },
+      update: {},
+      create: {
+        userId: reviewer.id,
+        businessId: business.id,
+      },
+    });
+  }
+
+  console.log(`Seeded ${savedSlugs.length} saved businesses for reviewer.`);
+
   const sampleOwner = await prisma.user.upsert({
     where: { email: "sample-owner@trustdoko.local" },
     update: { name: "Sample Business Owner", role: "BUSINESS" },

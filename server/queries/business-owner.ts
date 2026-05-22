@@ -33,7 +33,19 @@ export type BusinessForOwnerEdit = {
   claimStatus: string;
   verificationStatus: string;
   claimedByUserId: string | null;
+  trustScore: number;
+  trustScoreReasons: string[] | null;
+  reviewCount: number;
+  complaintCount: number;
 };
+
+function parseTrustScoreReasons(value: unknown): string[] | null {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const reasons = value.filter((item): item is string => typeof item === "string");
+  return reasons.length > 0 ? reasons : null;
+}
 
 export async function getOwnedBusinesses(
   userId: string,
@@ -83,6 +95,10 @@ export async function getBusinessForOwnerEdit(
       claimStatus: true,
       verificationStatus: true,
       claimedByUserId: true,
+      trustScore: true,
+      trustScoreReasons: true,
+      reviewCount: true,
+      complaintCount: true,
     },
   });
 
@@ -90,5 +106,8 @@ export async function getBusinessForOwnerEdit(
     return null;
   }
 
-  return business;
+  return {
+    ...business,
+    trustScoreReasons: parseTrustScoreReasons(business.trustScoreReasons),
+  };
 }

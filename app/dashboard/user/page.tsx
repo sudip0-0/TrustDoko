@@ -1,147 +1,94 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { NotificationsPanel } from "@/components/dashboard/notifications-panel";
+import { ProfileSummaryCard } from "@/components/dashboard/profile-summary-card";
 import { getSessionUser } from "@/lib/auth/session";
-import { getDashboardComplaints } from "@/server/queries/complaints";
-import { getUserClaimRequests } from "@/server/queries/claims";
-import { getUserReviews } from "@/server/queries/reviews";
+import {
+  getUserNotifications,
+  getUserProfileSummary,
+} from "@/server/queries/user-dashboard";
 
 export const metadata: Metadata = {
   title: "Your dashboard",
 };
 
-function formatStatus(status: string): string {
-  const labels: Record<string, string> = {
-    PENDING: "Pending moderation",
-    APPROVED: "Published",
-    REJECTED: "Rejected",
-    FLAGGED: "Flagged",
-    UNDER_REVIEW: "Under review",
-  };
-  return labels[status] ?? status;
-}
-
-export default async function UserDashboardPage() {
+export default async function UserDashboardOverviewPage() {
   const user = await getSessionUser();
-  const [reviews, complaints, claims] = user
-    ? await Promise.all([
-        getUserReviews(user.id),
-        getDashboardComplaints(user),
-        getUserClaimRequests(user.id),
-      ])
-    : [[], [], []];
+  if (!user) {
+    return null;
+  }
+
+  const [profile, notifications] = await Promise.all([
+    getUserProfileSummary(user.id, user.id),
+    getUserNotifications(user.id, user.id),
+  ]);
+
+  if (!profile) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Your dashboard</h1>
-        <p className="text-muted mt-2">
-          Signed in as {user?.email} ({user?.role})
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          Welcome back{profile.name ? `, ${profile.name}` : ""}
+        </h1>
+        <p className="text-muted mt-2 text-sm">
+          Track your reviews, complaints, saved businesses, and account activity.
         </p>
       </div>
 
-      <section className="rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold">Your reviews</h2>
-        {reviews.length === 0 ? (
-          <p className="text-muted mt-3 text-sm">
-            You have not written any reviews yet.{" "}
-            <Link href="/businesses" className="text-primary no-underline hover:underline">
-              Browse businesses
-            </Link>
-          </p>
-        ) : (
-          <ul className="mt-4 list-none space-y-3 p-0">
-            {reviews.map((review) => (
-              <li
-                key={review.id}
-                className="border-b border-border pb-3 last:border-0 last:pb-0"
-              >
-                <Link
-                  href={`/businesses/${review.business.slug}#write-review`}
-                  className="text-foreground font-medium no-underline hover:text-primary"
-                >
-                  {review.business.name}
-                </Link>
-                <p className="text-muted mt-1 text-sm">
-                  {review.rating} ★ · {formatStatus(review.status)}
-                  {review.title ? ` · ${review.title}` : ""}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <ProfileSummaryCard profile={profile} />
 
-      <section className="rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold">Your claim requests</h2>
-        {claims.length === 0 ? (
-          <p className="text-muted mt-3 text-sm">
-            No business claims submitted yet.
-          </p>
-        ) : (
-          <ul className="mt-4 list-none space-y-3 p-0">
-            {claims.map((claim) => (
-              <li
-                key={claim.id}
-                className="border-b border-border pb-3 last:border-0 last:pb-0"
-              >
-                <Link
-                  href={`/businesses/${claim.businessSlug}`}
-                  className="text-foreground font-medium no-underline hover:text-primary"
-                >
-                  {claim.businessName}
-                </Link>
-                <p className="text-muted mt-1 text-sm">
-                  {claim.methodLabel} · {claim.status.toLowerCase()} ·{" "}
-                  {claim.createdAt.toLocaleDateString()}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <QuickLink
+          href="/dashboard/user/reviews"
+          label="My reviews"
+          count={profile.reviewCount}
+        />
+        <QuickLink
+          href="/dashboard/user/complaints"
+          label="My complaints"
+          count={profile.complaintCount}
+        />
+        <QuickLink
+          href="/dashboard/user/saved"
+          label="Saved businesses"
+          count={profile.savedCount}
+        />
+        <QuickLink
+          href="/dashboard/user/settings"
+          label="Settings"
+          count={null}
+        />
+      </div>
 
-      <section className="rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold">Your complaints</h2>
-        {complaints.length === 0 ? (
-          <p className="text-muted mt-3 text-sm">
-            You have not filed any complaints yet.{" "}
-            <Link href="/businesses" className="text-primary no-underline hover:underline">
-              Browse businesses
-            </Link>{" "}
-            to report a serious issue.
-          </p>
-        ) : (
-          <ul className="mt-4 list-none space-y-3 p-0">
-            {complaints.map((complaint) => (
-              <li
-                key={complaint.id}
-                className="border-b border-border pb-3 last:border-0 last:pb-0"
-              >
-                <Link
-                  href={`/businesses/${complaint.businessSlug}#report-issue`}
-                  className="text-foreground font-medium no-underline hover:text-primary"
-                >
-                  {complaint.businessName}
-                </Link>
-                <p className="text-muted mt-1 text-sm">
-                  {complaint.categoryLabel} · {complaint.statusLabel}
-                </p>
-                <p className="text-muted mt-1 line-clamp-2 text-xs">
-                  {complaint.summary}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section className="rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold">Coming soon</h2>
-        <ul className="text-muted mt-3 list-inside list-disc space-y-1 text-sm">
-          <li>Account settings</li>
-        </ul>
-      </section>
+      <NotificationsPanel notifications={notifications} />
     </div>
+  );
+}
+
+function QuickLink({
+  href,
+  label,
+  count,
+}: {
+  href: string;
+  label: string;
+  count: number | null;
+}) {
+  return (
+    <Link
+      href={href}
+      className="rounded-xl border border-border bg-card p-4 no-underline transition-shadow hover:shadow-sm"
+    >
+      <p className="text-foreground text-sm font-semibold">{label}</p>
+      {count !== null ? (
+        <p className="text-muted mt-1 text-2xl font-bold tabular-nums">{count}</p>
+      ) : (
+        <p className="text-muted mt-1 text-sm">Account</p>
+      )}
+    </Link>
   );
 }

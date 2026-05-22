@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 7 (admin moderation) — complete.**
+**User & business dashboards — complete.**
 
-Admin dashboard with review, complaint, claim, business, and user queues; server-side route protection; audit trail. Next: file uploads (TD-0801) or search enhancements.
+Dedicated user and business owner dashboards with sub-navigation, empty/loading states, notifications preview, saved businesses, and access-controlled queries. Next: file uploads (TD-0801) or search enhancements.
 
 ---
 
@@ -40,6 +40,7 @@ Admin dashboard with review, complaint, claim, business, and user queues; server
 | Milestone 5 QA (trust score) | **Passed** (2026-05-21) |
 | Milestone 7 (admin moderation) | **DONE** (2026-05-21) |
 | Milestone 7 QA (admin) | **Passed** (2026-05-21) |
+| User & business dashboards | **DONE** (2026-05-21) |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 4 (complaints) | **DONE** (2026-05-22) |
@@ -1076,6 +1077,53 @@ Removed: `@types/bcryptjs` (bcryptjs ships its own types).
 #### Sign-off
 
 **Milestone 1 complete.** Safe to start Milestone 2 (TD-0202 business listing).
+
+---
+
+### 2026-05-21 - User & business dashboards
+
+#### Completed
+
+**User dashboard** (`/dashboard/user`):
+
+- Overview with profile summary, quick links, and notifications preview (review approved, business replied, complaint status, claim approved/rejected).
+- Sub-routes: reviews, complaints, saved businesses, account settings.
+- `UserSubNav`, empty states, `loading.tsx` with `DashboardSkeleton`.
+- Saved businesses: `SavedBusiness` model queries, toggle on public profile, remove from dashboard.
+- Account settings: `updateAccountAction` + `updateAccountSchema`.
+- Access control: `getUserProfileSummary`, `getUserSavedBusinesses`, `getUserReviews` require `userId === requesterId`.
+
+**Business dashboard** (`/dashboard/business`):
+
+- Claimed-business list with trust score, verification badge, empty state.
+- Per-business manage page: overview metrics, verification section, trust score explanation, profile edit, owner review/complaint response panels.
+- `getBusinessForOwnerEdit` extended with trust fields; owner-only via `isBusinessOwner`.
+- Layout + loading states for business routes.
+
+**Shared**
+
+- `max-w-6xl` dashboard layout; responsive grids and sub-navigation.
+- Seed: two saved businesses for sample reviewer.
+
+#### Key files
+
+- `app/dashboard/user/**`, `app/dashboard/business/**`
+- `components/dashboard/*`, `components/business/save-business-button.tsx`, `owner-business-overview.tsx`, `owner-verification-section.tsx`
+- `server/queries/user-dashboard.ts`, `saved-businesses.ts`
+- `server/actions/account.ts`, `saved-businesses.ts`
+
+#### Validation
+
+```bash
+npm run lint       # pass
+npm run typecheck  # pass
+npm test           # pass (140)
+npm run build      # pass
+```
+
+#### Next suggested task
+
+- **TD-0801:** File uploads for claim/verification evidence.
 
 ---
 

@@ -1,15 +1,20 @@
 import Link from "next/link";
 
+import { SaveBusinessButton } from "@/components/business/save-business-button";
 import type { BusinessProfileData } from "@/server/queries/business-profile";
 
 type BusinessProfileActionsProps = {
   business: BusinessProfileData;
   viewerIsOwner?: boolean;
+  showSave?: boolean;
+  initialSaved?: boolean;
 };
 
 export function BusinessProfileActions({
   business,
   viewerIsOwner = false,
+  showSave = false,
+  initialSaved = false,
 }: BusinessProfileActionsProps) {
   const canClaim =
     business.claimStatus === "UNCLAIMED" || business.claimStatus === "REJECTED";
@@ -41,6 +46,12 @@ export function BusinessProfileActions({
         <span className="inline-flex cursor-default justify-center rounded-lg border border-amber-200 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-900">
           Claim pending review
         </span>
+      ) : null}
+      {showSave && !viewerIsOwner ? (
+        <SaveBusinessButton
+          businessId={business.id}
+          initialSaved={initialSaved}
+        />
       ) : null}
       {viewerIsOwner ? (
         <Link

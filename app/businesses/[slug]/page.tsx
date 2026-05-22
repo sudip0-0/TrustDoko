@@ -20,6 +20,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { isBusinessOwner } from "@/lib/permissions/business";
 import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
 import { getBusinessProfile } from "@/server/queries/business-profile";
+import { isBusinessSavedByUser } from "@/server/queries/saved-businesses";
 import {
   getApprovedReviewsForBusiness,
   getViewerReviewForBusiness,
@@ -62,12 +63,22 @@ export default async function BusinessProfilePage({
 
   const sessionUser = await getSessionUser();
 
-  const [reviewList, viewerReview] = await Promise.all([
+  const [reviewList, viewerReview, initialSaved] = await Promise.all([
     getApprovedReviewsForBusiness(business.id, reviewPage, sessionUser?.id),
     sessionUser
       ? getViewerReviewForBusiness(business.id, sessionUser.id)
       : Promise.resolve(null),
+    sessionUser
+      ? isBusinessSavedByUser(sessionUser.id, business.id)
+      : Promise.resolve(false),
   ]);
+
+  const viewerIsOwner = sessionUser
+    ? isBusinessOwner(sessionUser, {
+        claimedByUserId: business.claimedByUserId,
+        claimStatus: business.claimStatus as ClaimStatus,
+      })
+    : false;
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">
@@ -82,14 +93,9 @@ export default async function BusinessProfilePage({
       />
       <BusinessProfileActions
         business={business}
-        viewerIsOwner={
-          sessionUser
-            ? isBusinessOwner(sessionUser, {
-                claimedByUserId: business.claimedByUserId,
-                claimStatus: business.claimStatus as ClaimStatus,
-              })
-            : false
-        }
+        viewerIsOwner={viewerIsOwner}
+        showSave={Boolean(sessionUser)}
+        initialSaved={initialSaved}
       />
 
       {sessionUser ? (

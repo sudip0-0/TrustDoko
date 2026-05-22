@@ -117,7 +117,11 @@ export async function getViewerReviewForBusiness(
   return review;
 }
 
-export async function getUserReviews(userId: string) {
+export async function getUserReviews(userId: string, requesterId: string) {
+  if (userId !== requesterId) {
+    throw new Error("Forbidden: cannot load another user's reviews");
+  }
+
   return prisma.review.findMany({
     where: { userId },
     orderBy: { updatedAt: "desc" },
