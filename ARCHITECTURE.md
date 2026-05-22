@@ -634,19 +634,22 @@ lib/trust-score/__tests__/calculateTrustScore.test.ts
 
 Trust score must be deterministic and testable.
 
-Example inputs:
+Example inputs (implemented TD-0501):
 
 ```txt
 verificationStatus
+claimStatus
 reviewCount
 averageRating
-recentReviewTrend
+recentNegativeTrend
 complaintCount
 unresolvedComplaintCount
-highSeverityComplaintCount
+complaintsUnderModerationCount
+highSeverityOpenCount
 businessResponseRate
+profileCompleteness
+pendingReviewCount
 accountAgeDays
-suspiciousReviewSignalCount
 ```
 
 Example output:
@@ -654,8 +657,10 @@ Example output:
 ```txt
 score: 0..100
 label: HIGHLY_TRUSTED | TRUSTED | MIXED | RISKY | HIGH_RISK | UNDER_REVIEW
-reasons: string[]
+reasons: string[]  (persisted on Business.trustScoreReasons)
 ```
+
+Recalculation runs in `lib/trust-score/recalculate.ts` after review, complaint, verification, claim, profile, and owner-response writes — not on every page view.
 
 Never hide the basic reasoning. Users should understand why a business has a label.
 

@@ -19,5 +19,7 @@ export function getTrustScoreRangeForLabel(
       return { min: 25, max: 44 };
     case "HIGH_RISK":
       return { min: 0, max: 24 };
+    case "UNDER_REVIEW":
+      return { min: 0, max: 100 };
   }
 }

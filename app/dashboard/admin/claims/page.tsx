@@ -7,6 +7,9 @@ import { SetVerificationForm } from "@/components/admin/set-verification-form";
 import { getSessionUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/permissions/admin";
 import { prisma } from "@/lib/db";
+import { TrustLabelBadge } from "@/components/business/trust-label-badge";
+import { resolveTrustLabelForBusiness } from "@/lib/trust-score";
+import type { ClaimStatus } from "@prisma/client";
 import { getPendingClaimsForAdmin } from "@/server/queries/claims";
 
 export const metadata: Metadata = {
@@ -24,11 +27,14 @@ export default async function AdminClaimsPage() {
   const claimedBusinesses = await prisma.business.findMany({
     where: { claimStatus: "CLAIMED" },
     orderBy: { name: "asc" },
-    select: {
+      select: {
       id: true,
       name: true,
       slug: true,
       verificationStatus: true,
+      trustScore: true,
+      claimStatus: true,
+      trustScoreReasons: true,
     },
     take: 20,
   });
@@ -50,7 +56,13 @@ export default async function AdminClaimsPage() {
           <p className="text-muted mt-3 text-sm">No pending claims.</p>
         ) : (
           <ul className="mt-4 list-none space-y-6 p-0">
-            {pendingClaims.map((claim) => (
+            {pendingClaims.map((claim) => {
+              const trustLabel = resolveTrustLabelForBusiness({
+                trustScore: claim.businessTrustScore,
+                claimStatus: claim.businessClaimStatus as ClaimStatus,
+                trustScoreReasons: claim.businessTrustScoreReasons,
+              });
+              return (
               <li
                 key={claim.id}
                 className="border-b border-border pb-6 last:border-0 last:pb-0"
@@ -72,6 +84,12 @@ export default async function AdminClaimsPage() {
                       {claim.createdAt.toLocaleDateString()}
                     </p>
                   </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-foreground text-sm font-semibold tabular-nums">
+                      {claim.businessTrustScore}/100
+                    </span>
+                    <TrustLabelBadge trustLabel={trustLabel} />
+                  </div>
                 </div>
                 <p className="text-muted mt-3 text-sm leading-relaxed">
                   {claim.message}
@@ -80,7 +98,8 @@ export default async function AdminClaimsPage() {
                   <ClaimReviewActions claimId={claim.id} />
                 </div>
               </li>
-            ))}
+            );
+            })}
           </ul>
         )}
       </section>
@@ -91,23 +110,36 @@ export default async function AdminClaimsPage() {
           Assign trusted seller or other verification tiers after review.
         </p>
         <ul className="mt-4 list-none space-y-3 p-0">
-          {claimedBusinesses.map((b) => (
+          {claimedBusinesses.map((b) => {
+            const trustLabel = resolveTrustLabelForBusiness({
+              trustScore: b.trustScore,
+              claimStatus: b.claimStatus as ClaimStatus,
+              trustScoreReasons: b.trustScoreReasons,
+            });
+            return (
             <li
               key={b.id}
               className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3 last:border-0"
             >
-              <Link
-                href={`/businesses/${b.slug}`}
-                className="text-foreground font-medium no-underline hover:text-primary"
-              >
-                {b.name}
-              </Link>
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href={`/businesses/${b.slug}`}
+                  className="text-foreground font-medium no-underline hover:text-primary"
+                >
+                  {b.name}
+                </Link>
+                <span className="text-muted text-xs tabular-nums">
+                  {b.trustScore}/100
+                </span>
+                <TrustLabelBadge trustLabel={trustLabel} />
+              </div>
               <SetVerificationForm
                 businessId={b.id}
                 currentStatus={b.verificationStatus}
               />
             </li>
-          ))}
+          );
+          })}
         </ul>
       </section>
     </div>

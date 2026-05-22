@@ -68,17 +68,17 @@ Related files:
 
 ### KI-0016: Denormalized business aggregates can drift
 
-Status: OPEN  
+Status: RESOLVED (2026-05-21)  
 Severity: MEDIUM
 
 Description:
-`Business.trustScore`, `averageRating`, `reviewCount`, and `complaintCount` are stored on the row for fast listing. Seed sets demo values; no background job recalculates from child tables yet.
+`Business.trustScore` is now recalculated via `lib/trust-score/recalculate.ts` when reviews, complaints, verification, owner responses, claims, or profile fields change. `trustScoreReasons` stores an explanation snapshot. Review/complaint aggregates were already maintained on write.
 
 Impact:
-Listing and trust labels may disagree with live review/complaint counts until TD-0501 and moderation hooks update aggregates in transactions.
+Resolved for MVP request-time updates. A nightly full-table job remains optional for historical repair.
 
 Recommended action:
-Update counters in the same transaction as review/complaint approve/reject/delete. Add tests when trust score logic lands.
+None for MVP. Consider a maintenance script if manual DB edits are made outside app actions.
 
 Related files:
 - `prisma/schema.prisma` (`Business`)

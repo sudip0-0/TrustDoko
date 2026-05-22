@@ -6,6 +6,7 @@ import {
 } from "@prisma/client";
 
 import { prisma } from "@/lib/db";
+import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 
 export function verificationStatusForClaimMethod(
   method: BusinessClaimMethod,
@@ -78,6 +79,8 @@ export async function approveBusinessClaim(
       },
     }),
   ]);
+
+  await recalculateTrustScore(claim.businessId);
 }
 
 export async function rejectBusinessClaim(
@@ -119,4 +122,6 @@ export async function rejectBusinessClaim(
       },
     }),
   ]);
+
+  await recalculateTrustScore(claim.businessId);
 }

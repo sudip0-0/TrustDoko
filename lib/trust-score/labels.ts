@@ -3,7 +3,8 @@ export type TrustLabelKey =
   | "TRUSTED"
   | "MIXED"
   | "RISKY"
-  | "HIGH_RISK";
+  | "HIGH_RISK"
+  | "UNDER_REVIEW";
 
 export type TrustLabelDisplay = {
   key: TrustLabelKey;
@@ -11,10 +12,6 @@ export type TrustLabelDisplay = {
   tone: "positive" | "neutral" | "caution" | "negative";
 };
 
-/**
- * Maps stored trust score (0–100) to a public label for listings.
- * Full formula lives in TD-0501; this is a simple MVP display mapping.
- */
 export function getTrustLabelFromScore(trustScore: number): TrustLabelDisplay {
   if (trustScore >= 80) {
     return {
@@ -33,4 +30,20 @@ export function getTrustLabelFromScore(trustScore: number): TrustLabelDisplay {
     return { key: "RISKY", label: "Risky", tone: "caution" };
   }
   return { key: "HIGH_RISK", label: "High Risk", tone: "negative" };
+}
+
+export const UNDER_REVIEW_LABEL: TrustLabelDisplay = {
+  key: "UNDER_REVIEW",
+  label: "Under Review",
+  tone: "neutral",
+};
+
+export function getTrustLabelFromResult(
+  trustScore: number,
+  flags: { underReview: boolean },
+): TrustLabelDisplay {
+  if (flags.underReview) {
+    return UNDER_REVIEW_LABEL;
+  }
+  return getTrustLabelFromScore(trustScore);
 }

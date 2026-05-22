@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 6 (business claims) — QA complete.**
+**Milestone 5 (trust score) — complete.**
 
-Claim flow, owner access control, verification badges, and admin approval are validated. Next: trust score module (TD-0501) or admin moderation UI (TD-0703).
+Deterministic trust score engine with explanations, recalculation hooks, and UI on cards, profiles, and admin. Next: admin moderation UI (TD-0703) or search enhancements.
 
 ---
 
@@ -36,13 +36,14 @@ Claim flow, owner access control, verification badges, and admin approval are va
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **101 passing** |
+| Unit tests (Vitest) | **114 passing** |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 4 (complaints) | **DONE** (2026-05-22) |
 | Milestone 4 QA (complaints) | **Passed** (2026-05-22) |
 | Milestone 6 (business claims) | **DONE** (2026-05-22) |
 | Milestone 6 QA (claims) | **Passed** (2026-05-21) |
+| Milestone 5 (trust score) | **DONE** (2026-05-21) |
 | Milestone 2 QA (directory) | **Passed** (2026-05-21) |
 
 **MVP scope (unchanged):** auth, business directory + profiles, reviews, complaints, business claims, owner + admin dashboards, basic trust score, search/filters.
@@ -624,7 +625,31 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 
 #### Next suggested task
 
-- **TD-0501:** Trust score calculation module.
+- **TD-0703:** Admin moderation UI.
+
+---
+
+### 2026-05-21 - Milestone 5: Trust score engine (TD-0501–0503)
+
+#### Completed
+
+- Schema: `trustScoreReasons` (JSON), `trustScoreUpdatedAt` on `Business`.
+- Core: `lib/trust-score/` — `calculateTrustScore`, `gatherTrustScoreInputs`, `recalculateTrustScore`, labels incl. **Under Review**, neutral explanations.
+- Formula (base 50): rating, review volume, complaints, verification tier, response rate, profile completeness, negative trend, account age.
+- Hooks: review/complaint/verification/claim/profile/response actions call `recalculateTrustScore`.
+- UI: `TrustScoreExplanation` on business profile; cards/header use `resolveTrustLabelForListing`; admin claims shows score + label; `/about` trust score section.
+- Seed: recalculates all businesses after sample data load.
+
+#### Validation
+
+- `npm test`: pass
+- `npm run typecheck`: pass
+- `npm run lint`: pass
+- `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0703:** Admin moderation UI.
 
 ---
 

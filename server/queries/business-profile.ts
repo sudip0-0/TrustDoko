@@ -3,6 +3,14 @@ import { cache } from "react";
 import { buildComplaintSummaryFromCounts } from "@/lib/complaints/summary";
 import { prisma } from "@/lib/db";
 
+function parseTrustScoreReasons(value: unknown): string[] | null {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const reasons = value.filter((item): item is string => typeof item === "string");
+  return reasons.length > 0 ? reasons : null;
+}
+
 export type BusinessProfileData = {
   id: string;
   name: string;
@@ -22,6 +30,7 @@ export type BusinessProfileData = {
   claimedByUserId: string | null;
   verificationStatus: string;
   trustScore: number;
+  trustScoreReasons: string[] | null;
   averageRating: number;
   reviewCount: number;
   complaintCount: number;
@@ -80,6 +89,7 @@ async function fetchBusinessProfile(
     claimedByUserId: business.claimedByUserId,
     verificationStatus: business.verificationStatus,
     trustScore: business.trustScore,
+    trustScoreReasons: parseTrustScoreReasons(business.trustScoreReasons),
     averageRating: business.averageRating,
     reviewCount: business.reviewCount,
     complaintCount: complaintSummary.total,

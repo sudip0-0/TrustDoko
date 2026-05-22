@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { TrustLabelBadge } from "@/components/business/trust-label-badge";
 import { VerificationBadge } from "@/components/business/verification-badge";
 import { getSessionUser } from "@/lib/auth/session";
+import { resolveTrustLabelForListing } from "@/lib/trust-score";
+import type { ClaimStatus } from "@prisma/client";
 import { getOwnedBusinesses } from "@/server/queries/business-owner";
 
 export const metadata: Metadata = {
@@ -35,7 +38,12 @@ export default async function BusinessDashboardPage() {
         </section>
       ) : (
         <ul className="list-none space-y-4 p-0">
-          {businesses.map((business) => (
+          {businesses.map((business) => {
+            const trustLabel = resolveTrustLabelForListing({
+              trustScore: business.trustScore,
+              claimStatus: business.claimStatus as ClaimStatus,
+            });
+            return (
             <li
               key={business.id}
               className="rounded-xl border border-border bg-card p-5"
@@ -52,6 +60,9 @@ export default async function BusinessDashboardPage() {
                     {business.reviewCount} reviews · {business.complaintCount}{" "}
                     complaints · Trust {business.trustScore}/100
                   </p>
+                  <div className="mt-2">
+                    <TrustLabelBadge trustLabel={trustLabel} />
+                  </div>
                 </div>
                 <VerificationBadge
                   claimStatus={business.claimStatus}
@@ -73,7 +84,8 @@ export default async function BusinessDashboardPage() {
                 </Link>
               </div>
             </li>
-          ))}
+          );
+          })}
         </ul>
       )}
     </div>

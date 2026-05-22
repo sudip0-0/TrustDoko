@@ -7,6 +7,7 @@ import { z } from "zod";
 import { getSessionUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/permissions/admin";
+import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 
 export type VerificationActionState = {
   success?: boolean;
@@ -69,6 +70,8 @@ export async function setBusinessVerificationAction(
       },
     }),
   ]);
+
+  await recalculateTrustScore(business.id);
 
   revalidatePath(`/businesses/${business.slug}`);
   revalidatePath("/businesses");

@@ -6,6 +6,7 @@ import { buildOwnerUpdateData } from "@/lib/business/build-owner-update-data";
 import { getSessionUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { isBusinessOwner } from "@/lib/permissions/business";
+import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import {
   parseBusinessProfileFormData,
   updateBusinessProfileSchema,
@@ -81,6 +82,8 @@ export async function updateBusinessProfileAction(
       },
     }),
   ]);
+
+  await recalculateTrustScore(business.id);
 
   revalidatePath(`/businesses/${business.slug}`);
   revalidatePath("/dashboard/business");

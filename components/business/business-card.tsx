@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import { TrustLabelBadge } from "@/components/business/trust-label-badge";
 import { VerificationBadge } from "@/components/business/verification-badge";
-import { getTrustLabelFromScore } from "@/lib/trust-score";
+import { resolveTrustLabelForListing } from "@/lib/trust-score";
+import type { ClaimStatus } from "@prisma/client";
 import type { BusinessListItem } from "@/server/queries/businesses";
 
 type BusinessCardProps = {
@@ -24,7 +25,10 @@ function formatRating(averageRating: number, reviewCount: number): string {
 }
 
 export function BusinessCard({ business }: BusinessCardProps) {
-  const trustLabel = getTrustLabelFromScore(business.trustScore);
+  const trustLabel = resolveTrustLabelForListing({
+    trustScore: business.trustScore,
+    claimStatus: business.claimStatus as ClaimStatus,
+  });
   const location = formatLocation(business.city, business.province);
 
   return (

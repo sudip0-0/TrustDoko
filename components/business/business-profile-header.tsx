@@ -7,7 +7,8 @@ import {
   formatVerificationStatus,
 } from "@/lib/business/display";
 import { getVerificationBadgeDisplay } from "@/lib/business/verification-display";
-import { getTrustLabelFromScore } from "@/lib/trust-score";
+import { resolveTrustLabelForBusiness } from "@/lib/trust-score";
+import type { ClaimStatus } from "@prisma/client";
 import type { BusinessProfileData } from "@/server/queries/business-profile";
 
 type BusinessProfileHeaderProps = {
@@ -24,7 +25,11 @@ function formatLocation(
 }
 
 export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) {
-  const trustLabel = getTrustLabelFromScore(business.trustScore);
+  const trustLabel = resolveTrustLabelForBusiness({
+    trustScore: business.trustScore,
+    claimStatus: business.claimStatus as ClaimStatus,
+    trustScoreReasons: business.trustScoreReasons,
+  });
   const verificationDisplay = getVerificationBadgeDisplay(
     business.claimStatus,
     business.verificationStatus,

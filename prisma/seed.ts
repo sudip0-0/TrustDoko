@@ -519,6 +519,17 @@ async function main() {
   }
 
   console.log(`Seeded ${sampleComplaints.length} sample complaints.`);
+
+  const { recalculateTrustScore } = await import(
+    "../lib/trust-score/recalculate"
+  );
+  const allBusinesses = await prisma.business.findMany({
+    select: { id: true, slug: true },
+  });
+  for (const business of allBusinesses) {
+    await recalculateTrustScore(business.id);
+  }
+  console.log(`Recalculated trust scores for ${allBusinesses.length} businesses.`);
 }
 
 main()

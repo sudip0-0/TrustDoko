@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { getTrustLabelFromScore } from "../labels";
+import {
+  getTrustLabelFromResult,
+  getTrustLabelFromScore,
+  UNDER_REVIEW_LABEL,
+} from "../labels";
 
 describe("getTrustLabelFromScore", () => {
   it("returns Highly Trusted for high scores", () => {
@@ -21,5 +25,11 @@ describe("getTrustLabelFromScore", () => {
 
   it("returns High Risk for very low scores", () => {
     expect(getTrustLabelFromScore(10).label).toBe("High Risk");
+  });
+
+  it("returns Under Review when flagged", () => {
+    expect(
+      getTrustLabelFromResult(90, { underReview: true }).label,
+    ).toBe(UNDER_REVIEW_LABEL.label);
   });
 });

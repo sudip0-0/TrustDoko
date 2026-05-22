@@ -4,6 +4,7 @@ import { ComplaintStatus, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { recalculateBusinessComplaintCount } from "@/lib/complaints/aggregates";
+import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import { isComplaintRateLimited } from "@/lib/complaints/rate-limit";
 import { getComplaintSeverity } from "@/lib/complaints/severity";
 import { canTransitionComplaintStatus } from "@/lib/complaints/status-transitions";
@@ -121,6 +122,7 @@ export async function submitComplaintAction(
   });
 
   await recalculateBusinessComplaintCount(business.id);
+  await recalculateTrustScore(business.id);
   await logComplaintAudit(user.id, "COMPLAINT_SUBMITTED", complaint.id, {
     status,
     category: parsed.data.category,
@@ -215,6 +217,8 @@ export async function respondToComplaintAction(
     }),
   ]);
 
+  await recalculateTrustScore(complaint.businessId);
+
   revalidatePath(`/businesses/${complaint.business.slug}`);
   revalidatePath("/dashboard/user");
 
@@ -269,6 +273,7 @@ export async function updateComplaintStatusAction(
   });
 
   await recalculateBusinessComplaintCount(complaint.businessId);
+  await recalculateTrustScore(complaint.businessId);
   await logComplaintAudit(user.id, "COMPLAINT_STATUS_UPDATED", complaint.id, {
     from: complaint.status,
     to: nextStatus,

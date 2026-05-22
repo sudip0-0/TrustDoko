@@ -15,6 +15,9 @@ export type PendingClaimRow = {
   businessId: string;
   businessName: string;
   businessSlug: string;
+  businessTrustScore: number;
+  businessClaimStatus: string;
+  businessTrustScoreReasons: unknown;
   userId: string;
 };
 
@@ -41,7 +44,15 @@ export async function getPendingClaimsForAdmin(): Promise<PendingClaimRow[]> {
       createdAt: true,
       businessId: true,
       userId: true,
-      business: { select: { name: true, slug: true } },
+      business: {
+        select: {
+          name: true,
+          slug: true,
+          trustScore: true,
+          claimStatus: true,
+          trustScoreReasons: true,
+        },
+      },
     },
   });
 
@@ -57,6 +68,9 @@ export async function getPendingClaimsForAdmin(): Promise<PendingClaimRow[]> {
     businessId: c.businessId,
     businessName: c.business.name,
     businessSlug: c.business.slug,
+    businessTrustScore: c.business.trustScore,
+    businessClaimStatus: c.business.claimStatus,
+    businessTrustScoreReasons: c.business.trustScoreReasons,
     userId: c.userId,
   }));
 }

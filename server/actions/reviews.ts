@@ -9,6 +9,7 @@ import { isBusinessOwner } from "@/lib/permissions/business";
 import { isAdmin } from "@/lib/permissions/admin";
 import { canDeleteReview, canEditReview, canReplyToReview } from "@/lib/permissions/review";
 import { recalculateBusinessReviewAggregates } from "@/lib/reviews/aggregates";
+import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import { isReviewRateLimited } from "@/lib/reviews/rate-limit";
 import { prisma } from "@/lib/db";
 import {
@@ -140,6 +141,7 @@ export async function submitReviewAction(
   if (reviewData.status === ReviewStatus.APPROVED) {
     await recalculateBusinessReviewAggregates(business.id);
   }
+  await recalculateTrustScore(business.id);
 
   revalidatePath(`/businesses/${business.slug}`);
 
@@ -198,6 +200,7 @@ export async function updateReviewAction(
   });
 
   await recalculateBusinessReviewAggregates(review.businessId);
+  await recalculateTrustScore(review.businessId);
 
   revalidatePath(`/businesses/${review.business.slug}`);
 
@@ -260,6 +263,7 @@ export async function deleteReviewAction(
       });
     }
   }
+  await recalculateTrustScore(review.businessId);
 
   revalidatePath(`/businesses/${review.business.slug}`);
 
@@ -387,6 +391,8 @@ export async function respondToReviewAction(
       },
     }),
   ]);
+
+  await recalculateTrustScore(review.businessId);
 
   revalidatePath(`/businesses/${review.business.slug}`);
   revalidatePath(`/dashboard/business/${review.businessId}`);

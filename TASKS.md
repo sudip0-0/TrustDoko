@@ -436,7 +436,7 @@ Acceptance criteria:
 
 ### TD-0501: Implement trust score module
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Location:
@@ -447,38 +447,38 @@ lib/trust-score
 
 Acceptance criteria:
 
-- [ ] Deterministic calculation function exists
-- [ ] Returns score from 0 to 100
-- [ ] Returns trust label
-- [ ] Returns reason list
-- [ ] Unit tests cover normal and edge cases
+- [x] Deterministic calculation function exists
+- [x] Returns score from 0 to 100
+- [x] Returns trust label
+- [x] Returns reason list
+- [x] Unit tests cover normal and edge cases
 
 ---
 
 ### TD-0502: Recalculate trust score after review/complaint changes
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Acceptance criteria:
 
-- [ ] Score updates after approved review
-- [ ] Score updates after complaint status change
-- [ ] Score updates after verification status change
-- [ ] Logic avoids expensive full-table recalculation on every request
+- [x] Score updates after approved review
+- [x] Score updates after complaint status change
+- [x] Score updates after verification status change
+- [x] Logic avoids expensive full-table recalculation on every request
 
 ---
 
 ### TD-0503: Add trust score explanation UI
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Acceptance criteria:
 
-- [ ] Business profile shows why score exists
-- [ ] Trust score page explains labels
-- [ ] Wording avoids legal overclaiming
+- [x] Business profile shows why score exists
+- [x] Trust score page explains labels
+- [x] Wording avoids legal overclaiming
 
 ---
 

@@ -9,6 +9,7 @@ import { BusinessProfileComplaints } from "@/components/business/business-profil
 import { BusinessProfileHeader } from "@/components/business/business-profile-header";
 import { BusinessProfileReviews } from "@/components/business/business-profile-reviews";
 import { BusinessProfileStats } from "@/components/business/business-profile-stats";
+import { TrustScoreExplanation } from "@/components/business/trust-score-explanation";
 import { ComplaintForm } from "@/components/complaints/complaint-form";
 import { ComplaintSignInCta } from "@/components/complaints/complaint-sign-in-cta";
 import { OwnerComplaintsPanel } from "@/components/complaints/owner-complaints-panel";
@@ -75,6 +76,10 @@ export default async function BusinessProfilePage({
         <ClaimPendingBanner businessName={business.name} />
       ) : null}
       <BusinessProfileStats business={business} />
+      <TrustScoreExplanation
+        trustScore={business.trustScore}
+        reasons={business.trustScoreReasons}
+      />
       <BusinessProfileActions
         business={business}
         viewerIsOwner={

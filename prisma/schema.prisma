@@ -192,12 +192,14 @@ model Business {
   claimedByUserId    String?
   claimStatus        ClaimStatus        @default(UNCLAIMED)
   verificationStatus VerificationStatus @default(UNVERIFIED)
-  trustScore         Int                @default(0)
-  averageRating      Float              @default(0)
-  reviewCount        Int                @default(0)
-  complaintCount     Int                @default(0)
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  trustScore           Int                @default(0)
+  trustScoreReasons    Json?
+  trustScoreUpdatedAt  DateTime?
+  averageRating        Float              @default(0)
+  reviewCount          Int                @default(0)
+  complaintCount       Int                @default(0)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 
   category              Category?              @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   claimedBy             User?                  @relation("BusinessOwner", fields: [claimedByUserId], references: [id], onDelete: SetNull)

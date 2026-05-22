@@ -4,6 +4,7 @@ import { BusinessClaimStatus, ClaimStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { approveBusinessClaim, rejectBusinessClaim } from "@/lib/claims/approve";
+import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import { getSessionUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/permissions/admin";
@@ -157,6 +158,8 @@ export async function submitClaimAction(
     }
     throw error;
   }
+
+  await recalculateTrustScore(business.id);
 
   revalidatePath(`/businesses/${business.slug}`);
   revalidatePath(`/claim/${business.slug}`);
