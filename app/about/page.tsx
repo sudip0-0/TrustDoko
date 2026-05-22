@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
+
 import { ContentWidth } from "@/components/layout/content-width";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { copy } from "@/lib/copy/messages";
+import { buildMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildMetadata({
+  title: "About TrustDoko",
+  description:
+    "How TrustDoko helps Nepali shoppers check trust scores, reviews, and complaints before paying online sellers.",
+  path: "/about",
+});
 
 const labels = [
   { name: "Highly Trusted", range: "80+", detail: "Strong positive community signals" },

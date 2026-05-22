@@ -626,60 +626,60 @@ Acceptance criteria:
 
 ### TD-0901: Add automated tests for domain logic
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Trust score tests exist
-- [ ] Moderation tests exist
-- [ ] Permission tests exist
-- [ ] Complaint workflow tests exist
+- [x] Trust score tests exist
+- [x] Moderation tests exist
+- [x] Permission tests exist
+- [x] Complaint workflow tests exist
 
 ---
 
 ### TD-0902: Add seed data for local testing
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Acceptance criteria:
 
-- [ ] Test users created
-- [ ] Test businesses created
-- [ ] Test reviews created
-- [ ] Test complaints created
-- [ ] Seed data is clearly fake
+- [x] Test users created
+- [x] Test businesses created
+- [x] Test reviews created
+- [x] Test complaints created
+- [x] Seed data is clearly fake
 
 ---
 
 ### TD-0903: Add basic SEO metadata
 
-Status: TODO  
+Status: DONE  
 Priority: P1
 
 Acceptance criteria:
 
-- [ ] Home page metadata exists
-- [ ] Business profile metadata exists
-- [ ] Category metadata exists
-- [ ] Open Graph basics exist
+- [x] Home page metadata exists
+- [x] Business profile metadata exists
+- [x] Category metadata exists
+- [x] Open Graph basics exist
 
 ---
 
 ### TD-0904: Security review pass
 
-Status: TODO  
+Status: DONE  
 Priority: P0
 
 Acceptance criteria:
 
-- [ ] Auth boundaries reviewed
-- [ ] Admin routes protected
-- [ ] Business ownership checks reviewed
-- [ ] Proof file exposure reviewed
-- [ ] Rate limiting planned or implemented
-- [ ] Known risks documented
+- [x] Auth boundaries reviewed
+- [x] Admin routes protected
+- [x] Business ownership checks reviewed
+- [x] Proof file exposure reviewed
+- [x] Rate limiting planned or implemented
+- [x] Known risks documented
 
 ---
 

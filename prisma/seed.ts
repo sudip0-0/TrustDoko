@@ -10,10 +10,14 @@ import {
 } from "@prisma/client";
 
 import { hashPassword } from "../lib/auth/password";
+import { recalculateBusinessReviewAggregates } from "../lib/reviews/aggregates";
 
 const prisma = new PrismaClient();
 
-/** Shared dev password for seeded accounts (see README / PROGRESS dashboard QA). */
+/**
+ * Fake local QA data only — names prefixed [Sample], emails @trustdoko.local.
+ * Shared password for all seeded accounts (see README seed table).
+ */
 const SEED_USER_PASSWORD = "trustdoko12";
 
 const categories = [
@@ -348,6 +352,22 @@ async function main() {
   }
 
   console.log(`Seeded ${sampleReviews.length} sample approved reviews.`);
+
+  const reviewedBusinessSlugs = [
+    ...new Set(sampleReviews.map((item) => item.businessSlug)),
+  ] as string[];
+  for (const slug of reviewedBusinessSlugs) {
+    const business = await prisma.business.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+    if (business) {
+      await recalculateBusinessReviewAggregates(business.id);
+    }
+  }
+  console.log(
+    `Recalculated review aggregates for ${reviewedBusinessSlugs.length} businesses.`,
+  );
 
   const savedSlugs = [
     "sample-kathmandu-threads",

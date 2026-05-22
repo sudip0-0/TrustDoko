@@ -6,7 +6,9 @@ import { BusinessListFilters } from "@/components/business/business-list-filters
 import { BusinessListPagination } from "@/components/business/business-list-pagination";
 import { ContentWidth } from "@/components/layout/content-width";
 import { PageHeader } from "@/components/ui/page-header";
+import { prisma } from "@/lib/db";
 import { copy } from "@/lib/copy/messages";
+import { buildMetadata } from "@/lib/seo/metadata";
 import { hasActiveBusinessFilters } from "@/lib/search/business-filters";
 import { parseBusinessListFilters } from "@/lib/validations/business-list";
 import {
@@ -14,15 +16,39 @@ import {
   listBusinesses,
 } from "@/server/queries/businesses";
 
-export const metadata: Metadata = {
-  title: "Browse businesses",
-  description:
-    "Search and browse Nepali online businesses with trust scores, reviews, and complaint history on TrustDoko.",
-};
-
 type BusinessesPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
+
+export async function generateMetadata({
+  searchParams,
+}: BusinessesPageProps): Promise<Metadata> {
+  const rawParams = await searchParams;
+  const categorySlug =
+    typeof rawParams.category === "string" ? rawParams.category : undefined;
+
+  if (categorySlug) {
+    const category = await prisma.category.findUnique({
+      where: { slug: categorySlug },
+      select: { name: true },
+    });
+    if (category) {
+      const title = `${category.name} businesses`;
+      return buildMetadata({
+        title,
+        description: `Browse ${category.name.toLowerCase()} sellers on TrustDoko with trust scores, reviews, and complaint history.`,
+        path: `/businesses?category=${categorySlug}`,
+      });
+    }
+  }
+
+  return buildMetadata({
+    title: "Browse businesses",
+    description:
+      "Search and browse Nepali online businesses with trust scores, reviews, and complaint history on TrustDoko.",
+    path: "/businesses",
+  });
+}
 
 export default async function BusinessesPage({
   searchParams,

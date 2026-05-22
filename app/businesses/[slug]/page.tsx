@@ -19,6 +19,7 @@ import { ReviewForm } from "@/components/reviews/review-form";
 import { ReviewPendingBanner } from "@/components/reviews/review-pending-banner";
 import { ReviewSignInCta } from "@/components/reviews/review-sign-in-cta";
 import { getSessionUser } from "@/lib/auth/session";
+import { buildMetadata } from "@/lib/seo/metadata";
 import { isStorageConfigured } from "@/lib/storage/config";
 import { isBusinessOwner } from "@/lib/permissions/business";
 import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
@@ -44,10 +45,11 @@ export async function generateMetadata({
     return { title: "Business not found" };
   }
 
-  return {
+  return buildMetadata({
     title: business.name,
     description: `Trust score, reviews, and complaints for ${business.name} on TrustDoko.`,
-  };
+    path: `/businesses/${slug}`,
+  });
 }
 
 export default async function BusinessProfilePage({

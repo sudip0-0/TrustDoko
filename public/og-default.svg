@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="TrustDoko">
+  <rect width="1200" height="630" fill="#0f766e"/>
+  <rect x="48" y="48" width="1104" height="534" rx="24" fill="#fafaf9" opacity="0.08"/>
+  <text x="600" y="300" text-anchor="middle" font-family="Georgia, serif" font-size="72" fill="#fafaf9">TrustDoko</text>
+  <text x="600" y="380" text-anchor="middle" font-family="system-ui, sans-serif" font-size="32" fill="#ccfbf1">Trust reviews for Nepali businesses</text>
+</svg>

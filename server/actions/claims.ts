@@ -4,6 +4,7 @@ import { BusinessClaimStatus, ClaimStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { approveBusinessClaim, rejectBusinessClaim } from "@/lib/claims/approve";
+import { isClaimRateLimited } from "@/lib/claims/rate-limit";
 import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import { getSessionUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
@@ -61,6 +62,12 @@ export async function submitClaimAction(
 
   if (business.claimStatus === ClaimStatus.CLAIMED) {
     return { error: "This business is already claimed." };
+  }
+
+  if (await isClaimRateLimited(user.id)) {
+    return {
+      error: "You have reached the claim submission limit for today. Try again tomorrow.",
+    };
   }
 
   if (business.claimStatus === ClaimStatus.PENDING) {

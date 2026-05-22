@@ -231,7 +231,7 @@ Require business claim verification through at least one strong method:
 
 ### KI-0005: Proof file privacy risk
 
-Status: OPEN  
+Status: RESOLVED (2026-05-21)  
 Severity: CRITICAL
 
 Description:
@@ -240,8 +240,33 @@ Complaint and review proof files may contain private information such as phone n
 Impact:
 Public exposure could violate user privacy and damage platform trust.
 
+Resolution:
+- Uploads use Cloudinary `type: private` and `FileVisibility.PRIVATE` on `FileAsset`.
+- Public and owner Prisma selects omit `proofFileId` / `proofFile` (see `lib/complaints/selects.ts`).
+- Admins access proof via signed URLs at `/api/admin/proof/[fileAssetId]` only.
+- Submitters viewing their own proof in-dashboard remains follow-on (TD-0703), not public exposure.
+
+Related files:
+- `lib/storage/`, `app/api/admin/proof/[fileAssetId]/route.ts`
+
+---
+
+### KI-0019: Login rate limit is in-memory (single instance)
+
+Status: ACCEPTED_RISK  
+Severity: LOW
+
+Description:
+Failed login throttling (`lib/auth/login-rate-limit.ts`) uses an in-process Map (10 failures / 15 minutes per email). It does not sync across multiple app instances.
+
+Impact:
+Distributed deployments need Redis or edge rate limiting for consistent protection.
+
 Recommended action:
-Proof files must be private by default. Only admins and authorized parties should access them through controlled permissions.
+Keep for MVP single-instance dev/staging. Replace with shared store before multi-node production.
+
+Related files:
+- `lib/auth/login-rate-limit.ts`, `lib/auth/auth.config.ts`
 
 ---
 

@@ -8,9 +8,9 @@ Agents must update this file after every meaningful coding session.
 
 ## Current project phase
 
-**Milestone 8 (file upload) — complete.**
+**Milestone 9 (quality and launch readiness) — complete.**
 
-Cloudinary-backed private proof uploads for reviews and complaints, admin signed URL viewer, MIME/size validation. Next: search enhancements or Milestone 9 quality/launch pass.
+Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits, security review documented, KI-0005 resolved. Next: post-MVP enhancements (search, owner proof viewer, production rate limiting).
 
 ---
 
@@ -44,6 +44,7 @@ Cloudinary-backed private proof uploads for reviews and complaints, admin signed
 | User & business dashboards     | **DONE** (2026-05-21)                                        |
 | UI/UX overhaul                 | **DONE** (2026-05-21)                                        |
 | Milestone 8 (file upload)      | **DONE** (2026-05-21)                                        |
+| Milestone 9 (launch readiness) | **DONE** (2026-05-21)                                        |
 | Milestone 3 (reviews)          | **DONE** (2026-05-22)                                        |
 | Milestone 3 QA (reviews)       | **Passed** (2026-05-22)                                      |
 | Milestone 4 (complaints)       | **DONE** (2026-05-22)                                        |
@@ -1299,6 +1300,43 @@ npm run build      # pass
 ```
 
 **Follow-on:** claim document upload (`BusinessClaim.documentFileId`), orphan asset cleanup on replace, TD-0703 full owner proof access, TD-0904 security review.
+
+---
+
+## Milestone 9 — Quality and launch readiness (2026-05-21)
+
+### TD-0901 — Tests
+
+Added targeted coverage: `lib/storage/__tests__/permissions.test.ts`, `lib/complaints/__tests__/rate-limit.test.ts`, `severity.test.ts`, extended `status-transitions.test.ts`, `lib/permissions/__tests__/queries.test.ts`, `lib/auth/__tests__/login-rate-limit.test.ts`, `lib/claims/__tests__/rate-limit.test.ts`. Existing trust score, moderation, and permission suites retained.
+
+### TD-0902 — Seed
+
+[`prisma/seed.ts`](prisma/seed.ts) documents fake data; recalculates `reviewCount` / `averageRating` after sample reviews via `recalculateBusinessReviewAggregates`.
+
+### TD-0903 — SEO
+
+[`lib/seo/metadata.ts`](lib/seo/metadata.ts) + Open Graph on home, about, directory (including `?category=` titles), business profiles; [`public/og-default.svg`](public/og-default.svg).
+
+### TD-0904 — Security review
+
+| Control | Implementation |
+|---------|----------------|
+| Dashboard auth | `middleware.ts` + `app/dashboard/layout.tsx` |
+| Admin | Middleware role check + `requireAdminPage` / `requireAdminQuery` |
+| Ownership | `isBusinessOwner`, query guards (`dashboard-access.test.ts`) |
+| Proof privacy | Private Cloudinary + selective selects + admin signed URL route |
+| Rate limits | Reviews 10 min; complaints 3/day; claims 3/day; login 10 fails/15 min (in-memory, KI-0019) |
+
+KI-0005 marked **RESOLVED**. Residual: KI-0004 impersonation, distributed login limiter (KI-0019).
+
+### Validation
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
 
 ---
 

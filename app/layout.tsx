@@ -5,6 +5,8 @@ import { Plus_Jakarta_Sans, Source_Serif_4 } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 
+import { siteConfig } from "@/lib/seo/metadata";
+
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -26,11 +28,25 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "TrustDoko — Trust reviews for Nepali businesses",
+    default: siteConfig.title,
     template: "%s | TrustDoko",
   },
-  description:
-    "Check reviews, complaints, and trust signals before you buy from online sellers in Nepal.",
+  description: siteConfig.description,
+  metadataBase: new URL(siteConfig.url),
+  openGraph: {
+    type: "website",
+    locale: "en_NP",
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [{ url: siteConfig.ogImagePath, alt: siteConfig.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [siteConfig.ogImagePath],
+  },
 };
 
 export default function RootLayout({

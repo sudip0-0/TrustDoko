@@ -51,4 +51,64 @@ describe("canTransitionComplaintStatus", () => {
       ),
     ).toBe(false);
   });
+
+  it("allows UNDER_REVIEW to admin and owner outcomes", () => {
+    expect(
+      canTransitionComplaintStatus(
+        ComplaintStatus.UNDER_REVIEW,
+        ComplaintStatus.BUSINESS_RESPONDED,
+      ),
+    ).toBe(true);
+    expect(
+      canTransitionComplaintStatus(
+        ComplaintStatus.UNDER_REVIEW,
+        ComplaintStatus.RESOLVED,
+      ),
+    ).toBe(true);
+    expect(
+      canTransitionComplaintStatus(
+        ComplaintStatus.UNDER_REVIEW,
+        ComplaintStatus.UNRESOLVED,
+      ),
+    ).toBe(true);
+    expect(
+      canTransitionComplaintStatus(
+        ComplaintStatus.UNDER_REVIEW,
+        ComplaintStatus.REJECTED,
+      ),
+    ).toBe(true);
+  });
+
+  it("allows UNRESOLVED to reopen or resolve", () => {
+    expect(
+      canTransitionComplaintStatus(
+        ComplaintStatus.UNRESOLVED,
+        ComplaintStatus.UNDER_REVIEW,
+      ),
+    ).toBe(true);
+    expect(
+      canTransitionComplaintStatus(
+        ComplaintStatus.UNRESOLVED,
+        ComplaintStatus.RESOLVED,
+      ),
+    ).toBe(true);
+  });
+
+  it("blocks transitions from terminal REJECTED", () => {
+    expect(
+      canTransitionComplaintStatus(
+        ComplaintStatus.REJECTED,
+        ComplaintStatus.UNDER_REVIEW,
+      ),
+    ).toBe(false);
+  });
+
+  it("allows identity transitions", () => {
+    expect(
+      canTransitionComplaintStatus(
+        ComplaintStatus.SUBMITTED,
+        ComplaintStatus.SUBMITTED,
+      ),
+    ).toBe(true);
+  });
 });

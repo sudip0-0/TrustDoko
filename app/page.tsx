@@ -1,9 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ContentWidth } from "@/components/layout/content-width";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { copy } from "@/lib/copy/messages";
+import { buildMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Trust reviews for Nepali businesses",
+  description:
+    "Check trust scores, community reviews, and complaint history before you pay online sellers across Nepal.",
+  path: "/",
+});
 
 const pillars = [
   {

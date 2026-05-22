@@ -295,6 +295,17 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+### Seed accounts (local QA only)
+
+All seeded users share password **`trustdoko12`**. Business names are prefixed **`[Sample]`** and emails use **`@trustdoko.local`**.
+
+| Role | Email | Use for |
+|------|-------|---------|
+| Reviewer | `sample-reviewer@trustdoko.local` | Submit reviews and complaints |
+| Business owner (claimed) | `sample-owner@trustdoko.local` | Manage Valley Mobile Hub |
+| Business owner (no claim) | `sample-unclaimed-owner@trustdoko.local` | Empty business dashboard / 404 on manage URLs |
+| Admin | `admin@trustdoko.local` | Moderation queues at `/dashboard/admin` |
+
 ### Common commands
 
 | npm | pnpm | Description |
