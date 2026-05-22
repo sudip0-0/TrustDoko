@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getSessionUser } from "@/lib/auth/session";
-import { getUserComplaints } from "@/server/queries/complaints";
+import { getDashboardComplaints } from "@/server/queries/complaints";
 import { getUserReviews } from "@/server/queries/reviews";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ function formatStatus(status: string): string {
 export default async function UserDashboardPage() {
   const user = await getSessionUser();
   const [reviews, complaints] = user
-    ? await Promise.all([getUserReviews(user.id), getUserComplaints(user.id)])
+    ? await Promise.all([getUserReviews(user.id), getDashboardComplaints(user)])
     : [[], []];
 
   return (

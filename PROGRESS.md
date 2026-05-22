@@ -36,7 +36,7 @@ Complaint submission, status workflow, public summary on profiles, user dashboar
 | TD-0101 / TD-0102 | **DONE** (2026-05-21) |
 | TD-0103 | **DONE** (2026-05-21) |
 | TD-0104 | **DONE** (2026-05-21) |
-| Unit tests (Vitest) | **74 passing** |
+| Unit tests (Vitest) | **89 passing** |
 | Milestone 3 (reviews) | **DONE** (2026-05-22) |
 | Milestone 3 QA (reviews) | **Passed** (2026-05-22) |
 | Milestone 4 (complaints) | **DONE** (2026-05-22) |
@@ -620,6 +620,47 @@ Manual HTTP QA (production `next start -p 3011` after clean build): all listing/
 - `npm run typecheck`: pass
 - `npm run lint`: pass
 - `npm run build`: pass
+
+#### Next suggested task
+
+- **TD-0501:** Trust score calculation module, or **TD-0601:** Business claim flow.
+
+---
+
+### 2026-05-22 - Milestone 4 quality check (complaint system)
+
+#### Checklist
+
+| # | Check | Result |
+|---|--------|--------|
+| 1 | Logged-in users can submit complaints | **Pass** — `submitComplaintAction` + `ComplaintForm` on profile `#report-issue` |
+| 2 | Logged-out users cannot submit complaints | **Pass** — `ComplaintSignInCta` only; server action returns sign-in error; `/dashboard` middleware |
+| 3 | Complaint validation works | **Pass** — Zod in `lib/validations/complaint.ts` (5 tests) |
+| 4 | Complaint categories are correct | **Pass** — 9 public categories + labels (`lib/complaints/__tests__/categories.test.ts`) |
+| 5 | Complaint statuses work correctly | **Pass** — initial status rules + transition map (9 tests) |
+| 6 | Private proof is not publicly visible | **Pass** — explicit selects omit `proofFileId`; disabled upload UI; no proof in profile query |
+| 7 | Business profile shows complaint summary | **Pass** — four buckets in `BusinessProfileComplaints` |
+| 8 | User dashboard shows user's own complaints | **Pass** — `getDashboardComplaints` scoped to session user |
+| 9 | Owner responds only on own claimed business | **Pass** — `canReplyToComplaint` owner-only; action + panel enforce |
+| 10 | Users cannot access others' private complaint details | **Pass** — `getUserComplaints` throws on userId mismatch; no public detail route |
+| 11 | Public wording avoids risky scam labels | **Pass** — neutral summary copy; trust label uses "High Risk" only |
+| 12 | PROGRESS.md updated | **Pass** (this entry) |
+
+#### Fixes during QA
+
+- `canReplyToComplaint` restricted to claimed business owner (admins use status moderation, not owner replies).
+- Owner panel shows respond form only when `canReplyToComplaint`; admins see read-only private details.
+- `getUserComplaints(userId, requesterId)` forbids cross-user reads; dashboard uses `getDashboardComplaints`.
+- `lib/complaints/selects.ts` documents safe Prisma fields for dashboard and owner panel queries.
+
+#### Commands
+
+```bash
+npm run lint          # pass
+npm run typecheck     # pass
+npm test              # pass (89)
+npm run build         # pass
+```
 
 #### Next suggested task
 

@@ -1,7 +1,11 @@
 import type { SessionUser } from "@/types/auth";
 
 import { isAdmin } from "./admin";
-import { canManageBusiness, type BusinessOwnershipFields } from "./business";
+import {
+  canManageBusiness,
+  isBusinessOwner,
+  type BusinessOwnershipFields,
+} from "./business";
 
 export function isComplaintSubmitter(
   user: SessionUser | null | undefined,
@@ -30,9 +34,25 @@ export function canViewComplaint(
   return canManageBusiness(user, business);
 }
 
-export function canReplyToComplaint(
+/** View complaint details on the owner/admin panel (not public). */
+export function canViewBusinessComplaints(
   user: SessionUser | null | undefined,
   business: BusinessOwnershipFields,
 ): boolean {
   return canManageBusiness(user, business);
 }
+
+/**
+ * Post a BusinessResponse on a complaint — claimed owner only.
+ * Admins change status via moderation actions, not owner replies.
+ */
+export function canReplyToComplaint(
+  user: SessionUser | null | undefined,
+  business: BusinessOwnershipFields,
+): boolean {
+  if (!user) {
+    return false;
+  }
+  return isBusinessOwner(user, business);
+}
+

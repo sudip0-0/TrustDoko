@@ -15,7 +15,7 @@ import { ReviewForm } from "@/components/reviews/review-form";
 import { ReviewPendingBanner } from "@/components/reviews/review-pending-banner";
 import { ReviewSignInCta } from "@/components/reviews/review-sign-in-cta";
 import { getSessionUser } from "@/lib/auth/session";
-import { canManageBusiness } from "@/lib/permissions/business";
+import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
 import { getBusinessProfile } from "@/server/queries/business-profile";
 import {
   getApprovedReviewsForBusiness,
@@ -106,7 +106,7 @@ export default async function BusinessProfilePage({
       )}
 
       {sessionUser &&
-      canManageBusiness(sessionUser, {
+      canViewBusinessComplaints(sessionUser, {
         claimedByUserId: business.claimedByUserId,
         claimStatus: business.claimStatus as ClaimStatus,
       }) ? (

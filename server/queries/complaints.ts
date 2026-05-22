@@ -1,8 +1,12 @@
 import { ClaimStatus, ComplaintStatus } from "@prisma/client";
 
 import { getComplaintCategoryLabel } from "@/lib/complaints/categories";
+import {
+  complaintDashboardSelect,
+  complaintOwnerPanelSelect,
+} from "@/lib/complaints/selects";
 import { prisma } from "@/lib/db";
-import { canManageBusiness } from "@/lib/permissions/business";
+import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
 import type { SessionUser } from "@/types/auth";
 
 export type UserComplaintListItem = {
@@ -46,18 +50,16 @@ export function formatComplaintStatus(status: ComplaintStatus): string {
 
 export async function getUserComplaints(
   userId: string,
+  requesterId: string,
 ): Promise<UserComplaintListItem[]> {
+  if (userId !== requesterId) {
+    throw new Error("Forbidden: cannot load another user's complaints");
+  }
+
   const complaints = await prisma.complaint.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      category: true,
-      status: true,
-      summary: true,
-      createdAt: true,
-      business: { select: { name: true, slug: true } },
-    },
+    select: complaintDashboardSelect,
   });
 
   return complaints.map((c) => ({
@@ -73,6 +75,13 @@ export async function getUserComplaints(
   }));
 }
 
+/** Dashboard entry point — always scopes to the signed-in user. */
+export async function getDashboardComplaints(
+  sessionUser: SessionUser,
+): Promise<UserComplaintListItem[]> {
+  return getUserComplaints(sessionUser.id, sessionUser.id);
+}
+
 export async function getOwnerComplaintsForBusiness(
   businessId: string,
   viewer: SessionUser,
@@ -81,7 +90,7 @@ export async function getOwnerComplaintsForBusiness(
     claimStatus: ClaimStatus;
   },
 ): Promise<OwnerComplaintListItem[]> {
-  if (!canManageBusiness(viewer, business)) {
+  if (!canViewBusinessComplaints(viewer, business)) {
     return [];
   }
 
@@ -91,16 +100,7 @@ export async function getOwnerComplaintsForBusiness(
       status: { not: ComplaintStatus.REJECTED },
     },
     orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      category: true,
-      status: true,
-      summary: true,
-      description: true,
-      experienceDate: true,
-      createdAt: true,
-      businessResponse: { select: { body: true } },
-    },
+    select: complaintOwnerPanelSelect,
   });
 
   return complaints.map((c) => ({

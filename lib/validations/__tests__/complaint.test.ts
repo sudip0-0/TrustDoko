@@ -50,4 +50,13 @@ describe("submitComplaintSchema", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("rejects legacy or tampered categories not in the public form", () => {
+    const result = submitComplaintSchema.safeParse({
+      ...validComplaint,
+      category: "MISLEADING_INFO",
+      businessSlug: "sample-valley-mobile-hub",
+    });
+    expect(result.success).toBe(false);
+  });
 });

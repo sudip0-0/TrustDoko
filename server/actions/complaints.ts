@@ -181,7 +181,7 @@ export async function respondToComplaintAction(
   }
 
   if (!canReplyToComplaint(user, complaint.business)) {
-    return { error: "You cannot respond to complaints for this business." };
+    return { error: "Only the claimed business owner can respond to this complaint." };
   }
 
   if (complaint.businessResponse) {
