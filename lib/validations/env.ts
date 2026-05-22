@@ -6,7 +6,8 @@ const envSchema = z.object({
     .default("development"),
   DATABASE_URL: z.string().url().optional(),
   NEXTAUTH_URL: z.string().url().optional(),
-  NEXTAUTH_SECRET: z.string().min(1).optional(),
+  AUTH_SECRET: z.string().min(32).optional(),
+  NEXTAUTH_SECRET: z.string().min(32).optional(),
 });
 
 export type ServerEnv = z.infer<typeof envSchema>;

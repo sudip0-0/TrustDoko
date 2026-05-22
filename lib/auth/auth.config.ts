@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { loginSchema } from "@/lib/validations/auth";
 
 import { verifyPassword } from "./password";
+import { getAuthSecret } from "./secret";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -75,6 +76,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
   },
-  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+  secret: getAuthSecret(),
   trustHost: true,
 });
