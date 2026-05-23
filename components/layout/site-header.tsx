@@ -7,7 +7,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { getSessionUser } from "@/lib/auth/session";
 
 const navItems = [
-  { href: "/businesses", label: "Businesses" },
+  { href: "/businesses", label: "Businesses", matchPrefix: true },
   { href: "/about", label: "About trust scores" },
 ];
 

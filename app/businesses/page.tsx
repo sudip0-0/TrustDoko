@@ -66,13 +66,22 @@ export default async function BusinessesPage({
       <PageHeader
         eyebrow="Directory"
         title="Browse businesses"
-        description="Compare trust scores, ratings, and complaint signals before you buy from online sellers and social shops in Nepal."
+        description={
+          <>
+            <p>
+              Compare trust scores, ratings, and complaint signals before you buy from
+              online sellers and social shops in Nepal.
+            </p>
+            <p className="text-sm">
+              {copy.trust.communityReported} Search by name, city, category, or social
+              links.
+            </p>
+          </>
+        }
+        className="mb-8"
       />
-      <p className="text-muted -mt-4 max-w-2xl text-sm leading-relaxed">
-        {copy.trust.communityReported} Search by name, city, category, or social links.
-      </p>
 
-      <div className="mt-8 space-y-8">
+      <div className="space-y-8">
         <BusinessListFilters filters={filters} options={filterOptions} />
 
         {result.total === 0 ? (

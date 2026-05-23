@@ -5,6 +5,7 @@ import { AdminProofLink } from "@/components/admin/admin-proof-link";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ModerationStatusBadge } from "@/components/admin/moderation-status-badge";
 import { ReviewModerationActions } from "@/components/admin/review-moderation-actions";
+import { SectionHeader } from "@/components/ui/section-header";
 import { getReviewsForModeration } from "@/server/queries/admin/reviews";
 
 export const metadata: Metadata = {
@@ -16,13 +17,10 @@ export default async function AdminReviewsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold">Review moderation queue</h2>
-        <p className="text-muted mt-1 text-sm">
-          Pending, under review, and flagged community reviews. Approve, reject,
-          flag, or remove content that violates guidelines.
-        </p>
-      </div>
+      <SectionHeader
+        title="Review moderation queue"
+        description="Pending, under review, and flagged community reviews. Approve, reject, flag, or remove content that violates guidelines."
+      />
 
       {reviews.length === 0 ? (
         <EmptyState

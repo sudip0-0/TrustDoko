@@ -4,10 +4,11 @@ import { cn } from "@/lib/utils";
 
 type PageHeaderProps = {
   title: string;
-  description?: string;
+  description?: ReactNode;
   eyebrow?: string;
   actions?: ReactNode;
   className?: string;
+  size?: "default" | "compact";
 };
 
 export function PageHeader({
@@ -16,6 +17,7 @@ export function PageHeader({
   eyebrow,
   actions,
   className,
+  size = "default",
 }: PageHeaderProps) {
   return (
     <header
@@ -26,17 +28,29 @@ export function PageHeader({
     >
       <div className="max-w-2xl">
         {eyebrow ? (
-          <p className="text-primary mb-2 text-sm font-semibold tracking-wide uppercase">
+          <p className="text-primary mb-2 text-xs font-semibold tracking-wide uppercase">
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
+        <h1
+          className={cn(
+            "text-foreground font-bold tracking-tight",
+            size === "compact"
+              ? "text-2xl sm:text-3xl"
+              : "text-3xl sm:text-4xl",
+          )}
+        >
           {title}
         </h1>
         {description ? (
-          <p className="text-muted mt-3 text-base leading-relaxed sm:text-lg">
-            {description}
-          </p>
+          <div
+            className={cn(
+              "text-muted mt-3 space-y-2 leading-relaxed",
+              size === "compact" ? "text-sm sm:text-base" : "text-base sm:text-lg",
+            )}
+          >
+            {typeof description === "string" ? <p>{description}</p> : description}
+          </div>
         ) : null}
       </div>
       {actions ? <div className="flex shrink-0 flex-wrap gap-3">{actions}</div> : null}

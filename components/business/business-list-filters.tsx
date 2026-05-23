@@ -40,10 +40,10 @@ export function BusinessListFilters({
           ) : null}
         </div>
 
-        <form method="get" action="/businesses" className="mt-4">
+        <form method="get" action="/businesses" className="mt-5">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="sm:col-span-2 lg:col-span-3">
-              <label htmlFor="q" className="text-foreground mb-1.5 block text-sm font-medium">
+            <div className="form-field sm:col-span-2 lg:col-span-3">
+              <label htmlFor="q" className="text-foreground block text-sm font-medium">
                 Search
               </label>
               <Input
@@ -55,10 +55,10 @@ export function BusinessListFilters({
               />
             </div>
 
-            <div>
+            <div className="form-field">
               <label
                 htmlFor="category"
-                className="text-foreground mb-1.5 block text-sm font-medium"
+                className="text-foreground block text-sm font-medium"
               >
                 Category
               </label>
@@ -72,8 +72,8 @@ export function BusinessListFilters({
               </Select>
             </div>
 
-            <div>
-              <label htmlFor="city" className="text-foreground mb-1.5 block text-sm font-medium">
+            <div className="form-field">
+              <label htmlFor="city" className="text-foreground block text-sm font-medium">
                 City
               </label>
               <Select id="city" name="city" defaultValue={filters.city ?? ""}>
@@ -86,10 +86,10 @@ export function BusinessListFilters({
               </Select>
             </div>
 
-            <div>
+            <div className="form-field">
               <label
                 htmlFor="businessType"
-                className="text-foreground mb-1.5 block text-sm font-medium"
+                className="text-foreground block text-sm font-medium"
               >
                 Business type
               </label>
@@ -105,10 +105,10 @@ export function BusinessListFilters({
               </Select>
             </div>
 
-            <div>
+            <div className="form-field">
               <label
                 htmlFor="verificationStatus"
-                className="text-foreground mb-1.5 block text-sm font-medium"
+                className="text-foreground block text-sm font-medium"
               >
                 Verification
               </label>
@@ -125,10 +125,10 @@ export function BusinessListFilters({
               </Select>
             </div>
 
-            <div>
+            <div className="form-field">
               <label
                 htmlFor="minRating"
-                className="text-foreground mb-1.5 block text-sm font-medium"
+                className="text-foreground block text-sm font-medium"
               >
                 Minimum rating
               </label>
@@ -147,8 +147,8 @@ export function BusinessListFilters({
               </Select>
             </div>
 
-            <div>
-              <label htmlFor="sort" className="text-foreground mb-1.5 block text-sm font-medium">
+            <div className="form-field">
+              <label htmlFor="sort" className="text-foreground block text-sm font-medium">
                 Sort by
               </label>
               <Select id="sort" name="sort" defaultValue={filters.sort ?? "trust"}>
@@ -159,10 +159,10 @@ export function BusinessListFilters({
               </Select>
             </div>
 
-            <div>
+            <div className="form-field">
               <label
                 htmlFor="trustLabel"
-                className="text-foreground mb-1.5 block text-sm font-medium"
+                className="text-foreground block text-sm font-medium"
               >
                 Trust label
               </label>

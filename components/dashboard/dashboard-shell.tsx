@@ -22,7 +22,12 @@ export function DashboardShell({
 }: DashboardShellProps) {
   return (
     <div className={cn("space-y-6", className)}>
-      <PageHeader title={title} description={description} actions={actions} />
+      <PageHeader
+        title={title}
+        description={description}
+        actions={actions}
+        size="compact"
+      />
       {subNav}
       {children}
     </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ClaimReviewActions } from "@/components/admin/claim-review-actions";
 import { TrustLabelBadge } from "@/components/business/trust-label-badge";
+import { SectionHeader } from "@/components/ui/section-header";
 import { resolveTrustLabelForBusiness } from "@/lib/trust-score";
 import type { ClaimStatus } from "@prisma/client";
 import { getPendingClaimsForAdmin } from "@/server/queries/claims";
@@ -17,15 +18,10 @@ export default async function AdminClaimsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold">
-          Business claim queue ({pendingClaims.length})
-        </h2>
-        <p className="text-muted mt-1 text-sm">
-          Approve or reject ownership requests. Verification tier is set on
-          approval based on claim method.
-        </p>
-      </div>
+      <SectionHeader
+        title={`Business claim queue (${pendingClaims.length})`}
+        description="Approve or reject ownership requests. Verification tier is set on approval based on claim method."
+      />
 
       {pendingClaims.length === 0 ? (
         <EmptyState

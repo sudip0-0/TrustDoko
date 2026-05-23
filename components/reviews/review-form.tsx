@@ -7,6 +7,7 @@ import { ProofFileField } from "@/components/forms/proof-file-field";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { FormSection } from "@/components/ui/form-section";
 import { Select, Textarea } from "@/components/ui/input";
 import { copy } from "@/lib/copy/messages";
 import { experienceTypes } from "@/lib/validations/review";
@@ -87,15 +88,12 @@ export function ReviewForm({
             <input type="hidden" name="reviewId" value={viewerReview.id} />
           ) : null}
 
-          <fieldset>
-            <legend className="text-foreground mb-2 block text-sm font-medium">
-              Rating <span className="text-destructive">*</span>
-            </legend>
+          <FormSection title="Your rating" description="How would you rate your overall experience?">
             <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Rating">
               {[1, 2, 3, 4, 5].map((value) => (
                 <label
                   key={value}
-                  className="border-border has-[:checked]:border-primary has-[:checked]:bg-primary/10 flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-lg border px-3 text-sm font-medium"
+                  className="border-border has-[:checked]:border-primary has-[:checked]:bg-primary/10 flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-lg border px-3 text-sm font-medium transition-colors hover:border-primary/40"
                 >
                   <input
                     type="radio"
@@ -110,97 +108,101 @@ export function ReviewForm({
               ))}
             </div>
             {state.fieldErrors?.rating ? (
-              <p className="text-destructive mt-1 text-sm" role="alert">
+              <p className="text-destructive text-sm" role="alert">
                 {state.fieldErrors.rating[0]}
               </p>
             ) : null}
-          </fieldset>
+          </FormSection>
 
-          <FormField
-            id="title"
-            label="Title (optional)"
-            name="title"
-            required={false}
-            defaultValue={viewerReview?.title ?? ""}
-            errors={state.fieldErrors?.title}
-          />
-
-          <div>
-            <label htmlFor="body" className="text-foreground mb-1.5 block text-sm font-medium">
-              Your review <span className="text-destructive">*</span>
-            </label>
-            <Textarea
-              id="body"
-              name="body"
-              required
-              rows={5}
-              defaultValue={viewerReview?.body ?? ""}
-              placeholder="What went well or poorly? Mention delivery, product quality, payment method (eSewa/Khalti/bank), and communication."
-              aria-invalid={Boolean(state.fieldErrors?.body)}
-            />
-            {state.fieldErrors?.body ? (
-              <p className="text-destructive mt-1 text-sm" role="alert">
-                {state.fieldErrors.body[0]}
-              </p>
-            ) : null}
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="experienceType"
-                className="text-foreground mb-1.5 block text-sm font-medium"
-              >
-                Experience type
-              </label>
-              <Select
-                id="experienceType"
-                name="experienceType"
-                defaultValue={viewerReview?.experienceType ?? ""}
-              >
-                <option value="">Select…</option>
-                {experienceTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {experienceLabels[type]}
-                  </option>
-                ))}
-              </Select>
-            </div>
+          <FormSection title="Review details">
             <FormField
-              id="experienceDate"
-              label="Experience date"
-              name="experienceDate"
-              type="date"
+              id="title"
+              label="Title (optional)"
+              name="title"
               required={false}
-              defaultValue={
-                viewerReview?.experienceDate
-                  ? viewerReview.experienceDate.toISOString().slice(0, 10)
-                  : ""
-              }
-              errors={state.fieldErrors?.experienceDate}
+              defaultValue={viewerReview?.title ?? ""}
+              errors={state.fieldErrors?.title}
             />
-          </div>
 
-          <FormField
-            id="tags"
-            label="Tags (comma-separated, max 5)"
-            name="tags"
-            required={false}
-            placeholder="fast-delivery, good-packaging"
-            defaultValue={viewerReview?.tags.join(", ") ?? ""}
-            errors={state.fieldErrors?.tags}
-          />
+            <div className="form-field">
+              <label htmlFor="body" className="text-foreground block text-sm font-medium">
+                Your review <span className="text-destructive">*</span>
+              </label>
+              <Textarea
+                id="body"
+                name="body"
+                required
+                rows={5}
+                defaultValue={viewerReview?.body ?? ""}
+                placeholder="What went well or poorly? Mention delivery, product quality, payment method (eSewa/Khalti/bank), and communication."
+                aria-invalid={Boolean(state.fieldErrors?.body)}
+              />
+              {state.fieldErrors?.body ? (
+                <p className="text-destructive text-sm" role="alert">
+                  {state.fieldErrors.body[0]}
+                </p>
+              ) : null}
+            </div>
+          </FormSection>
 
-          <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              name="wouldRecommend"
-              value="true"
-              defaultChecked={viewerReview?.wouldRecommend ?? true}
-              className="size-4 rounded border-border"
+          <FormSection title="Experience context">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="form-field">
+                <label
+                  htmlFor="experienceType"
+                  className="text-foreground block text-sm font-medium"
+                >
+                  Experience type
+                </label>
+                <Select
+                  id="experienceType"
+                  name="experienceType"
+                  defaultValue={viewerReview?.experienceType ?? ""}
+                >
+                  <option value="">Select…</option>
+                  {experienceTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {experienceLabels[type]}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <FormField
+                id="experienceDate"
+                label="Experience date"
+                name="experienceDate"
+                type="date"
+                required={false}
+                defaultValue={
+                  viewerReview?.experienceDate
+                    ? viewerReview.experienceDate.toISOString().slice(0, 10)
+                    : ""
+                }
+                errors={state.fieldErrors?.experienceDate}
+              />
+            </div>
+
+            <FormField
+              id="tags"
+              label="Tags (comma-separated, max 5)"
+              name="tags"
+              required={false}
+              placeholder="fast-delivery, good-packaging"
+              defaultValue={viewerReview?.tags.join(", ") ?? ""}
+              errors={state.fieldErrors?.tags}
             />
-            I would recommend this business
-          </label>
+
+            <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 text-sm">
+              <input
+                type="checkbox"
+                name="wouldRecommend"
+                value="true"
+                defaultChecked={viewerReview?.wouldRecommend ?? true}
+                className="size-4 rounded border-border"
+              />
+              I would recommend this business
+            </label>
+          </FormSection>
 
           <ProofFileField
             enabled={proofUploadEnabled}

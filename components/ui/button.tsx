@@ -42,7 +42,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        "inline-flex items-center justify-center rounded-lg font-semibold no-underline transition-opacity",
+        "inline-flex items-center justify-center rounded-lg font-semibold no-underline shadow-sm transition-[opacity,transform,box-shadow] active:scale-[0.98] motion-reduce:active:scale-100",
         variants[variant],
         sizes[size],
         className,
@@ -73,7 +73,7 @@ export function ButtonLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center justify-center rounded-lg font-semibold no-underline transition-opacity",
+        "inline-flex items-center justify-center rounded-lg font-semibold no-underline shadow-sm transition-[opacity,transform,box-shadow] active:scale-[0.98] motion-reduce:active:scale-100",
         variants[variant],
         sizes[size],
         className,

@@ -19,7 +19,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
   const [state, formAction, isPending] = useActionState(loginAction, initialState);
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5">
       {callbackUrl ? (
         <input type="hidden" name="callbackUrl" value={callbackUrl} />
       ) : null}

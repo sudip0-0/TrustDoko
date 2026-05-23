@@ -2,9 +2,14 @@
 
 import { useActionState } from "react";
 
+import {
+  FormField,
+  FormSelectField,
+  FormTextareaField,
+} from "@/components/auth/form-field";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input, Select, Textarea } from "@/components/ui/input";
+import { FormSection } from "@/components/ui/form-section";
 import { copy } from "@/lib/copy/messages";
 import { claimMethodLabels, claimMethods } from "@/lib/claims/method-labels";
 import {
@@ -34,107 +39,68 @@ export function ClaimForm({ businessSlug, businessName }: ClaimFormProps) {
   }
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form action={formAction} className="space-y-6">
       <input type="hidden" name="businessSlug" value={businessSlug} />
 
       <p className="text-muted text-sm leading-relaxed">{copy.forms.claimHelper}</p>
 
       {state.error ? <Alert variant="error">{state.error}</Alert> : null}
 
-      <div>
-        <label htmlFor="ownerName" className="text-foreground block text-sm font-medium">
-          Owner name <span className="text-destructive">*</span>
-        </label>
-        <Input
+      <FormSection
+        title="Owner details"
+        description="Use contact information TrustDoko admins can reach for verification."
+      >
+        <FormField
           id="ownerName"
+          label="Owner name"
           name="ownerName"
-          required
-          maxLength={120}
-          className="mt-1.5"
-          aria-invalid={Boolean(state.fieldErrors?.ownerName)}
+          errors={state.fieldErrors?.ownerName}
         />
-        {state.fieldErrors?.ownerName ? (
-          <p className="text-destructive mt-1 text-sm" role="alert">
-            {state.fieldErrors.ownerName[0]}
-          </p>
-        ) : null}
-      </div>
-
-      <div>
-        <label htmlFor="ownerEmail" className="text-foreground block text-sm font-medium">
-          Owner email <span className="text-destructive">*</span>
-        </label>
-        <Input
+        <FormField
           id="ownerEmail"
+          label="Owner email"
           name="ownerEmail"
           type="email"
-          required
-          maxLength={200}
-          className="mt-1.5"
-          aria-invalid={Boolean(state.fieldErrors?.ownerEmail)}
+          errors={state.fieldErrors?.ownerEmail}
         />
-        {state.fieldErrors?.ownerEmail ? (
-          <p className="text-destructive mt-1 text-sm" role="alert">
-            {state.fieldErrors.ownerEmail[0]}
-          </p>
-        ) : null}
-      </div>
-
-      <div>
-        <label htmlFor="ownerPhone" className="text-foreground block text-sm font-medium">
-          Owner phone (optional)
-        </label>
-        <Input
+        <FormField
           id="ownerPhone"
+          label="Owner phone"
           name="ownerPhone"
           type="tel"
-          maxLength={30}
-          className="mt-1.5"
+          required={false}
         />
-      </div>
+      </FormSection>
 
-      <div>
-        <label htmlFor="method" className="text-foreground block text-sm font-medium">
-          Verification method <span className="text-destructive">*</span>
-        </label>
-        <Select id="method" name="method" required defaultValue="" className="mt-1.5">
-          <option value="" disabled>
-            Select how you can verify ownership
-          </option>
+      <FormSection
+        title="Verification request"
+        description={`Explain your relationship to ${businessName} and how ownership can be confirmed.`}
+      >
+        <FormSelectField
+          id="method"
+          label="Verification method"
+          name="method"
+          placeholder="Select how you can verify ownership"
+          errors={state.fieldErrors?.method}
+        >
           {claimMethods.map((method) => (
             <option key={method} value={method}>
               {claimMethodLabels[method]}
             </option>
           ))}
-        </Select>
-        {state.fieldErrors?.method ? (
-          <p className="text-destructive mt-1 text-sm" role="alert">
-            {state.fieldErrors.method[0]}
-          </p>
-        ) : null}
-      </div>
+        </FormSelectField>
 
-      <div>
-        <label htmlFor="message" className="text-foreground block text-sm font-medium">
-          Message <span className="text-destructive">*</span>
-        </label>
-        <Textarea
+        <FormTextareaField
           id="message"
+          label="Message"
           name="message"
-          required
           rows={4}
           minLength={20}
           maxLength={2000}
-          className="mt-1.5"
           placeholder={`Explain your relationship to ${businessName} and how TrustDoko can verify you operate this business.`}
-          aria-invalid={Boolean(state.fieldErrors?.message)}
+          errors={state.fieldErrors?.message}
         />
-        {state.fieldErrors?.message ? (
-          <p className="text-destructive mt-1 text-sm" role="alert">
-            {state.fieldErrors.message[0]}
-          </p>
-        ) : null}
-      </div>
+      </FormSection>
 
       <Alert variant="info" title="Documents">
         Supporting document upload is coming soon. Include registration details or

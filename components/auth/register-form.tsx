@@ -17,7 +17,7 @@ export function RegisterForm() {
   );
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5">
       {state.error ? <Alert variant="error">{state.error}</Alert> : null}
 
       <FormField

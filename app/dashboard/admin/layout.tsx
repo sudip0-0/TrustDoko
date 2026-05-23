@@ -9,10 +9,13 @@ export default async function AdminDashboardLayout({
   await requireAdminPage();
 
   return (
-    <div className="mx-auto w-full max-w-6xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Admin</h1>
-        <p className="text-muted mt-1 text-sm">
+    <div className="dashboard-surface mx-auto w-full max-w-6xl">
+      <div className="mb-6 border-b border-border pb-6">
+        <p className="text-primary mb-2 text-xs font-semibold tracking-wide uppercase">
+          Moderation
+        </p>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Admin</h1>
+        <p className="text-muted mt-2 text-sm leading-relaxed">
           Moderate reviews, complaints, claims, and platform accounts.
         </p>
       </div>

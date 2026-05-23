@@ -41,13 +41,15 @@ export function EmptyState({
     <section
       role="region"
       aria-labelledby={id}
-      className="flex flex-col items-center rounded-xl border border-dashed border-border bg-card px-6 py-12 text-center"
+      className="rounded-xl border border-dashed border-border bg-muted/20 px-6 py-12 text-center"
     >
-      <div className="text-muted mb-4">{icon ?? <DefaultIcon />}</div>
+      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-border bg-card">
+        {icon ?? <DefaultIcon />}
+      </div>
       <h3 id={id} className="text-foreground text-base font-semibold">
         {title}
       </h3>
-      <p className="text-muted mt-2 max-w-md text-sm leading-relaxed">
+      <p className="text-muted mx-auto mt-2 max-w-md text-sm leading-relaxed">
         {description}
       </p>
       {action ? (

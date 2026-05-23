@@ -48,7 +48,7 @@ export default function AboutPage() {
         </p>
       </section>
 
-      <section className="mt-10" aria-labelledby="scores-heading">
+      <section className="mt-12" aria-labelledby="scores-heading">
         <h2 id="scores-heading" className="text-xl font-semibold">
           How trust scores work
         </h2>
@@ -57,16 +57,22 @@ export default function AboutPage() {
           ratings, complaint reports (with extra weight for open or serious issues),
           verification tier, owner responses, profile completeness, and recent trends.
         </p>
-        <p className="text-muted mt-4 text-sm leading-relaxed">{copy.trust.disclaimer}</p>
+        <p className="text-muted mt-4 rounded-lg border border-border bg-muted/20 px-4 py-3 text-sm leading-relaxed">
+          {copy.trust.disclaimer}
+        </p>
 
-        <ul className="mt-8 grid list-none gap-3 p-0 sm:grid-cols-2">
+        <ul className="mt-8 grid list-none gap-3 p-0">
           {labels.map((item) => (
             <li key={item.name}>
               <Card>
-                <CardContent className="py-4">
-                  <p className="text-foreground font-semibold">{item.name}</p>
-                  <p className="text-primary text-sm tabular-nums">{item.range}</p>
-                  <p className="text-muted mt-1 text-sm">{item.detail}</p>
+                <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-foreground font-semibold">{item.name}</p>
+                    <p className="text-muted mt-1 text-sm">{item.detail}</p>
+                  </div>
+                  <p className="text-primary shrink-0 font-mono text-sm font-semibold tabular-nums">
+                    {item.range}
+                  </p>
                 </CardContent>
               </Card>
             </li>

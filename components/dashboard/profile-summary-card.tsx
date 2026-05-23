@@ -6,39 +6,25 @@ type ProfileSummaryCardProps = {
 
 export function ProfileSummaryCard({ profile }: ProfileSummaryCardProps) {
   return (
-    <section className="rounded-xl border border-border bg-card p-6">
-      <h2 className="text-lg font-semibold">Profile</h2>
-      <dl className="mt-4 grid gap-4 sm:grid-cols-2">
-        <div>
-          <dt className="text-muted text-xs font-medium uppercase tracking-wide">
-            Name
-          </dt>
-          <dd className="text-foreground mt-1 text-sm font-medium">
-            {profile.name ?? "—"}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-muted text-xs font-medium uppercase tracking-wide">
-            Email
-          </dt>
-          <dd className="text-foreground mt-1 text-sm">{profile.email}</dd>
-        </div>
-        <div>
-          <dt className="text-muted text-xs font-medium uppercase tracking-wide">
-            Member since
-          </dt>
-          <dd className="text-foreground mt-1 text-sm">
-            {profile.memberSince.toLocaleDateString()}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-muted text-xs font-medium uppercase tracking-wide">
-            Trust level
-          </dt>
-          <dd className="text-foreground mt-1 text-sm">{profile.trustLevel}</dd>
-        </div>
+    <section className="overflow-hidden rounded-xl border border-border bg-card">
+      <div className="border-b border-border bg-muted/20 px-6 py-4">
+        <h2 className="text-base font-semibold">Your profile</h2>
+        <p className="text-muted mt-1 text-sm">
+          Account details and activity summary on TrustDoko.
+        </p>
+      </div>
+
+      <dl className="grid gap-4 px-6 py-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ProfileField label="Name" value={profile.name ?? "Not set"} />
+        <ProfileField label="Email" value={profile.email} />
+        <ProfileField
+          label="Member since"
+          value={profile.memberSince.toLocaleDateString()}
+        />
+        <ProfileField label="Trust level" value={profile.trustLevel} />
       </dl>
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+
+      <div className="grid grid-cols-2 divide-x divide-y divide-border border-t border-border sm:grid-cols-4 sm:divide-y-0">
         <Stat label="Reviews" value={profile.reviewCount} />
         <Stat label="Complaints" value={profile.complaintCount} />
         <Stat label="Saved" value={profile.savedCount} />
@@ -48,11 +34,22 @@ export function ProfileSummaryCard({ profile }: ProfileSummaryCardProps) {
   );
 }
 
+function ProfileField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-muted text-xs font-medium tracking-wide uppercase">
+        {label}
+      </dt>
+      <dd className="text-foreground mt-1 text-sm font-medium break-words">{value}</dd>
+    </div>
+  );
+}
+
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-lg bg-muted/30 px-3 py-2 text-center">
-      <p className="text-foreground text-lg font-bold tabular-nums">{value}</p>
-      <p className="text-muted text-xs">{label}</p>
+    <div className="px-4 py-4 text-center sm:px-6">
+      <p className="text-foreground font-mono text-2xl font-bold tabular-nums">{value}</p>
+      <p className="text-muted mt-1 text-xs font-medium">{label}</p>
     </div>
   );
 }
