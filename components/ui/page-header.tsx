@@ -28,9 +28,7 @@ export function PageHeader({
     >
       <div className="max-w-2xl">
         {eyebrow ? (
-          <p className="text-primary mb-2 text-xs font-semibold tracking-wide uppercase">
-            {eyebrow}
-          </p>
+          <p className="eyebrow-badge mb-3">{eyebrow}</p>
         ) : null}
         <h1
           className={cn(

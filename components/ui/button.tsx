@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
@@ -5,14 +7,14 @@ import { cn } from "@/lib/utils";
 
 const variants = {
   primary:
-    "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-60",
+    "bg-primary text-primary-foreground shadow-[0_1px_2px_rgba(15,118,110,0.15)] hover:shadow-[0_4px_12px_rgba(15,118,110,0.2)]",
   secondary:
-    "border border-border bg-card text-foreground hover:bg-accent disabled:opacity-60",
+    "border border-border bg-card text-foreground hover:bg-accent/60",
   outline:
-    "border border-primary bg-transparent text-primary hover:bg-accent disabled:opacity-60",
-  ghost: "text-foreground hover:bg-accent disabled:opacity-60",
+    "border border-primary/30 bg-transparent text-primary hover:bg-primary/5 hover:border-primary",
+  ghost: "text-foreground hover:bg-accent/60",
   destructive:
-    "bg-destructive text-destructive-foreground hover:opacity-90 disabled:opacity-60",
+    "bg-destructive text-destructive-foreground shadow-[0_1px_2px_rgba(185,28,28,0.15)] hover:shadow-[0_4px_12px_rgba(185,28,28,0.2)]",
 } as const;
 
 const sizes = {
@@ -42,7 +44,10 @@ export function Button({
     <button
       type={type}
       className={cn(
-        "inline-flex items-center justify-center rounded-lg font-semibold no-underline shadow-sm transition-[opacity,transform,box-shadow] active:scale-[0.98] motion-reduce:active:scale-100",
+        "inline-flex items-center justify-center rounded-full font-semibold no-underline",
+        "transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+        "active:scale-[0.97] motion-reduce:active:scale-100",
+        "disabled:opacity-50 disabled:pointer-events-none",
         variants[variant],
         sizes[size],
         className,
@@ -73,7 +78,10 @@ export function ButtonLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center justify-center rounded-lg font-semibold no-underline shadow-sm transition-[opacity,transform,box-shadow] active:scale-[0.98] motion-reduce:active:scale-100",
+        "inline-flex items-center justify-center rounded-full font-semibold no-underline",
+        "transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+        "active:scale-[0.97] motion-reduce:active:scale-100",
+        "disabled:opacity-50 disabled:pointer-events-none",
         variants[variant],
         sizes[size],
         className,

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { FadeInView } from "@/components/home/fade-in-view";
 import { ClaimPendingBanner } from "@/components/business/claim-pending-banner";
 import { ProfileSectionNav } from "@/components/business/profile-section-nav";
 import { ContentWidth } from "@/components/layout/content-width";
@@ -88,80 +89,110 @@ export default async function BusinessProfilePage({
   const proofUploadEnabled = isStorageConfigured();
 
   return (
-    <ContentWidth size="lg" className="space-y-6 py-10">
-      <BusinessProfileHeader business={business} />
-      <ProfileSectionNav />
-      {business.claimStatus === "PENDING" ? (
-        <ClaimPendingBanner businessName={business.name} />
-      ) : null}
-      <BusinessProfileStats business={business} />
-      <TrustScoreExplanation
-        trustScore={business.trustScore}
-        reasons={business.trustScoreReasons}
-      />
-      <BusinessProfileActions
-        business={business}
-        viewerIsOwner={viewerIsOwner}
-        showSave={Boolean(sessionUser)}
-        initialSaved={initialSaved}
-      />
+    <ContentWidth size="lg" className="space-y-8 py-10">
+      <FadeInView>
+        <BusinessProfileHeader business={business} />
+      </FadeInView>
 
-      {sessionUser ? (
-        <div className="space-y-4">
-          {viewerReview ? <ReviewPendingBanner review={viewerReview} /> : null}
-          <ReviewForm
+      <FadeInView delay={0.1}>
+        <ProfileSectionNav />
+      </FadeInView>
+
+      {business.claimStatus === "PENDING" ? (
+        <FadeInView delay={0.1}>
+          <ClaimPendingBanner businessName={business.name} />
+        </FadeInView>
+      ) : null}
+
+      <FadeInView delay={0.15}>
+        <BusinessProfileStats business={business} />
+      </FadeInView>
+
+      <FadeInView delay={0.2}>
+        <TrustScoreExplanation
+          trustScore={business.trustScore}
+          reasons={business.trustScoreReasons}
+        />
+      </FadeInView>
+
+      <FadeInView delay={0.2}>
+        <BusinessProfileActions
+          business={business}
+          viewerIsOwner={viewerIsOwner}
+          showSave={Boolean(sessionUser)}
+          initialSaved={initialSaved}
+        />
+      </FadeInView>
+
+      <FadeInView delay={0.25}>
+        {sessionUser ? (
+          <div className="space-y-4">
+            {viewerReview ? <ReviewPendingBanner review={viewerReview} /> : null}
+            <ReviewForm
+              businessSlug={business.slug}
+              businessName={business.name}
+              viewerReview={viewerReview}
+              proofUploadEnabled={proofUploadEnabled}
+            />
+          </div>
+        ) : (
+          <ReviewSignInCta businessSlug={business.slug} />
+        )}
+      </FadeInView>
+
+      <FadeInView delay={0.3}>
+        <BusinessProfileReviews
+          businessSlug={business.slug}
+          reviews={reviewList.reviews}
+          reviewPage={reviewPage}
+          reviewTotalPages={reviewList.totalPages}
+          reviewTotal={reviewList.total}
+          viewerUserId={sessionUser?.id}
+          isLoggedIn={Boolean(sessionUser)}
+        />
+      </FadeInView>
+
+      <FadeInView delay={0.35}>
+        <BusinessProfileComplaints business={business} />
+      </FadeInView>
+
+      <FadeInView delay={0.4}>
+        {sessionUser ? (
+          <ComplaintForm
             businessSlug={business.slug}
             businessName={business.name}
-            viewerReview={viewerReview}
             proofUploadEnabled={proofUploadEnabled}
           />
-        </div>
-      ) : (
-        <ReviewSignInCta businessSlug={business.slug} />
-      )}
-
-      <BusinessProfileReviews
-        businessSlug={business.slug}
-        reviews={reviewList.reviews}
-        reviewPage={reviewPage}
-        reviewTotalPages={reviewList.totalPages}
-        reviewTotal={reviewList.total}
-        viewerUserId={sessionUser?.id}
-        isLoggedIn={Boolean(sessionUser)}
-      />
-      <BusinessProfileComplaints business={business} />
-
-      {sessionUser ? (
-        <ComplaintForm
-          businessSlug={business.slug}
-          businessName={business.name}
-          proofUploadEnabled={proofUploadEnabled}
-        />
-      ) : (
-        <ComplaintSignInCta businessSlug={business.slug} />
-      )}
+        ) : (
+          <ComplaintSignInCta businessSlug={business.slug} />
+        )}
+      </FadeInView>
 
       {sessionUser &&
       canViewBusinessComplaints(sessionUser, {
         claimedByUserId: business.claimedByUserId,
         claimStatus: business.claimStatus as ClaimStatus,
       }) ? (
-        <OwnerComplaintsPanel
-          businessId={business.id}
-          businessName={business.name}
-          sessionUser={sessionUser}
-          business={{
-            claimedByUserId: business.claimedByUserId,
-            claimStatus: business.claimStatus as ClaimStatus,
-          }}
-        />
+        <FadeInView delay={0.45}>
+          <OwnerComplaintsPanel
+            businessId={business.id}
+            businessName={business.name}
+            sessionUser={sessionUser}
+            business={{
+              claimedByUserId: business.claimedByUserId,
+              claimStatus: business.claimStatus as ClaimStatus,
+            }}
+          />
+        </FadeInView>
       ) : null}
 
-      <p className="text-muted text-center text-sm">
-        <Link href="/businesses" className="no-underline hover:underline">
-          ← Browse all businesses
-        </Link>
-      </p>
+      <FadeInView delay={0.5}>
+        <p className="text-muted text-center text-sm">
+          <Link href="/businesses" className="no-underline transition-colors duration-300 hover:underline">
+            &larr; Browse all businesses
+          </Link>
+        </p>
+      </FadeInView>
     </ContentWidth>
   );
 }

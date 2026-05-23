@@ -60,7 +60,7 @@ export default function RootLayout({
         className={`${jakarta.variable} ${sourceSerif.variable} ${geistMono.variable} flex min-h-screen flex-col`}
       >
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pt-16">{children}</main>
         <SiteFooter />
       </body>
     </html>
