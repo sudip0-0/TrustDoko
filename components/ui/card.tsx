@@ -1,6 +1,24 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  type HTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 
 import { cn } from "@/lib/utils";
+
+const cardTitleClassName = "text-foreground text-lg font-semibold";
+
+function isHeadingElement(
+  child: ReactNode,
+): child is ReactElement<HTMLAttributes<HTMLHeadingElement>> {
+  return (
+    isValidElement(child) &&
+    typeof child.type === "string" &&
+    /^h[1-6]$/i.test(child.type)
+  );
+}
 
 type CardProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode;
@@ -37,11 +55,15 @@ export function CardTitle({
   children,
   ...props
 }: HTMLAttributes<HTMLHeadingElement>) {
+  if (isHeadingElement(children)) {
+    return cloneElement(children, {
+      ...props,
+      className: cn(cardTitleClassName, children.props.className, className),
+    });
+  }
+
   return (
-    <h2
-      className={cn("text-foreground text-lg font-semibold", className)}
-      {...props}
-    >
+    <h2 className={cn(cardTitleClassName, className)} {...props}>
       {children}
     </h2>
   );

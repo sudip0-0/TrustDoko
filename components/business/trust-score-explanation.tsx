@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription } from "@/components/ui/card";
 import { copy } from "@/lib/copy/messages";
 
 type TrustScoreExplanationProps = {
@@ -24,11 +24,9 @@ export function TrustScoreExplanation({
       aria-labelledby="trust-score-heading"
     >
       <CardContent className="py-6">
-        <CardTitle>
-          <h2 id="trust-score-heading" className="text-lg font-semibold">
-            How this trust score is calculated
-          </h2>
-        </CardTitle>
+        <h2 id="trust-score-heading" className="text-lg font-semibold">
+          How this trust score is calculated
+        </h2>
         <CardDescription className="mt-2">
           Trust score:{" "}
           <span className="text-foreground font-semibold tabular-nums">
