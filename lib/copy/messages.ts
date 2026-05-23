@@ -50,6 +50,16 @@ export const copy = {
     proofRateLimited:
       "You have uploaded too many files recently. Please wait before trying again.",
   },
+  moderation: {
+    warningTitle: "This may need careful review",
+    warningBody:
+      "We detected wording that needs moderation. Do not publish serious accusations as facts. Your submission may be checked before it appears publicly.",
+    guidanceLink: "Read our trust and moderation guidance",
+    pendingPublish: "This may be checked before publishing.",
+    proofPrivateLabel: "Proof files are private",
+    proofPrivateDetail:
+      "We never share your files publicly. They are only used to review your report.",
+  },
   empty: {
     businesses:
       "No businesses match your search yet. Try a different keyword or category.",

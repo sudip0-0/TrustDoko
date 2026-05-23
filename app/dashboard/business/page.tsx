@@ -48,7 +48,7 @@ export default async function BusinessDashboardPage() {
                       <div className="min-w-0 flex-1">
                         <Link
                           href={`/dashboard/business/${business.id}`}
-                          className="text-foreground text-lg font-semibold no-underline hover:text-primary"
+                          className="text-foreground type-h3 no-underline hover:text-primary"
                         >
                           {business.name}
                         </Link>

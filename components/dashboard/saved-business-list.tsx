@@ -48,7 +48,7 @@ function SavedBusinessRow({ item }: { item: SavedBusinessListItem }) {
         <div>
           <Link
             href={`/businesses/${item.slug}`}
-            className="text-foreground text-lg font-semibold no-underline hover:text-primary"
+            className="text-foreground type-h3 no-underline hover:text-primary"
           >
             {item.name}
           </Link>

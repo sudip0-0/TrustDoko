@@ -1,4 +1,5 @@
 import { Alert } from "@/components/ui/alert";
+import { StatusChip } from "@/components/ui/status-chip";
 import { Card, CardContent } from "@/components/ui/card";
 import type { BusinessProfileData } from "@/server/queries/business-profile";
 
@@ -25,14 +26,25 @@ export function BusinessProfileComplaints({
         {complaintSummary.total === 0 ? (
           <p className="text-muted mt-4 text-sm">No complaints on record.</p>
         ) : (
-          <ul className="text-muted mt-4 list-inside list-disc space-y-1 text-sm">
-            <li>
-              {complaintSummary.total} complaint
-              {complaintSummary.total === 1 ? "" : "s"} reported
+          <ul className="mt-4 list-none space-y-3 p-0">
+            <li className="flex items-center justify-between text-sm">
+              <StatusChip variant="warning">Under review</StatusChip>
+              <span className="font-mono font-semibold tabular-nums">
+                {complaintSummary.underReview}
+              </span>
             </li>
-            <li>{complaintSummary.resolved} resolved</li>
-            <li>{complaintSummary.underReview} under review</li>
-            <li>{complaintSummary.unresolved} unresolved complaints</li>
+            <li className="flex items-center justify-between text-sm">
+              <StatusChip variant="danger">Unresolved complaint</StatusChip>
+              <span className="font-mono font-semibold tabular-nums">
+                {complaintSummary.unresolved}
+              </span>
+            </li>
+            <li className="flex items-center justify-between text-sm">
+              <StatusChip variant="success">Resolved</StatusChip>
+              <span className="font-mono font-semibold tabular-nums">
+                {complaintSummary.resolved}
+              </span>
+            </li>
           </ul>
         )}
 

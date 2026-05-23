@@ -14,7 +14,7 @@ export default function DashboardError({
 }) {
   return (
     <div className="mx-auto max-w-lg space-y-6 px-4 py-12">
-      <h1 className="text-2xl font-bold">Something went wrong</h1>
+      <h1 className="type-h1">Something went wrong</h1>
       <Alert variant="error">
         {copy.errors.generic} If this keeps happening, sign out and try again, or
         return to your dashboard overview.

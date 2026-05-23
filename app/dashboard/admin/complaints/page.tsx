@@ -17,7 +17,7 @@ export default async function AdminComplaintsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold">Complaint moderation queue</h2>
+        <h2 className="type-h3">Complaint moderation queue</h2>
         <p className="text-muted mt-1 text-sm">
           Open community reports. Update status, add private admin notes, and
           view attached proof when provided.

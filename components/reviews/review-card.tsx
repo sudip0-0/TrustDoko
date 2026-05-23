@@ -31,7 +31,7 @@ export function ReviewCard({ review, isLoggedIn, isOwner }: ReviewCardProps) {
       <p className="text-muted mt-3 text-sm leading-relaxed">{review.body}</p>
 
       {review.businessResponseBody ? (
-        <div className="mt-4 rounded-lg border border-border bg-muted/30 px-4 py-3">
+        <div className="mt-4 rounded-lg border border-primary/15 bg-primary/5 px-4 py-3">
           <p className="text-foreground text-xs font-semibold">Business response</p>
           <p className="text-muted mt-1 text-sm leading-relaxed">
             {review.businessResponseBody}

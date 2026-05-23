@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ComplaintStatusStepper } from "@/components/complaints/complaint-status-stepper";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ModerationStatusBadge } from "@/components/admin/moderation-status-badge";
 import type { UserComplaintListItem } from "@/server/queries/complaints";
@@ -24,7 +25,7 @@ export function UserComplaintsList({ complaints }: UserComplaintsListProps) {
       {complaints.map((complaint) => (
         <li
           key={complaint.id}
-          className="rounded-xl border border-border bg-card p-5"
+          className="rounded-lg border border-border bg-card p-5"
         >
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div>
@@ -41,9 +42,12 @@ export function UserComplaintsList({ complaints }: UserComplaintsListProps) {
             </div>
             <ModerationStatusBadge status={complaint.status} />
           </div>
-          <p className="text-muted mt-2 text-sm leading-relaxed">
-            {complaint.summary}
-          </p>
+
+          <div className="mt-4">
+            <ComplaintStatusStepper status={complaint.status} />
+          </div>
+
+          <p className="text-muted mt-4 text-sm leading-relaxed">{complaint.summary}</p>
         </li>
       ))}
     </ul>

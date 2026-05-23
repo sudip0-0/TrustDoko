@@ -22,7 +22,7 @@ export function NotificationsPanel({ notifications }: NotificationsPanelProps) {
       <CardContent className="py-6">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <h2 className="text-lg font-semibold">Notifications</h2>
+            <h2 className="type-h3">Notifications</h2>
             <p className="text-muted mt-1 text-sm">
               Activity from your reviews, complaints, and claims. Email alerts are
               planned for a later release.

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
-import { Plus_Jakarta_Sans, Source_Serif_4 } from "next/font/google";
+import { DM_Sans, Geist_Mono } from "next/font/google";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -9,21 +8,17 @@ import { siteConfig } from "@/lib/seo/metadata";
 
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const dmSans = DM_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
-});
-
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
-  subsets: ["latin"],
-  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -55,12 +50,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${jakarta.variable} ${sourceSerif.variable} ${geistMono.variable} flex min-h-screen flex-col`}
-      >
+    <html lang="en" className={`${dmSans.variable} ${geistMono.variable}`}>
+      <body className="flex min-h-screen flex-col font-sans antialiased">
         <SiteHeader />
-        <main className="flex-1 pt-16">{children}</main>
+        <main className="flex-1 pt-14">{children}</main>
         <SiteFooter />
       </body>
     </html>

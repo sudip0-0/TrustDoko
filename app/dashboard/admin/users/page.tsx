@@ -14,7 +14,7 @@ export default async function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold">User management</h2>
+        <h2 className="type-h3">User management</h2>
         <p className="text-muted mt-1 text-sm">
           Review accounts and flag suspicious activity via trust level. Role
           changes are not exposed in MVP to reduce privilege-escalation risk.

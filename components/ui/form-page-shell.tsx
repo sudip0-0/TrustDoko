@@ -25,15 +25,13 @@ export function FormPageShell({
     <div className={cn("mx-auto w-full max-w-md px-4 py-12 sm:px-6 sm:py-16", className)}>
       <Card>
         <CardContent className="py-8">
-          <p className="text-primary mb-2 text-xs font-semibold tracking-wide uppercase">
-            Account
-          </p>
-          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-          <p className="text-muted mt-2 text-sm leading-relaxed">{description}</p>
+          <p className="type-eyebrow text-primary mb-2">Account</p>
+          <h1 className="type-h1">{title}</h1>
+          <p className="type-body mt-2">{description}</p>
           <div className="mt-8">{children}</div>
         </CardContent>
       </Card>
-      <p className="text-muted mt-6 text-center text-sm">
+      <p className="type-body mt-6 text-center">
         <Link href={backHref} className="no-underline hover:underline">
           {backLabel}
         </Link>

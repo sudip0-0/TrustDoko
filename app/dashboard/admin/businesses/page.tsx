@@ -17,7 +17,7 @@ export default async function AdminBusinessesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold">Business management</h2>
+        <h2 className="type-h3">Business management</h2>
         <p className="text-muted mt-1 text-sm">
           Browse listed businesses, trust scores, and verification tiers.
         </p>

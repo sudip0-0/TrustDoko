@@ -34,10 +34,10 @@ export function AdminStatsGrid({ stats }: AdminStatsGridProps) {
       urgent: stats.flaggedReviews > 0,
     },
     {
-      label: "Flagged users",
-      value: stats.flaggedUsers,
-      href: "/dashboard/admin/users",
-      urgent: stats.flaggedUsers > 0,
+      label: "Risk flags",
+      value: stats.flaggedReviews + stats.flaggedUsers,
+      href: "/dashboard/admin/reviews",
+      urgent: stats.flaggedReviews + stats.flaggedUsers > 0,
     },
     {
       label: "Total businesses",

@@ -48,7 +48,7 @@ function ProfileField({ label, value }: { label: string; value: string }) {
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="px-4 py-4 text-center sm:px-6">
-      <p className="text-foreground font-mono text-2xl font-bold tabular-nums">{value}</p>
+      <p className="type-metric text-foreground text-2xl">{value}</p>
       <p className="text-muted mt-1 text-xs font-medium">{label}</p>
     </div>
   );

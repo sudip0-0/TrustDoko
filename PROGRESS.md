@@ -14,6 +14,54 @@ Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits,
 
 ---
 
+## 2026-05-23 — Premium typography (Cursor)
+
+### Completed
+- Replaced Plus Jakarta Sans + Source Serif 4 with **DM Sans** (400–700) and **Geist Mono** for metrics; single sans family site-wide.
+- Refined base palette (`#f8f7f4` background, `#1a1816` foreground) and global type scale in `app/globals.css` (`.type-display`, `.type-h1`–`.type-h3`, `.type-lead`, `.type-body`, `.type-caption`, `.type-eyebrow`, `.type-metric`, `.type-brand`).
+- Migrated shared UI and high-traffic surfaces to type utilities: `PageHeader`, `FormPageShell`, `SectionHeader`, `Card`, home sections, business profile stats/ratings, dashboards, admin section headings, auth shells.
+- Fixed `/businesses` header overlap (description merged into `PageHeader` as React node).
+- Fixed `auth.config.ts` session callback typing (`typeof token.id === "string"`).
+
+### Validation
+- `pnpm lint`: pass
+- `pnpm typecheck`: pass
+- `pnpm test`: pass (202 tests)
+
+### Notes
+- UI-only; no behavior changes. Buttons use `rounded-lg` to match card system.
+
+---
+
+## 2026-05-23 — Mockup-inspired UI system (Cursor)
+
+### Completed
+- Home/search page with hero search, trust metrics bar, featured businesses, category chips, and public complaint snapshot (`server/queries/home.ts`, `components/home/*`, `app/page.tsx`).
+- Business profile tabs (Overview, Reviews, Report, About), rating distribution chart, and complaint status chips on overview.
+- Write review and complaint forms: private proof upload cues, live moderation warnings for risky language, clearer form sections.
+- User complaints list with status stepper (Submitted → Under Review → Business responded → Resolved).
+- Admin dashboard sidebar shell, privacy footer, and queue-focused overview header.
+- Shared UI: `StatusChip`, `SubNav` consolidation, restrained `rounded-lg` cards, simplified site header with search entry.
+
+### Changed files
+- `app/page.tsx`, `app/businesses/[slug]/page.tsx`, `app/dashboard/admin/layout.tsx`, `app/dashboard/admin/page.tsx`, `app/globals.css`, `app/layout.tsx`
+- `components/home/*`, `components/business/*`, `components/reviews/review-form.tsx`, `components/complaints/*`, `components/admin/*`, `components/dashboard/user-complaints-list.tsx`, `components/forms/*`, `components/layout/site-header.tsx`, `components/ui/*`
+- `lib/moderation/moderation-language.ts`, `lib/copy/messages.ts`, `server/queries/home.ts`
+
+### Validation
+- `pnpm lint`: pass
+- `pnpm typecheck`: pass
+- `pnpm test`: pass (202 tests)
+
+### Notes
+- No auth, moderation, trust-score, or proof privacy behavior changed — UI only.
+- Order/reference field on complaints is described in copy only (no new schema field).
+
+### Next suggested task
+- Add dedicated `/write-review` and `/report` standalone layouts matching mobile mockups; wire admin moderation table view for queue scanning.
+
+---
+
 ## Current status summary
 
 
@@ -42,7 +90,7 @@ Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits,
 | Milestone 7 (admin moderation) | **DONE** (2026-05-21)                                        |
 | Milestone 7 QA (admin)         | **Passed** (2026-05-21)                                      |
 | User & business dashboards     | **DONE** (2026-05-21)                                        |
-| UI/UX overhaul                 | **DONE** (2026-05-21)                                        |
+| UI/UX overhaul                 | **DONE** (2026-05-21); mockup pass **DONE** (2026-05-23)     |
 | Milestone 8 (file upload)      | **DONE** (2026-05-21)                                        |
 | Milestone 9 (launch readiness) | **DONE** (2026-05-21)                                        |
 | Milestone 3 (reviews)          | **DONE** (2026-05-22)                                        |

@@ -1,14 +1,15 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import { FormField } from "@/components/auth/form-field";
+import { ModerationWarning } from "@/components/forms/moderation-warning";
 import { ProofFileField } from "@/components/forms/proof-file-field";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FormSection } from "@/components/ui/form-section";
-import { Select, Textarea } from "@/components/ui/input";
+import { Input, Select, Textarea } from "@/components/ui/input";
 import { copy } from "@/lib/copy/messages";
 import { experienceTypes } from "@/lib/validations/review";
 import {
@@ -43,6 +44,9 @@ export function ReviewForm({
   proofUploadEnabled = false,
 }: ReviewFormProps) {
   const isEdit = Boolean(viewerReview);
+  const [title, setTitle] = useState(viewerReview?.title ?? "");
+  const [body, setBody] = useState(viewerReview?.body ?? "");
+
   const [submitState, submitAction, isSubmitting] = useActionState(
     isEdit ? updateReviewAction : submitReviewAction,
     initialState,
@@ -56,7 +60,7 @@ export function ReviewForm({
     submitState.error || submitState.fieldErrors ? submitState : deleteState;
 
   return (
-    <Card id="write-review" className="scroll-mt-24">
+    <Card className="scroll-mt-24">
       <CardContent className="py-6">
         <h2 className="text-xl font-semibold">
           {isEdit ? "Edit your review" : "Write a review"}
@@ -88,7 +92,10 @@ export function ReviewForm({
             <input type="hidden" name="reviewId" value={viewerReview.id} />
           ) : null}
 
-          <FormSection title="Your rating" description="How would you rate your overall experience?">
+          <FormSection
+            title="Your rating"
+            description="How would you rate your overall experience?"
+          >
             <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Rating">
               {[1, 2, 3, 4, 5].map((value) => (
                 <label
@@ -103,7 +110,7 @@ export function ReviewForm({
                     required
                     className="sr-only"
                   />
-                  {value} ★
+                  {value} star{value === 1 ? "" : "s"}
                 </label>
               ))}
             </div>
@@ -115,15 +122,25 @@ export function ReviewForm({
           </FormSection>
 
           <FormSection title="Review details">
-            <FormField
-              id="title"
-              label="Title (optional)"
-              name="title"
-              required={false}
-              defaultValue={viewerReview?.title ?? ""}
-              errors={state.fieldErrors?.title}
-            />
-
+            <div className="form-field">
+              <label htmlFor="title" className="text-foreground block text-sm font-medium">
+                Review title (optional)
+              </label>
+              <p className="text-muted text-xs">Short summary, max 80 characters</p>
+              <Input
+                id="title"
+                name="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                maxLength={80}
+                aria-invalid={Boolean(state.fieldErrors?.title)}
+              />
+              {state.fieldErrors?.title ? (
+                <p className="text-destructive text-sm" role="alert">
+                  {state.fieldErrors.title[0]}
+                </p>
+              ) : null}
+            </div>
             <div className="form-field">
               <label htmlFor="body" className="text-foreground block text-sm font-medium">
                 Your review <span className="text-destructive">*</span>
@@ -133,7 +150,8 @@ export function ReviewForm({
                 name="body"
                 required
                 rows={5}
-                defaultValue={viewerReview?.body ?? ""}
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
                 placeholder="What went well or poorly? Mention delivery, product quality, payment method (eSewa/Khalti/bank), and communication."
                 aria-invalid={Boolean(state.fieldErrors?.body)}
               />
@@ -143,6 +161,7 @@ export function ReviewForm({
                 </p>
               ) : null}
             </div>
+            <ModerationWarning title={title} body={body} />
           </FormSection>
 
           <FormSection title="Experience context">
@@ -152,7 +171,7 @@ export function ReviewForm({
                   htmlFor="experienceType"
                   className="text-foreground block text-sm font-medium"
                 >
-                  Experience type
+                  What is your review about?
                 </label>
                 <Select
                   id="experienceType"
@@ -209,6 +228,10 @@ export function ReviewForm({
             errors={state.fieldErrors?.proof}
           />
 
+          <p className="text-muted rounded-lg border border-border bg-muted/20 px-3 py-2 text-xs leading-relaxed">
+            {copy.moderation.pendingPublish}
+          </p>
+
           <Button
             type="submit"
             disabled={isSubmitting}
@@ -216,7 +239,7 @@ export function ReviewForm({
             className="w-full sm:w-auto"
           >
             {isSubmitting
-              ? "Saving…"
+              ? "Submitting your review…"
               : isEdit
                 ? "Update review"
                 : "Submit review"}

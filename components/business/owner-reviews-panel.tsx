@@ -61,7 +61,7 @@ export async function OwnerReviewsPanel({
   if (reviews.length === 0) {
     return (
       <section className="rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold">Reviews</h2>
+        <h2 className="type-h3">Reviews</h2>
         <p className="text-muted mt-2 text-sm">No approved reviews yet.</p>
       </section>
     );
@@ -69,7 +69,7 @@ export async function OwnerReviewsPanel({
 
   return (
     <section className="rounded-xl border border-border bg-card p-6">
-      <h2 className="text-lg font-semibold">Reviews on your business</h2>
+      <h2 className="type-h3">Reviews on your business</h2>
       <p className="text-muted mt-1 text-sm">
         Respond publicly to approved reviews.{" "}
         <a href={`/businesses/${businessSlug}#reviews`} className="text-primary">

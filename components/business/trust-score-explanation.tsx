@@ -24,7 +24,7 @@ export function TrustScoreExplanation({
       aria-labelledby="trust-score-heading"
     >
       <CardContent className="py-6">
-        <h2 id="trust-score-heading" className="text-lg font-semibold">
+        <h2 id="trust-score-heading" className="type-h3">
           How this trust score is calculated
         </h2>
         <CardDescription className="mt-2">

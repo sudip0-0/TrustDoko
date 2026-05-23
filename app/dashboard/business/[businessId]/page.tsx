@@ -57,7 +57,7 @@ export default async function OwnerBusinessPage({ params }: OwnerBusinessPagePro
               ← All businesses
             </Link>
           </p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+          <h1 className="type-h1 mt-2">
             {business.name}
           </h1>
           <p className="text-muted mt-2 text-sm">

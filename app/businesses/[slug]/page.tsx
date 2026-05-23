@@ -3,16 +3,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { FadeInView } from "@/components/home/fade-in-view";
 import { ClaimPendingBanner } from "@/components/business/claim-pending-banner";
-import { ProfileSectionNav } from "@/components/business/profile-section-nav";
-import { ContentWidth } from "@/components/layout/content-width";
 import { BusinessProfileActions } from "@/components/business/business-profile-actions";
-import { BusinessProfileComplaints } from "@/components/business/business-profile-complaints";
 import { BusinessProfileHeader } from "@/components/business/business-profile-header";
+import { BusinessProfileOverview } from "@/components/business/business-profile-overview";
 import { BusinessProfileReviews } from "@/components/business/business-profile-reviews";
-import { BusinessProfileStats } from "@/components/business/business-profile-stats";
-import { TrustScoreExplanation } from "@/components/business/trust-score-explanation";
+import { ProfileTabsNav } from "@/components/business/profile-tabs-nav";
+import { ContentWidth } from "@/components/layout/content-width";
 import { ComplaintForm } from "@/components/complaints/complaint-form";
 import { ComplaintSignInCta } from "@/components/complaints/complaint-sign-in-cta";
 import { OwnerComplaintsPanel } from "@/components/complaints/owner-complaints-panel";
@@ -25,6 +22,7 @@ import { isStorageConfigured } from "@/lib/storage/config";
 import { isBusinessOwner } from "@/lib/permissions/business";
 import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
 import { getBusinessProfile } from "@/server/queries/business-profile";
+import { getRatingDistributionForBusiness } from "@/server/queries/home";
 import { isBusinessSavedByUser } from "@/server/queries/saved-businesses";
 import {
   getApprovedReviewsForBusiness,
@@ -69,15 +67,17 @@ export default async function BusinessProfilePage({
 
   const sessionUser = await getSessionUser();
 
-  const [reviewList, viewerReview, initialSaved] = await Promise.all([
-    getApprovedReviewsForBusiness(business.id, reviewPage, sessionUser?.id),
-    sessionUser
-      ? getViewerReviewForBusiness(business.id, sessionUser.id)
-      : Promise.resolve(null),
-    sessionUser
-      ? isBusinessSavedByUser(sessionUser.id, business.id)
-      : Promise.resolve(false),
-  ]);
+  const [reviewList, viewerReview, initialSaved, ratingDistribution] =
+    await Promise.all([
+      getApprovedReviewsForBusiness(business.id, reviewPage, sessionUser?.id),
+      sessionUser
+        ? getViewerReviewForBusiness(business.id, sessionUser.id)
+        : Promise.resolve(null),
+      sessionUser
+        ? isBusinessSavedByUser(sessionUser.id, business.id)
+        : Promise.resolve(false),
+      getRatingDistributionForBusiness(business.id),
+    ]);
 
   const viewerIsOwner = sessionUser
     ? isBusinessOwner(sessionUser, {
@@ -88,43 +88,36 @@ export default async function BusinessProfilePage({
 
   const proofUploadEnabled = isStorageConfigured();
 
-  return (
-    <ContentWidth size="lg" className="space-y-8 py-10">
-      <FadeInView>
-        <BusinessProfileHeader business={business} />
-      </FadeInView>
+  const profileTabs = [
+    { id: "overview", label: "Overview" },
+    { id: "reviews", label: `Reviews (${reviewList.total})` },
+    { id: "report-issue", label: "Report issue" },
+    { id: "about", label: "About" },
+  ];
 
-      <FadeInView delay={0.1}>
-        <ProfileSectionNav />
-      </FadeInView>
+  return (
+    <ContentWidth size="lg" className="space-y-6 py-8">
+      <BusinessProfileHeader business={business} />
 
       {business.claimStatus === "PENDING" ? (
-        <FadeInView delay={0.1}>
-          <ClaimPendingBanner businessName={business.name} />
-        </FadeInView>
+        <ClaimPendingBanner businessName={business.name} />
       ) : null}
 
-      <FadeInView delay={0.15}>
-        <BusinessProfileStats business={business} />
-      </FadeInView>
+      <BusinessProfileActions
+        business={business}
+        viewerIsOwner={viewerIsOwner}
+        showSave={Boolean(sessionUser)}
+        initialSaved={initialSaved}
+      />
 
-      <FadeInView delay={0.2}>
-        <TrustScoreExplanation
-          trustScore={business.trustScore}
-          reasons={business.trustScoreReasons}
-        />
-      </FadeInView>
+      <ProfileTabsNav tabs={profileTabs} />
 
-      <FadeInView delay={0.2}>
-        <BusinessProfileActions
-          business={business}
-          viewerIsOwner={viewerIsOwner}
-          showSave={Boolean(sessionUser)}
-          initialSaved={initialSaved}
-        />
-      </FadeInView>
+      <BusinessProfileOverview
+        business={business}
+        ratingDistribution={ratingDistribution}
+      />
 
-      <FadeInView delay={0.25}>
+      <section id="write-review" className="scroll-mt-24">
         {sessionUser ? (
           <div className="space-y-4">
             {viewerReview ? <ReviewPendingBanner review={viewerReview} /> : null}
@@ -138,25 +131,19 @@ export default async function BusinessProfilePage({
         ) : (
           <ReviewSignInCta businessSlug={business.slug} />
         )}
-      </FadeInView>
+      </section>
 
-      <FadeInView delay={0.3}>
-        <BusinessProfileReviews
-          businessSlug={business.slug}
-          reviews={reviewList.reviews}
-          reviewPage={reviewPage}
-          reviewTotalPages={reviewList.totalPages}
-          reviewTotal={reviewList.total}
-          viewerUserId={sessionUser?.id}
-          isLoggedIn={Boolean(sessionUser)}
-        />
-      </FadeInView>
+      <BusinessProfileReviews
+        businessSlug={business.slug}
+        reviews={reviewList.reviews}
+        reviewPage={reviewPage}
+        reviewTotalPages={reviewList.totalPages}
+        reviewTotal={reviewList.total}
+        viewerUserId={sessionUser?.id}
+        isLoggedIn={Boolean(sessionUser)}
+      />
 
-      <FadeInView delay={0.35}>
-        <BusinessProfileComplaints business={business} />
-      </FadeInView>
-
-      <FadeInView delay={0.4}>
+      <section id="report-issue" className="scroll-mt-24">
         {sessionUser ? (
           <ComplaintForm
             businessSlug={business.slug}
@@ -166,33 +153,38 @@ export default async function BusinessProfilePage({
         ) : (
           <ComplaintSignInCta businessSlug={business.slug} />
         )}
-      </FadeInView>
+      </section>
+
+      <section id="about" className="scroll-mt-24 rounded-lg border border-border bg-card p-6">
+        <h2 className="text-xl font-semibold">About this business</h2>
+        {business.description ? (
+          <p className="text-muted mt-3 leading-relaxed">{business.description}</p>
+        ) : (
+          <p className="text-muted mt-3 text-sm">No public description provided.</p>
+        )}
+      </section>
 
       {sessionUser &&
       canViewBusinessComplaints(sessionUser, {
         claimedByUserId: business.claimedByUserId,
         claimStatus: business.claimStatus as ClaimStatus,
       }) ? (
-        <FadeInView delay={0.45}>
-          <OwnerComplaintsPanel
-            businessId={business.id}
-            businessName={business.name}
-            sessionUser={sessionUser}
-            business={{
-              claimedByUserId: business.claimedByUserId,
-              claimStatus: business.claimStatus as ClaimStatus,
-            }}
-          />
-        </FadeInView>
+        <OwnerComplaintsPanel
+          businessId={business.id}
+          businessName={business.name}
+          sessionUser={sessionUser}
+          business={{
+            claimedByUserId: business.claimedByUserId,
+            claimStatus: business.claimStatus as ClaimStatus,
+          }}
+        />
       ) : null}
 
-      <FadeInView delay={0.5}>
-        <p className="text-muted text-center text-sm">
-          <Link href="/businesses" className="no-underline transition-colors duration-300 hover:underline">
-            &larr; Browse all businesses
-          </Link>
-        </p>
-      </FadeInView>
+      <p className="text-muted text-center text-sm">
+        <Link href="/businesses" className="no-underline hover:underline">
+          Back to all businesses
+        </Link>
+      </p>
     </ContentWidth>
   );
 }

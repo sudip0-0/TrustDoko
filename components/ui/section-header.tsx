@@ -23,10 +23,8 @@ export function SectionHeader({
       )}
     >
       <div>
-        <h2 className="text-lg font-semibold">{title}</h2>
-        {description ? (
-          <p className="text-muted mt-1 text-sm leading-relaxed">{description}</p>
-        ) : null}
+        <h2 className="type-h3">{title}</h2>
+        {description ? <p className="type-body mt-1">{description}</p> : null}
       </div>
       {children}
     </div>

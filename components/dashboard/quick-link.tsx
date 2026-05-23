@@ -27,7 +27,7 @@ export function QuickLink({
     >
       <p className="text-foreground text-sm font-semibold">{label}</p>
       {count !== null && count !== undefined ? (
-        <p className="text-foreground mt-2 font-mono text-2xl font-bold tabular-nums">
+        <p className="type-metric text-foreground mt-2 text-2xl">
           {count}
         </p>
       ) : (

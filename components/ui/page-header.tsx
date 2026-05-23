@@ -27,24 +27,13 @@ export function PageHeader({
       )}
     >
       <div className="max-w-2xl">
-        {eyebrow ? (
-          <p className="eyebrow-badge mb-3">{eyebrow}</p>
-        ) : null}
-        <h1
-          className={cn(
-            "text-foreground font-bold tracking-tight",
-            size === "compact"
-              ? "text-2xl sm:text-3xl"
-              : "text-3xl sm:text-4xl",
-          )}
-        >
-          {title}
-        </h1>
+        {eyebrow ? <p className="eyebrow-badge mb-3">{eyebrow}</p> : null}
+        <h1 className={cn(size === "compact" ? "type-h2" : "type-h1")}>{title}</h1>
         {description ? (
           <div
             className={cn(
-              "text-muted mt-3 space-y-2 leading-relaxed",
-              size === "compact" ? "text-sm sm:text-base" : "text-base sm:text-lg",
+              "mt-3 space-y-2",
+              size === "compact" ? "type-body" : "type-lead",
             )}
           >
             {typeof description === "string" ? <p>{description}</p> : description}

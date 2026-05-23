@@ -26,7 +26,7 @@ function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg bg-muted/30 px-3 py-3">
       <p className="text-muted text-xs font-medium">{label}</p>
-      <p className="text-foreground mt-1 text-lg font-semibold tabular-nums">
+      <p className="type-metric text-foreground mt-1">
         {value}
       </p>
     </div>
@@ -43,7 +43,7 @@ export function OwnerBusinessOverview({ business }: OwnerBusinessOverviewProps) 
   return (
     <Card>
       <CardContent className="py-6">
-        <h2 className="text-lg font-semibold">Business overview</h2>
+        <h2 className="type-h3">Business overview</h2>
         <div className="mt-4">
           <TrustScoreDisplay
             trustScore={business.trustScore}

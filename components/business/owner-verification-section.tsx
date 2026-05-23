@@ -22,7 +22,7 @@ export function OwnerVerificationSection({
     <section className="rounded-xl border border-border bg-card p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Verification status</h2>
+          <h2 className="type-h3">Verification status</h2>
           <p className="text-muted mt-1 text-sm">
             How TrustDoko displays trust on your public profile.
           </p>

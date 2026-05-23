@@ -8,7 +8,7 @@ import {
 
 import { cn } from "@/lib/utils";
 
-const cardTitleClassName = "text-foreground text-lg font-semibold";
+const cardTitleClassName = "text-foreground type-h3";
 
 function isHeadingElement(
   child: ReactNode,
@@ -51,8 +51,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-card text-card-foreground shadow-sm",
-        "transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-diffusion-lg",
+        "rounded-lg border border-border bg-card text-card-foreground shadow-sm",
         className,
       )}
       {...props}
@@ -108,7 +107,7 @@ export function CardDescription({
   return (
     <p
       className={cn(
-        "text-muted mt-1 text-sm leading-relaxed",
+        "type-body mt-1",
         className,
       )}
       {...props}

@@ -41,13 +41,11 @@ export function BusinessProfileHeader({ business }: BusinessProfileHeaderProps) 
       <div className="border-b border-border bg-muted/20 px-6 py-5 sm:px-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              {business.name}
-            </h1>
+            <h1 className="type-h1">{business.name}</h1>
             {business.category ? (
-              <p className="text-muted mt-2 text-sm">{business.category.name}</p>
+              <p className="type-caption mt-2 font-medium">{business.category.name}</p>
             ) : null}
-            <p className="text-muted mt-3 max-w-2xl text-sm leading-relaxed">
+            <p className="type-body mt-3 max-w-2xl">
               {copy.trust.beforeYouPay}
             </p>
           </div>

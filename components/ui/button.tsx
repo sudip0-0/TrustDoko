@@ -44,9 +44,9 @@ export function Button({
     <button
       type={type}
       className={cn(
-        "inline-flex items-center justify-center rounded-full font-semibold no-underline",
-        "transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-        "active:scale-[0.97] motion-reduce:active:scale-100",
+        "inline-flex items-center justify-center rounded-lg text-sm font-semibold tracking-tight no-underline",
+        "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        "active:scale-[0.98] motion-reduce:active:scale-100",
         "disabled:opacity-50 disabled:pointer-events-none",
         variants[variant],
         sizes[size],
@@ -78,9 +78,9 @@ export function ButtonLink({
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center justify-center rounded-full font-semibold no-underline",
-        "transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-        "active:scale-[0.97] motion-reduce:active:scale-100",
+        "inline-flex items-center justify-center rounded-lg text-sm font-semibold tracking-tight no-underline",
+        "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        "active:scale-[0.98] motion-reduce:active:scale-100",
         "disabled:opacity-50 disabled:pointer-events-none",
         variants[variant],
         sizes[size],

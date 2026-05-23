@@ -29,7 +29,7 @@ export function BusinessProfileEditForm({ business }: BusinessProfileEditFormPro
   return (
     <Card>
       <CardContent className="py-6">
-        <h2 className="text-lg font-semibold">Edit profile</h2>
+        <h2 className="type-h3">Edit profile</h2>
         <p className="text-muted mt-1 text-sm">
           Update contact and description fields. Name and trust scores cannot be
           changed here.

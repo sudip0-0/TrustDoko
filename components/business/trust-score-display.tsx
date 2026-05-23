@@ -39,9 +39,9 @@ export function TrustScoreDisplay({
         aria-label={`Trust score ${trustScore} out of 100`}
       >
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <p className="text-foreground text-4xl font-bold tabular-nums">
+          <p className="type-metric text-foreground text-4xl">
             {trustScore}
-            <span className="text-muted text-xl font-normal">/100</span>
+            <span className="type-body text-xl font-normal">/100</span>
           </p>
           {trustLabel ? <TrustLabelBadge trustLabel={trustLabel} /> : null}
         </div>
@@ -65,9 +65,9 @@ export function TrustScoreDisplay({
       aria-label={`Trust score ${trustScore} out of 100`}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-foreground text-lg font-bold tabular-nums">
+        <span className="type-metric text-foreground text-lg">
           {trustScore}
-          <span className="text-muted text-sm font-normal">/100</span>
+          <span className="type-caption font-normal">/100</span>
         </span>
         {trustLabel ? <TrustLabelBadge trustLabel={trustLabel} /> : null}
       </div>

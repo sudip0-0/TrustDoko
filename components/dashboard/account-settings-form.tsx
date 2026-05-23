@@ -27,7 +27,7 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
   return (
     <Card>
       <CardContent className="py-6">
-        <h2 className="text-lg font-semibold">Account settings</h2>
+        <h2 className="type-h3">Account settings</h2>
         <p className="text-muted mt-1 text-sm">
           Update your display name. Email changes require support for now.
         </p>

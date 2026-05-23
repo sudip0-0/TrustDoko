@@ -34,7 +34,7 @@ export function FormField({
 
   return (
     <div className={cn("form-field", className)}>
-      <label htmlFor={id} className="text-foreground block text-sm font-medium">
+      <label htmlFor={id} className="text-foreground type-body-strong block">
         {label}
         {required ? (
           <span className="text-destructive ml-0.5" aria-hidden="true">
@@ -96,7 +96,7 @@ export function FormTextareaField({
 
   return (
     <div className={cn("form-field", className)}>
-      <label htmlFor={id} className="text-foreground block text-sm font-medium">
+      <label htmlFor={id} className="text-foreground type-body-strong block">
         {label}
         {required ? (
           <span className="text-destructive ml-0.5" aria-hidden="true">
@@ -156,7 +156,7 @@ export function FormSelectField({
 
   return (
     <div className={cn("form-field", className)}>
-      <label htmlFor={id} className="text-foreground block text-sm font-medium">
+      <label htmlFor={id} className="text-foreground type-body-strong block">
         {label}
         {required ? (
           <span className="text-destructive ml-0.5" aria-hidden="true">

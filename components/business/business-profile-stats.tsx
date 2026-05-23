@@ -19,7 +19,7 @@ export function BusinessProfileStats({ business }: BusinessProfileStatsProps) {
       <Card>
         <CardContent>
           <p className="text-muted text-sm font-medium">Average rating</p>
-          <p className="text-foreground mt-2 text-2xl font-bold tabular-nums">
+          <p className="type-metric text-foreground mt-2 text-2xl">
             {ratingText}
           </p>
           <p className="text-muted mt-1 text-xs">
@@ -31,7 +31,7 @@ export function BusinessProfileStats({ business }: BusinessProfileStatsProps) {
       <Card>
         <CardContent>
           <p className="text-muted text-sm font-medium">Complaints on record</p>
-          <p className="text-foreground mt-2 text-2xl font-bold tabular-nums">
+          <p className="type-metric text-foreground mt-2 text-2xl">
             {business.complaintSummary.total}
           </p>
           <p className="text-muted mt-1 text-xs">

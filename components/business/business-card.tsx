@@ -37,7 +37,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
     <article className="flex h-full flex-col rounded-xl border border-border bg-card p-5 shadow-sm transition-[box-shadow,border-color] hover:border-primary/30 hover:shadow-md motion-reduce:transition-none">
       <div className="space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <h2 className="text-foreground text-lg font-semibold leading-snug">
+          <h2 className="text-foreground type-h3 leading-snug">
             <Link
               href={`/businesses/${business.slug}`}
               className="no-underline hover:text-primary"

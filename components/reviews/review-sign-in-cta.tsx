@@ -12,7 +12,7 @@ export function ReviewSignInCta({ businessSlug }: ReviewSignInCtaProps) {
       id="write-review"
       className="scroll-mt-24 rounded-xl border border-dashed border-border bg-card px-6 py-8 text-center"
     >
-      <h2 className="text-lg font-semibold">Share your experience</h2>
+      <h2 className="type-h3">Share your experience</h2>
       <p className="text-muted mx-auto mt-2 max-w-md text-sm leading-relaxed">
         Sign in to write a review for this business. Your feedback helps others
         decide with confidence.
