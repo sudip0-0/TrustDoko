@@ -37,7 +37,9 @@ export async function generateMetadata({
   });
 }
 
-export default async function WriteReviewPage({ params }: WriteReviewPageProps) {
+export default async function WriteReviewPage({
+  params,
+}: WriteReviewPageProps) {
   const { businessSlug } = await params;
   const business = await getBusinessProfile(businessSlug);
 
@@ -63,13 +65,16 @@ export default async function WriteReviewPage({ params }: WriteReviewPageProps) 
           <h1 className="type-h1 mt-2">Write a review</h1>
           <p className="type-body mt-3 max-w-2xl">
             Share a specific, fair account of your experience. Reviews with
-            serious claims may be held for moderation before they appear publicly.
+            serious claims may be held for moderation before they appear
+            publicly.
           </p>
         </div>
 
         {sessionUser ? (
           <div className="space-y-4">
-            {viewerReview ? <ReviewPendingBanner review={viewerReview} /> : null}
+            {viewerReview ? (
+              <ReviewPendingBanner review={viewerReview} />
+            ) : null}
             <ReviewForm
               businessSlug={business.slug}
               businessName={business.name}
@@ -111,12 +116,14 @@ export default async function WriteReviewPage({ params }: WriteReviewPageProps) 
         </Card>
         <Card>
           <CardContent className="space-y-3">
-            <p className="text-sm font-semibold text-foreground">
+            <p className="text-foreground text-sm font-semibold">
               Before publishing
             </p>
             <ul className="text-muted list-disc space-y-2 pl-5 text-sm leading-relaxed">
               <li>Approved reviews are public on the business profile.</li>
-              <li>Proof files stay private and are available to admins only.</li>
+              <li>
+                Proof files stay private and are available to admins only.
+              </li>
               <li>Accusations are reviewed before being amplified.</li>
             </ul>
             <Link

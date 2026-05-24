@@ -15,6 +15,38 @@ Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits,
 ## 2026-05-24 - Codex
 
 ### Completed
+- Built dedicated `/write-review/[businessSlug]` and `/report/[businessSlug]` pages using the existing review and complaint form components.
+- Updated business profile CTAs to use the dedicated form pages and replaced the inline report form with a focused report entry section.
+- Improved business profile tab navigation with active-section tracking and URL hash updates while scrolling.
+- Refactored admin review and complaint moderation queues into scan-friendly table views with mobile card fallbacks, existing actions, and proof links preserved.
+
+### Changed files
+- `app/write-review/[businessSlug]/page.tsx`
+- `app/report/[businessSlug]/page.tsx`
+- `app/businesses/[slug]/page.tsx`
+- `components/business/business-profile-actions.tsx`
+- `components/business/profile-tabs-nav.tsx`
+- `components/business/profile-section-nav.tsx`
+- `app/dashboard/admin/reviews/page.tsx`
+- `app/dashboard/admin/complaints/page.tsx`
+- `server/actions/reviews.ts`
+
+### Validation
+- `pnpm typecheck`: pass
+- `pnpm lint`: pass
+- `pnpm test`: pass (207 tests)
+- Route smoke test: blocked because local PostgreSQL was not reachable on `127.0.0.1:5433`; `pnpm docker:up` failed because Docker Desktop was not running.
+
+### Notes
+- No validation, moderation, proof privacy, or admin action server behavior was changed.
+- The dedicated review route is revalidated after review submit/update/delete.
+
+### Next suggested task
+- Run a browser/mobile smoke pass for the new form routes and admin tables after Docker Desktop/PostgreSQL is available.
+
+## 2026-05-24 - Codex
+
+### Completed
 - Added safe PostgreSQL check constraints for `Review.rating` and exactly one `BusinessResponse` target.
 - Added matching app validation for business response targets.
 - Wired private business-claim document uploads through the existing storage pipeline.

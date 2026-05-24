@@ -70,7 +70,7 @@ export function ProfileTabsNav({ tabs, className }: ProfileTabsNavProps) {
   return (
     <nav
       className={cn(
-        "flex gap-1 overflow-x-auto border-b border-border",
+        "border-border flex gap-1 overflow-x-auto border-b",
         className,
       )}
       aria-label="Business profile sections"
@@ -82,7 +82,7 @@ export function ProfileTabsNav({ tabs, className }: ProfileTabsNavProps) {
           onClick={() => scrollToSection(tab.id)}
           aria-current={activeId === tab.id ? "true" : undefined}
           data-active={activeId === tab.id ? true : undefined}
-          className="text-muted shrink-0 border-b-2 border-transparent px-4 py-3 text-sm font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[active]:border-primary data-[active]:text-primary"
+          className="text-muted hover:text-foreground focus-visible:ring-ring data-[active]:border-primary data-[active]:text-primary shrink-0 border-b-2 border-transparent px-4 py-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
         >
           {tab.label}
         </button>

@@ -24,7 +24,7 @@ export function BusinessProfileActions({
 
   return (
     <section
-      className="flex flex-col gap-3 rounded-xl border border-border bg-card p-6 sm:flex-row sm:flex-wrap"
+      className="border-border bg-card flex flex-col gap-3 rounded-xl border p-6 sm:flex-row sm:flex-wrap"
       aria-label="Actions for this business"
     >
       <ButtonLink href={`/write-review/${business.slug}`} size="md">
@@ -38,7 +38,11 @@ export function BusinessProfileActions({
         Report an issue
       </ButtonLink>
       {canClaim ? (
-        <ButtonLink href={`/claim/${business.slug}`} variant="outline" size="md">
+        <ButtonLink
+          href={`/claim/${business.slug}`}
+          variant="outline"
+          size="md"
+        >
           Claim this business
         </ButtonLink>
       ) : null}
@@ -48,7 +52,10 @@ export function BusinessProfileActions({
         </Badge>
       ) : null}
       {showSave && !viewerIsOwner ? (
-        <SaveBusinessButton businessId={business.id} initialSaved={initialSaved} />
+        <SaveBusinessButton
+          businessId={business.id}
+          initialSaved={initialSaved}
+        />
       ) : null}
       {viewerIsOwner ? (
         <ButtonLink href="/dashboard/business" variant="outline" size="md">
@@ -57,7 +64,7 @@ export function BusinessProfileActions({
       ) : null}
       <Link
         href="/businesses"
-        className="text-muted inline-flex min-h-11 items-center px-2 text-sm no-underline hover:text-foreground sm:ml-auto"
+        className="text-muted hover:text-foreground inline-flex min-h-11 items-center px-2 text-sm no-underline sm:ml-auto"
       >
         ← All businesses
       </Link>

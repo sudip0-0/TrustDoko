@@ -10,14 +10,14 @@ const sections = [
 export function ProfileSectionNav() {
   return (
     <nav
-      className="-mx-1 flex gap-2 overflow-x-auto border-b border-border px-1 pb-3 lg:hidden"
+      className="border-border -mx-1 flex gap-2 overflow-x-auto border-b px-1 pb-3 lg:hidden"
       aria-label="On this page"
     >
       {sections.map((section) => (
         <a
           key={section.id}
           href={`#${section.id}`}
-          className="text-muted shrink-0 rounded-lg border border-border px-3 py-1.5 text-sm font-medium no-underline hover:bg-accent hover:text-foreground"
+          className="text-muted border-border hover:bg-accent hover:text-foreground shrink-0 rounded-lg border px-3 py-1.5 text-sm font-medium no-underline"
         >
           {section.label}
         </a>

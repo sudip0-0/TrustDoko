@@ -19,9 +19,7 @@ import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
 import { getBusinessProfile } from "@/server/queries/business-profile";
 import { getRatingDistributionForBusiness } from "@/server/queries/home";
 import { isBusinessSavedByUser } from "@/server/queries/saved-businesses";
-import {
-  getApprovedReviewsForBusiness,
-} from "@/server/queries/reviews";
+import { getApprovedReviewsForBusiness } from "@/server/queries/reviews";
 
 type BusinessProfilePageProps = {
   params: Promise<{ slug: string }>;
@@ -61,14 +59,13 @@ export default async function BusinessProfilePage({
 
   const sessionUser = await getSessionUser();
 
-  const [reviewList, initialSaved, ratingDistribution] =
-    await Promise.all([
-      getApprovedReviewsForBusiness(business.id, reviewPage, sessionUser?.id),
-      sessionUser
-        ? isBusinessSavedByUser(sessionUser.id, business.id)
-        : Promise.resolve(false),
-      getRatingDistributionForBusiness(business.id),
-    ]);
+  const [reviewList, initialSaved, ratingDistribution] = await Promise.all([
+    getApprovedReviewsForBusiness(business.id, reviewPage, sessionUser?.id),
+    sessionUser
+      ? isBusinessSavedByUser(sessionUser.id, business.id)
+      : Promise.resolve(false),
+    getRatingDistributionForBusiness(business.id),
+  ]);
 
   const viewerIsOwner = sessionUser
     ? isBusinessOwner(sessionUser, {
@@ -118,7 +115,7 @@ export default async function BusinessProfilePage({
 
       <section
         id="report-issue"
-        className="scroll-mt-24 rounded-xl border border-border bg-card p-6"
+        className="border-border bg-card scroll-mt-24 rounded-xl border p-6"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -138,12 +135,19 @@ export default async function BusinessProfilePage({
         </div>
       </section>
 
-      <section id="about" className="scroll-mt-24 rounded-lg border border-border bg-card p-6">
+      <section
+        id="about"
+        className="border-border bg-card scroll-mt-24 rounded-lg border p-6"
+      >
         <h2 className="text-xl font-semibold">About this business</h2>
         {business.description ? (
-          <p className="text-muted mt-3 leading-relaxed">{business.description}</p>
+          <p className="text-muted mt-3 leading-relaxed">
+            {business.description}
+          </p>
         ) : (
-          <p className="text-muted mt-3 text-sm">No public description provided.</p>
+          <p className="text-muted mt-3 text-sm">
+            No public description provided.
+          </p>
         )}
       </section>
 

@@ -58,8 +58,8 @@ export default async function ReportPage({ params }: ReportPageProps) {
           <h1 className="type-h1 mt-2">Report a serious issue</h1>
           <p className="type-body mt-3 max-w-2xl">
             Use this for unresolved orders, misleading pricing, non-delivery, or
-            other serious issues. Reports are moderated before they affect public
-            trust signals.
+            other serious issues. Reports are moderated before they affect
+            public trust signals.
           </p>
         </div>
 
@@ -103,12 +103,14 @@ export default async function ReportPage({ params }: ReportPageProps) {
         </Card>
         <Card>
           <CardContent className="space-y-3">
-            <p className="text-sm font-semibold text-foreground">
+            <p className="text-foreground text-sm font-semibold">
               Privacy and moderation
             </p>
             <ul className="text-muted list-disc space-y-2 pl-5 text-sm leading-relaxed">
               <li>Complaint proof is private by default.</li>
-              <li>Admins may review the report before public status changes.</li>
+              <li>
+                Admins may review the report before public status changes.
+              </li>
               <li>Public wording avoids presenting allegations as facts.</li>
             </ul>
             <Link

@@ -165,6 +165,7 @@ export async function submitReviewAction(
   await recalculateTrustScore(business.id);
 
   revalidatePath(`/businesses/${business.slug}`);
+  revalidatePath(`/write-review/${business.slug}`);
 
   return {
     success: true,
@@ -252,6 +253,7 @@ export async function updateReviewAction(
   await recalculateTrustScore(review.businessId);
 
   revalidatePath(`/businesses/${review.business.slug}`);
+  revalidatePath(`/write-review/${review.business.slug}`);
 
   return {
     success: true,
@@ -322,6 +324,7 @@ export async function deleteReviewAction(
   await recalculateTrustScore(review.businessId);
 
   revalidatePath(`/businesses/${review.business.slug}`);
+  revalidatePath(`/write-review/${review.business.slug}`);
 
   return { success: true, message: "Your review was deleted." };
 }
@@ -357,7 +360,10 @@ export async function voteReviewHelpfulAction(
   }
 
   if (review.votes.length > 0) {
-    return { success: true, message: "You already marked this review helpful." };
+    return {
+      success: true,
+      message: "You already marked this review helpful.",
+    };
   }
 
   await prisma.$transaction([
