@@ -7,6 +7,7 @@ import {
   FormSelectField,
   FormTextareaField,
 } from "@/components/auth/form-field";
+import { ProofFileField } from "@/components/forms/proof-file-field";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { FormSection } from "@/components/ui/form-section";
@@ -22,9 +23,14 @@ const initialState: ClaimActionState = {};
 type ClaimFormProps = {
   businessSlug: string;
   businessName: string;
+  proofUploadEnabled?: boolean;
 };
 
-export function ClaimForm({ businessSlug, businessName }: ClaimFormProps) {
+export function ClaimForm({
+  businessSlug,
+  businessName,
+  proofUploadEnabled = false,
+}: ClaimFormProps) {
   const [state, formAction, isPending] = useActionState(
     submitClaimAction,
     initialState,
@@ -39,10 +45,16 @@ export function ClaimForm({ businessSlug, businessName }: ClaimFormProps) {
   }
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form
+      action={formAction}
+      encType={proofUploadEnabled ? "multipart/form-data" : undefined}
+      className="space-y-6"
+    >
       <input type="hidden" name="businessSlug" value={businessSlug} />
 
-      <p className="text-muted text-sm leading-relaxed">{copy.forms.claimHelper}</p>
+      <p className="text-muted text-sm leading-relaxed">
+        {copy.forms.claimHelper}
+      </p>
 
       {state.error ? <Alert variant="error">{state.error}</Alert> : null}
 
@@ -102,12 +114,24 @@ export function ClaimForm({ businessSlug, businessName }: ClaimFormProps) {
         />
       </FormSection>
 
-      <Alert variant="info" title="Documents">
-        Supporting document upload is coming soon. Include registration details or
-        official contact channels in your message.
-      </Alert>
+      <FormSection
+        title="Supporting document"
+        description="Attach business registration, PAN/VAT, or other ownership proof when available."
+      >
+        <ProofFileField
+          enabled={proofUploadEnabled}
+          errors={state.fieldErrors?.proof}
+          id="claim-proof"
+          label="Add business document (optional)"
+        />
+      </FormSection>
 
-      <Button type="submit" disabled={isPending} aria-busy={isPending} className="w-full sm:w-auto">
+      <Button
+        type="submit"
+        disabled={isPending}
+        aria-busy={isPending}
+        className="w-full sm:w-auto"
+      >
         {isPending ? "Submitting…" : "Submit claim request"}
       </Button>
     </form>

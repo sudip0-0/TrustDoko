@@ -20,6 +20,7 @@ export type PendingClaimRow = {
   businessClaimStatus: string;
   businessTrustScoreReasons: unknown;
   userId: string;
+  documentFileId: string | null;
 };
 
 export type UserClaimRow = {
@@ -44,6 +45,7 @@ export async function getPendingClaimsForAdmin(): Promise<PendingClaimRow[]> {
       ownerPhone: true,
       method: true,
       message: true,
+      documentFileId: true,
       createdAt: true,
       businessId: true,
       userId: true,
@@ -75,10 +77,13 @@ export async function getPendingClaimsForAdmin(): Promise<PendingClaimRow[]> {
     businessClaimStatus: c.business.claimStatus,
     businessTrustScoreReasons: c.business.trustScoreReasons,
     userId: c.userId,
+    documentFileId: c.documentFileId,
   }));
 }
 
-export async function getUserClaimRequests(userId: string): Promise<UserClaimRow[]> {
+export async function getUserClaimRequests(
+  userId: string,
+): Promise<UserClaimRow[]> {
   const claims = await prisma.businessClaim.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },

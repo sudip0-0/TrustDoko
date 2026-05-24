@@ -523,9 +523,12 @@ createdAt
 
 **Not enforced in the database (application layer):**
 
-- `BusinessResponse`: exactly one of `reviewId` or `complaintId` must be set.
-- `Review.rating` in range 1–5.
 - `Business.trustScore`, `averageRating`, `reviewCount`, `complaintCount` kept denormalized; must be updated in transactions when reviews/complaints change (TD-0501 / moderation tasks).
+
+**Database constraints added after schema audit:**
+
+- `BusinessResponse_exactly_one_target_check`: exactly one of `reviewId` or `complaintId` must be set.
+- `Review_rating_range_check`: `Review.rating` must stay between 1 and 5.
 
 **Seed:** `prisma/seed.ts` — idempotent upserts for 10 categories, 12 `[Sample]` businesses, one sample reviewer, 2 approved reviews.
 

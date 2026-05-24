@@ -10,15 +10,10 @@ import { BusinessProfileOverview } from "@/components/business/business-profile-
 import { BusinessProfileReviews } from "@/components/business/business-profile-reviews";
 import { ProfileTabsNav } from "@/components/business/profile-tabs-nav";
 import { ContentWidth } from "@/components/layout/content-width";
-import { ComplaintForm } from "@/components/complaints/complaint-form";
-import { ComplaintSignInCta } from "@/components/complaints/complaint-sign-in-cta";
 import { OwnerComplaintsPanel } from "@/components/complaints/owner-complaints-panel";
-import { ReviewForm } from "@/components/reviews/review-form";
-import { ReviewPendingBanner } from "@/components/reviews/review-pending-banner";
-import { ReviewSignInCta } from "@/components/reviews/review-sign-in-cta";
+import { ButtonLink } from "@/components/ui/button";
 import { getSessionUser } from "@/lib/auth/session";
 import { buildMetadata } from "@/lib/seo/metadata";
-import { isStorageConfigured } from "@/lib/storage/config";
 import { isBusinessOwner } from "@/lib/permissions/business";
 import { canViewBusinessComplaints } from "@/lib/permissions/complaint";
 import { getBusinessProfile } from "@/server/queries/business-profile";
@@ -26,7 +21,6 @@ import { getRatingDistributionForBusiness } from "@/server/queries/home";
 import { isBusinessSavedByUser } from "@/server/queries/saved-businesses";
 import {
   getApprovedReviewsForBusiness,
-  getViewerReviewForBusiness,
 } from "@/server/queries/reviews";
 
 type BusinessProfilePageProps = {
@@ -67,12 +61,9 @@ export default async function BusinessProfilePage({
 
   const sessionUser = await getSessionUser();
 
-  const [reviewList, viewerReview, initialSaved, ratingDistribution] =
+  const [reviewList, initialSaved, ratingDistribution] =
     await Promise.all([
       getApprovedReviewsForBusiness(business.id, reviewPage, sessionUser?.id),
-      sessionUser
-        ? getViewerReviewForBusiness(business.id, sessionUser.id)
-        : Promise.resolve(null),
       sessionUser
         ? isBusinessSavedByUser(sessionUser.id, business.id)
         : Promise.resolve(false),
@@ -85,8 +76,6 @@ export default async function BusinessProfilePage({
         claimStatus: business.claimStatus as ClaimStatus,
       })
     : false;
-
-  const proofUploadEnabled = isStorageConfigured();
 
   const profileTabs = [
     { id: "overview", label: "Overview" },
@@ -117,22 +106,6 @@ export default async function BusinessProfilePage({
         ratingDistribution={ratingDistribution}
       />
 
-      <section id="write-review" className="scroll-mt-24">
-        {sessionUser ? (
-          <div className="space-y-4">
-            {viewerReview ? <ReviewPendingBanner review={viewerReview} /> : null}
-            <ReviewForm
-              businessSlug={business.slug}
-              businessName={business.name}
-              viewerReview={viewerReview}
-              proofUploadEnabled={proofUploadEnabled}
-            />
-          </div>
-        ) : (
-          <ReviewSignInCta businessSlug={business.slug} />
-        )}
-      </section>
-
       <BusinessProfileReviews
         businessSlug={business.slug}
         reviews={reviewList.reviews}
@@ -143,16 +116,26 @@ export default async function BusinessProfilePage({
         isLoggedIn={Boolean(sessionUser)}
       />
 
-      <section id="report-issue" className="scroll-mt-24">
-        {sessionUser ? (
-          <ComplaintForm
-            businessSlug={business.slug}
-            businessName={business.name}
-            proofUploadEnabled={proofUploadEnabled}
-          />
-        ) : (
-          <ComplaintSignInCta businessSlug={business.slug} />
-        )}
+      <section
+        id="report-issue"
+        className="scroll-mt-24 rounded-xl border border-border bg-card p-6"
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-xl font-semibold">Report an issue</h2>
+            <p className="text-muted mt-1 max-w-2xl text-sm leading-relaxed">
+              File serious issues through the dedicated report page so proof,
+              privacy, and moderation steps stay clear.
+            </p>
+          </div>
+          <ButtonLink
+            href={`/report/${business.slug}`}
+            variant="secondary"
+            className="w-full sm:w-auto"
+          >
+            Open report form
+          </ButtonLink>
+        </div>
       </section>
 
       <section id="about" className="scroll-mt-24 rounded-lg border border-border bg-card p-6">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminProofLink } from "@/components/admin/admin-proof-link";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ClaimReviewActions } from "@/components/admin/claim-review-actions";
 import { TrustLabelBadge } from "@/components/business/trust-label-badge";
@@ -68,6 +69,14 @@ export default async function AdminClaimsPage() {
                 <p className="text-muted mt-3 text-sm leading-relaxed">
                   {claim.message}
                 </p>
+                {claim.documentFileId ? (
+                  <div className="mt-3">
+                    <AdminProofLink
+                      proofFileId={claim.documentFileId}
+                      label="View claim document"
+                    />
+                  </div>
+                ) : null}
                 <div className="mt-4">
                   <ClaimReviewActions claimId={claim.id} />
                 </div>

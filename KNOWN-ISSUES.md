@@ -49,20 +49,22 @@ Related files:
 
 ### KI-0015: BusinessResponse target not enforced in database
 
-Status: OPEN  
+Status: RESOLVED (2026-05-24)  
 Severity: MEDIUM
 
 Description:
-`BusinessResponse` allows both `reviewId` and `complaintId` to be null or both set. The intended rule is exactly one target per row.
+`BusinessResponse` previously allowed both `reviewId` and `complaintId` to be null or both set. The intended rule is exactly one target per row.
 
 Impact:
 Invalid rows could break profile UI or owner-reply permissions if server actions do not validate.
 
-Recommended action:
-Validate in Zod/server actions when TD-0301+ ship. Optional later: partial unique indexes or check constraint via raw SQL migration.
+Resolution:
+Added `BusinessResponse_exactly_one_target_check` in a safe raw SQL migration and matching application validation in `lib/business-responses/target.ts`.
 
 Related files:
 - `prisma/schema.prisma` (`BusinessResponse`)
+- `prisma/migrations/20260524090000_add_response_and_rating_checks/migration.sql`
+- `lib/business-responses/target.ts`
 
 ---
 
@@ -88,20 +90,22 @@ Related files:
 
 ### KI-0017: Review rating range not enforced in PostgreSQL
 
-Status: OPEN  
+Status: RESOLVED (2026-05-24)  
 Severity: LOW
 
 Description:
-`Review.rating` is an `Int` without a database check constraint for 1–5.
+`Review.rating` was an `Int` without a database check constraint for 1 to 5.
 
 Impact:
 A buggy server action could persist invalid ratings.
 
-Recommended action:
-Enforce in Zod (`lib/validations/`) on submit; optional `CHECK (rating >= 1 AND rating <= 5)` in a future migration.
+Resolution:
+Review submit/update validation already rejects ratings outside 1 to 5. Added `Review_rating_range_check` to PostgreSQL for defense in depth.
 
 Related files:
 - `prisma/schema.prisma` (`Review`)
+- `prisma/migrations/20260524090000_add_response_and_rating_checks/migration.sql`
+- `lib/validations/review.ts`
 
 ---
 
@@ -251,22 +255,25 @@ Related files:
 
 ---
 
-### KI-0020: Business verification and image uploads not implemented
+### KI-0020: Business claim document uploads not implemented
 
-Status: OPEN  
+Status: RESOLVED (2026-05-24)  
 Severity: MEDIUM
 
 Description:
-`FileAsset` supports `BUSINESS_DOCUMENT` and `BUSINESS_IMAGE`, but claim/verification/profile flows still show “coming soon” and have no server upload handlers.
+`FileAsset` supports `BUSINESS_DOCUMENT`, but business claim flows showed "coming soon" and had no server upload handler.
 
 Impact:
-Owners cannot upload verification documents or gallery images yet; schema is ahead of UI.
+Owners could not attach private verification documents to claim requests.
 
-Recommended action:
-Implement dedicated upload actions with stricter ownership checks when product requires it (post-M8).
+Resolution:
+Claim submissions now use the existing private storage pipeline with `FilePurpose.BUSINESS_DOCUMENT`, persist `BusinessClaim.documentFileId`, and expose documents only through the authenticated admin/owner signed proof route. Admin claim review shows a private document link when attached.
 
 Related files:
 - `components/claims/claim-form.tsx`
+- `server/actions/claims.ts`
+- `server/queries/claims.ts`
+- `app/dashboard/admin/claims/page.tsx`
 - `prisma/schema.prisma` (`FileAsset`)
 
 ---

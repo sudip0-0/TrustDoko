@@ -4,6 +4,7 @@ import { FilePurpose, Prisma, ReviewStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { getSessionUser } from "@/lib/auth/session";
+import { parseBusinessResponseTarget } from "@/lib/business-responses/target";
 import { determineReviewStatus } from "@/lib/moderation/review-status";
 import { isBusinessOwner } from "@/lib/permissions/business";
 import { canDeleteReview, canEditReview } from "@/lib/permissions/review";
@@ -429,7 +430,7 @@ export async function respondToReviewAction(
       data: {
         businessId: review.businessId,
         authorUserId: user.id,
-        reviewId: review.id,
+        ...parseBusinessResponseTarget({ reviewId: review.id }),
         body: parsed.data.body,
       },
     }),

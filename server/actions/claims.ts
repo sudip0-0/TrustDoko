@@ -1,18 +1,20 @@
 "use server";
 
-import { BusinessClaimStatus, ClaimStatus } from "@prisma/client";
+import { BusinessClaimStatus, ClaimStatus, FilePurpose } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-import { approveBusinessClaim, rejectBusinessClaim } from "@/lib/claims/approve";
+import {
+  approveBusinessClaim,
+  rejectBusinessClaim,
+} from "@/lib/claims/approve";
 import { isClaimRateLimited } from "@/lib/claims/rate-limit";
 import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import { getSessionUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/permissions/admin";
-import {
-  parseClaimFormData,
-  submitClaimSchema,
-} from "@/lib/validations/claim";
+import { deleteFileAsset } from "@/lib/storage/delete-asset";
+import { processProofUploadFromFormData } from "@/lib/storage/process-proof";
+import { parseClaimFormData, submitClaimSchema } from "@/lib/validations/claim";
 
 export type ClaimActionState = {
   success?: boolean;
@@ -66,7 +68,8 @@ export async function submitClaimAction(
 
   if (await isClaimRateLimited(user.id)) {
     return {
-      error: "You have reached the claim submission limit for today. Try again tomorrow.",
+      error:
+        "You have reached the claim submission limit for today. Try again tomorrow.",
     };
   }
 
@@ -85,6 +88,22 @@ export async function submitClaimAction(
     }
     return { error: "A claim for this business is already under review." };
   }
+
+  const documentResult = await processProofUploadFromFormData({
+    formData,
+    ownerUserId: user.id,
+    purpose: FilePurpose.BUSINESS_DOCUMENT,
+    businessId: business.id,
+  });
+
+  if (!documentResult.ok) {
+    if ("fieldErrors" in documentResult) {
+      return { fieldErrors: documentResult.fieldErrors };
+    }
+    return { error: documentResult.error };
+  }
+
+  const documentFileId = documentResult.proofFileId;
 
   try {
     await prisma.$transaction(async (tx) => {
@@ -128,6 +147,7 @@ export async function submitClaimAction(
           ownerPhone: parsed.data.ownerPhone || null,
           method: parsed.data.method,
           message: parsed.data.message,
+          ...(documentFileId ? { documentFileId } : {}),
         },
         select: { id: true },
       });
@@ -148,6 +168,9 @@ export async function submitClaimAction(
       });
     });
   } catch (error) {
+    if (documentFileId) {
+      await deleteFileAsset(documentFileId);
+    }
     const code = error instanceof Error ? error.message : "";
     if (code === "NOT_FOUND") {
       return { error: "Business not found." };

@@ -9,6 +9,7 @@ import { Alert } from "@/components/ui/alert";
 import { copy } from "@/lib/copy/messages";
 import { getSessionUser } from "@/lib/auth/session";
 import { formatClaimStatus } from "@/lib/business/display";
+import { isStorageConfigured } from "@/lib/storage/config";
 import { prisma } from "@/lib/db";
 
 type ClaimPageProps = {
@@ -49,6 +50,7 @@ export default async function ClaimBusinessPage({ params }: ClaimPageProps) {
 
   const canSubmit =
     business.claimStatus === "UNCLAIMED" || business.claimStatus === "REJECTED";
+  const proofUploadEnabled = isStorageConfigured();
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-12 sm:px-6 sm:py-16">
@@ -63,7 +65,11 @@ export default async function ClaimBusinessPage({ params }: ClaimPageProps) {
       {canSubmit ? (
         <Card className="mt-8">
           <CardContent className="py-6">
-            <ClaimForm businessSlug={business.slug} businessName={business.name} />
+            <ClaimForm
+              businessSlug={business.slug}
+              businessName={business.name}
+              proofUploadEnabled={proofUploadEnabled}
+            />
           </CardContent>
         </Card>
       ) : (

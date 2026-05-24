@@ -1,8 +1,12 @@
 type AdminProofLinkProps = {
   proofFileId: string | null | undefined;
+  label?: string;
 };
 
-export function AdminProofLink({ proofFileId }: AdminProofLinkProps) {
+export function AdminProofLink({
+  proofFileId,
+  label = "View proof",
+}: AdminProofLinkProps) {
   if (!proofFileId) {
     return null;
   }
@@ -14,7 +18,7 @@ export function AdminProofLink({ proofFileId }: AdminProofLinkProps) {
       rel="noopener noreferrer"
       className="text-primary inline-flex text-sm font-medium no-underline hover:underline"
     >
-      View proof
+      {label}
     </a>
   );
 }

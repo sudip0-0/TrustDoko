@@ -4,6 +4,7 @@ import { ComplaintStatus, FilePurpose, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { recalculateBusinessComplaintCount } from "@/lib/complaints/aggregates";
+import { parseBusinessResponseTarget } from "@/lib/business-responses/target";
 import { recalculateTrustScore } from "@/lib/trust-score/recalculate";
 import { isComplaintRateLimited } from "@/lib/complaints/rate-limit";
 import { getComplaintSeverity } from "@/lib/complaints/severity";
@@ -226,7 +227,7 @@ export async function respondToComplaintAction(
       data: {
         businessId: complaint.businessId,
         authorUserId: user.id,
-        complaintId: complaint.id,
+        ...parseBusinessResponseTarget({ complaintId: complaint.id }),
         body: parsed.data.body,
       },
     }),

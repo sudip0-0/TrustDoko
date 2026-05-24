@@ -50,6 +50,7 @@ describe("canAccessProofAssetById", () => {
       purpose: "COMPLAINT_PROOF",
       reviewProof: null,
       complaintProof: { userId: "user-1" },
+      claimDocument: null,
     });
     await expect(canAccessProofAssetById(admin, "file-1")).resolves.toBe(true);
   });
@@ -61,6 +62,19 @@ describe("canAccessProofAssetById", () => {
       purpose: "COMPLAINT_PROOF",
       reviewProof: null,
       complaintProof: { userId: "user-1" },
+      claimDocument: null,
+    });
+    await expect(canAccessProofAssetById(owner, "file-1")).resolves.toBe(true);
+  });
+
+  it("allows owner when linked to their business claim", async () => {
+    findUnique.mockResolvedValue({
+      ownerUserId: "user-1",
+      visibility: "PRIVATE",
+      purpose: "BUSINESS_DOCUMENT",
+      reviewProof: null,
+      complaintProof: null,
+      claimDocument: { userId: "user-1" },
     });
     await expect(canAccessProofAssetById(owner, "file-1")).resolves.toBe(true);
   });
@@ -72,8 +86,11 @@ describe("canAccessProofAssetById", () => {
       purpose: "REVIEW_PROOF",
       reviewProof: { userId: "user-1" },
       complaintProof: null,
+      claimDocument: null,
     });
-    await expect(canAccessProofAssetById(stranger, "file-1")).resolves.toBe(false);
+    await expect(canAccessProofAssetById(stranger, "file-1")).resolves.toBe(
+      false,
+    );
   });
 
   it("denies owner without entity link (orphan asset)", async () => {
@@ -83,6 +100,7 @@ describe("canAccessProofAssetById", () => {
       purpose: "REVIEW_PROOF",
       reviewProof: null,
       complaintProof: null,
+      claimDocument: null,
     });
     await expect(canAccessProofAssetById(owner, "file-1")).resolves.toBe(false);
   });

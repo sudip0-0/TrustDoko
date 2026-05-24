@@ -1,10 +1,10 @@
 "use client";
 
 const sections = [
-  { id: "trust-score", label: "Trust score" },
-  { id: "write-review", label: "Review" },
+  { id: "overview", label: "Overview" },
   { id: "reviews", label: "Reviews" },
   { id: "report-issue", label: "Report" },
+  { id: "about", label: "About" },
 ] as const;
 
 export function ProfileSectionNav() {

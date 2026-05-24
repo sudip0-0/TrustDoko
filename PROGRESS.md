@@ -10,7 +10,48 @@ Agents must update this file after every meaningful coding session.
 
 **Milestone 9 (quality and launch readiness) — complete.**
 
-Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits, security review documented, KI-0005 resolved. **File upload security hardening** (magic-byte validation, extension blocklist, upload rate limits, orphan cleanup, owner proof route). Next: post-MVP enhancements (search, business document upload, production rate limiting).
+Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits, security review documented, KI-0005 resolved. **File upload security hardening** (magic-byte validation, extension blocklist, upload rate limits, orphan cleanup, owner proof route). Business claim document upload and response/rating database constraints are now implemented. Next: post-MVP enhancements (search, production rate limiting).
+
+## 2026-05-24 - Codex
+
+### Completed
+- Added safe PostgreSQL check constraints for `Review.rating` and exactly one `BusinessResponse` target.
+- Added matching app validation for business response targets.
+- Wired private business-claim document uploads through the existing storage pipeline.
+- Added admin claim document links through the existing signed proof route.
+- Resolved KI-0015, KI-0017, and KI-0020.
+
+### Changed files
+- `prisma/migrations/20260524090000_add_response_and_rating_checks/migration.sql`
+- `lib/business-responses/target.ts`
+- `lib/business-responses/__tests__/target.test.ts`
+- `server/actions/claims.ts`
+- `server/actions/reviews.ts`
+- `server/actions/complaints.ts`
+- `components/claims/claim-form.tsx`
+- `components/forms/proof-file-field.tsx`
+- `components/admin/admin-proof-link.tsx`
+- `app/claim/[businessSlug]/page.tsx`
+- `app/dashboard/admin/claims/page.tsx`
+- `server/queries/claims.ts`
+- `lib/storage/access-proof.ts`
+- `lib/storage/__tests__/access-proof.test.ts`
+- `ARCHITECTURE.md`
+- `KNOWN-ISSUES.md`
+
+### Validation
+- `pnpm lint`: pass
+- `pnpm typecheck`: pass
+- `pnpm test`: pass
+- `pnpm db:validate`: pass
+- `pnpm db:migrate`: fail (local Prisma schema engine returned no details; Docker Desktop engine is not running)
+
+### Notes
+- Claim documents use `FileVisibility.PRIVATE` and are not displayed on public business pages.
+- Migration SQL is committed but was not applied locally because the local database/Docker runtime is unavailable.
+
+### Next suggested task
+- Add business profile image/gallery uploads as a separate public-media feature with explicit `PUBLIC` visibility rules.
 
 ---
 
@@ -1431,4 +1472,3 @@ Residual: KI-0020 (business docs/images not built), KI-0021 (no dimension cap).
 ### Next suggested task
 - Next task
 ```
-

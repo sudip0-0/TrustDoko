@@ -5,6 +5,7 @@ type ProofFileFieldProps = {
   enabled: boolean;
   errors?: string[];
   id?: string;
+  label?: string;
 };
 
 function LockIcon() {
@@ -29,10 +30,13 @@ export function ProofFileField({
   enabled,
   errors,
   id = "proof",
+  label = "Add receipt or screenshot (optional)",
 }: ProofFileFieldProps) {
   if (!enabled) {
     return (
-      <p className="text-muted text-sm leading-relaxed">{copy.forms.proofComingSoon}</p>
+      <p className="text-muted text-sm leading-relaxed">
+        {copy.forms.proofComingSoon}
+      </p>
     );
   }
 
@@ -40,7 +44,7 @@ export function ProofFileField({
     <div className="rounded-lg border border-dashed border-border bg-muted/20 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <label htmlFor={id} className="text-foreground text-sm font-medium">
-          Add receipt or screenshot (optional)
+          {label}
         </label>
         <span className="text-primary inline-flex items-center gap-1.5 text-xs font-semibold">
           <LockIcon />

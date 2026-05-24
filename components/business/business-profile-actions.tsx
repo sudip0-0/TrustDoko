@@ -27,11 +27,11 @@ export function BusinessProfileActions({
       className="flex flex-col gap-3 rounded-xl border border-border bg-card p-6 sm:flex-row sm:flex-wrap"
       aria-label="Actions for this business"
     >
-      <ButtonLink href={`/businesses/${business.slug}#write-review`} size="md">
+      <ButtonLink href={`/write-review/${business.slug}`} size="md">
         Write a review
       </ButtonLink>
       <ButtonLink
-        href={`/businesses/${business.slug}#report-issue`}
+        href={`/report/${business.slug}`}
         variant="secondary"
         size="md"
       >

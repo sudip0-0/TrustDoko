@@ -26,6 +26,7 @@ export async function canAccessProofAssetById(
       purpose: true,
       reviewProof: { select: { userId: true } },
       complaintProof: { select: { userId: true } },
+      claimDocument: { select: { userId: true } },
     },
   });
 
@@ -50,6 +51,10 @@ export async function canAccessProofAssetById(
   }
 
   if (asset.complaintProof?.userId === user.id) {
+    return true;
+  }
+
+  if (asset.claimDocument?.userId === user.id) {
     return true;
   }
 
