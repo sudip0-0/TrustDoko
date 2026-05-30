@@ -109,7 +109,6 @@ export default async function BusinessProfilePage({
         reviewPage={reviewPage}
         reviewTotalPages={reviewList.totalPages}
         reviewTotal={reviewList.total}
-        viewerUserId={sessionUser?.id}
         isLoggedIn={Boolean(sessionUser)}
       />
 

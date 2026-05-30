@@ -12,6 +12,38 @@ Agents must update this file after every meaningful coding session.
 
 Domain test gaps filled, seed sign-off, SEO/Open Graph, claim/login rate limits, security review documented, KI-0005 resolved. **File upload security hardening** (magic-byte validation, extension blocklist, upload rate limits, orphan cleanup, owner proof route). Business claim document upload and response/rating database constraints are now implemented. Next: post-MVP enhancements (search, production rate limiting).
 
+## 2026-05-30 - Kiro (launch hardening pass)
+
+### Completed
+- Audited security/privacy/perf/maintainability across `app/`, `components/`, `server/`, and `lib/`. Server-side auth, proof-file privacy, admin guards, validation, and moderation are already sound — no auth or privacy weakening needed.
+- Privacy: stopped leaking every reviewer's raw `userId` in the public review payload. `getApprovedReviewsForBusiness` now computes `viewerIsAuthor` server-side; `ReviewListItem.userId` removed from the client-facing type.
+- Performance: `lib/trust-score/gather-inputs.ts` no longer loads all approved reviews into memory for the recent-trend signal. Replaced the unbounded `findMany` + redundant approved-count query with two bounded `aggregate` calls split on the 90-day cutoff. Behavior unchanged.
+- Maintainability: extracted the recent-negative-trend rule into pure, tested `lib/trust-score/recent-trend.ts`.
+- Security headers: added conservative global headers in `next.config.ts` (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`). Strict CSP deferred and tracked as KI-0022.
+
+### Changed files
+- `server/queries/reviews.ts`
+- `components/business/business-profile-reviews.tsx`
+- `app/businesses/[slug]/page.tsx`
+- `lib/trust-score/gather-inputs.ts`
+- `lib/trust-score/recent-trend.ts` (new)
+- `lib/trust-score/__tests__/recent-trend.test.ts` (new)
+- `next.config.ts`
+- `KNOWN-ISSUES.md` (KI-0022)
+
+### Validation
+- `pnpm lint` (`npm run lint`): pass
+- `pnpm typecheck` (`npm run typecheck`): pass
+- `pnpm test` (`npm test`): pass (212 tests, +5)
+- `npm run build`: pass
+
+### Notes
+- No change to auth boundaries, moderation rules, proof privacy, trust-score formula, or complaint wording. Trust-score recalculation stays write-triggered.
+- No new dependencies added.
+
+### Next suggested task
+- Tune a per-environment Content-Security-Policy during launch QA (KI-0022).
+
 ## 2026-05-24 - Codex
 
 ### Completed

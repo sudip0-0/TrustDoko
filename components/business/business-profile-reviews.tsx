@@ -8,7 +8,6 @@ type BusinessProfileReviewsProps = {
   reviewPage: number;
   reviewTotalPages: number;
   reviewTotal: number;
-  viewerUserId?: string | null;
   isLoggedIn: boolean;
 };
 
@@ -18,7 +17,6 @@ export function BusinessProfileReviews({
   reviewPage,
   reviewTotalPages,
   reviewTotal,
-  viewerUserId,
   isLoggedIn,
 }: BusinessProfileReviewsProps) {
   return (
@@ -46,7 +44,7 @@ export function BusinessProfileReviews({
               key={review.id}
               review={review}
               isLoggedIn={isLoggedIn}
-              isOwner={viewerUserId === review.userId}
+              isOwner={review.viewerIsAuthor}
             />
           ))}
         </ul>

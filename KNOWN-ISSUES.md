@@ -27,6 +27,31 @@ LOW
 
 ## Open issues
 
+### KI-0022: Strict Content-Security-Policy not yet enabled
+
+Status: OPEN  
+Severity: LOW
+
+Description:
+Baseline security headers are applied globally in `next.config.ts`
+(`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`,
+`Referrer-Policy`, and a restrictive `Permissions-Policy`). A strict
+`Content-Security-Policy` is intentionally deferred to avoid breaking the
+Next.js inline runtime and Cloudinary delivery before launch QA.
+
+Impact:
+Clickjacking and MIME-sniffing are mitigated, but a tuned CSP would further
+reduce XSS blast radius.
+
+Recommended action:
+Add a per-environment CSP (likely nonce-based) during launch QA and verify
+auth, server actions, and signed proof URLs still work.
+
+Related files:
+- `next.config.ts`
+
+---
+
 ### KI-0014: Prisma generate EPERM when dev server holds query engine (Windows)
 
 Status: OPEN  

@@ -16,7 +16,7 @@ export type ReviewListItem = {
   helpfulCount: number;
   createdAt: Date;
   authorName: string | null;
-  userId: string;
+  viewerIsAuthor: boolean;
   viewerHasVoted: boolean;
   businessResponseBody: string | null;
 };
@@ -83,7 +83,7 @@ export async function getApprovedReviewsForBusiness(
       helpfulCount: review.helpfulCount,
       createdAt: review.createdAt,
       authorName: review.user.name,
-      userId: review.userId,
+      viewerIsAuthor: viewerUserId ? review.userId === viewerUserId : false,
       viewerHasVoted: viewerUserId
         ? Array.isArray(review.votes) && review.votes.length > 0
         : false,

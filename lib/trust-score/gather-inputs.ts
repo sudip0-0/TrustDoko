@@ -3,6 +3,7 @@ import { ComplaintSeverity, ComplaintStatus, ReviewStatus } from "@prisma/client
 import { prisma } from "@/lib/db";
 
 import { computeProfileCompleteness } from "./profile-completeness";
+import { hasRecentNegativeTrend } from "./recent-trend";
 import type { TrustScoreInput } from "./types";
 
 const OPEN_COMPLAINT_STATUSES: ComplaintStatus[] = [
@@ -46,13 +47,16 @@ export async function gatherTrustScoreInputs(
     return null;
   }
 
+  const recentCutoff = new Date();
+  recentCutoff.setDate(recentCutoff.getDate() - 90);
+
   const [
     unresolvedComplaintCount,
     complaintsUnderModerationCount,
     highSeverityOpenCount,
     pendingReviewCount,
-    approvedReviews,
-    eligibleReviews,
+    recentReviewStats,
+    olderReviewStats,
     eligibleComplaints,
     reviewsWithResponse,
     complaintsWithResponse,
@@ -76,13 +80,23 @@ export async function gatherTrustScoreInputs(
     prisma.review.count({
       where: { businessId, status: ReviewStatus.PENDING },
     }),
-    prisma.review.findMany({
-      where: { businessId, status: ReviewStatus.APPROVED },
-      select: { rating: true, createdAt: true },
-      orderBy: { createdAt: "asc" },
+    prisma.review.aggregate({
+      where: {
+        businessId,
+        status: ReviewStatus.APPROVED,
+        createdAt: { gte: recentCutoff },
+      },
+      _count: { _all: true },
+      _avg: { rating: true },
     }),
-    prisma.review.count({
-      where: { businessId, status: ReviewStatus.APPROVED },
+    prisma.review.aggregate({
+      where: {
+        businessId,
+        status: ReviewStatus.APPROVED,
+        createdAt: { lt: recentCutoff },
+      },
+      _count: { _all: true },
+      _avg: { rating: true },
     }),
     prisma.complaint.count({
       where: {
@@ -106,6 +120,7 @@ export async function gatherTrustScoreInputs(
     }),
   ]);
 
+  const eligibleReviews = recentReviewStats._count._all + olderReviewStats._count._all;
   const eligibleTotal = eligibleReviews + eligibleComplaints;
   const respondedTotal = reviewsWithResponse + complaintsWithResponse;
   const responseRate = Math.min(
@@ -113,20 +128,16 @@ export async function gatherTrustScoreInputs(
     Math.max(0, eligibleTotal > 0 ? respondedTotal / eligibleTotal : 0),
   );
 
-  const recentCutoff = new Date();
-  recentCutoff.setDate(recentCutoff.getDate() - 90);
-
-  const recent = approvedReviews.filter((r) => r.createdAt >= recentCutoff);
-  const older = approvedReviews.filter((r) => r.createdAt < recentCutoff);
-
-  let recentNegativeTrend = false;
-  if (recent.length >= 2 && older.length >= 1) {
-    const recentAvg =
-      recent.reduce((sum, r) => sum + r.rating, 0) / recent.length;
-    const olderAvg =
-      older.reduce((sum, r) => sum + r.rating, 0) / older.length;
-    recentNegativeTrend = recentAvg <= olderAvg - 0.5;
-  }
+  const recentNegativeTrend = hasRecentNegativeTrend(
+    {
+      count: recentReviewStats._count._all,
+      averageRating: recentReviewStats._avg.rating ?? 0,
+    },
+    {
+      count: olderReviewStats._count._all,
+      averageRating: olderReviewStats._avg.rating ?? 0,
+    },
+  );
 
   return {
     averageRating: business.averageRating,
